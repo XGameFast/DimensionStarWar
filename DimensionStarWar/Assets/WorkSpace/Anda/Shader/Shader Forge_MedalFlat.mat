@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Shader Forge_MedalFlat
+  m_Shader: {fileID: 4800000, guid: 9a89c3081d58d4a6488ca729efcb3010, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: e4615535cef234abc9b64bd307f01fad, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _node_7953:
+        m_Texture: {fileID: 2800000, guid: e4615535cef234abc9b64bd307f01fad, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _node_8433:
+        m_Texture: {fileID: 2800000, guid: 45ea12de601bc4ffdb2c4fce5a275420, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _Alpha: 1
+    - _Cutoff: 0.5
+    m_Colors:
+    - _MainCol: {r: 0.3455882, g: 0, b: 0, a: 1}
+    - _node_4388: {r: 0.35294116, g: 0.007785474, b: 0.007785474, a: 1}

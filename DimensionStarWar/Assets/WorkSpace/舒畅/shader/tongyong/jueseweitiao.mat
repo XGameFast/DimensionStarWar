@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: jueseweitiao
+  m_Shader: {fileID: 4800000, guid: 644b8558e9a49da428a436dfe1442fb0, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AO:
+        m_Texture: {fileID: 2800000, guid: 1636a2c4ce8bb421896554b69bc0e1d5, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _basecolor:
+        m_Texture: {fileID: 2800000, guid: bd149c749b34d476b8fdde36f32a088f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _liuwen1:
+        m_Texture: {fileID: 2800000, guid: 2a9af0d6364f8da43bc827ff5408c4a9, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _liuwen2:
+        m_Texture: {fileID: 2800000, guid: d22778733a18de44d8da6d6b0d744ff1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _metallic:
+        m_Texture: {fileID: 2800000, guid: 97a76e6873524411984c49adb4f96ccc, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _normal:
+        m_Texture: {fileID: 2800000, guid: f9407c26a6d6443a9a4ef558cd5484ae, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _rongjietex:
+        m_Texture: {fileID: 2800000, guid: 0839562779f0c0543aaa239b78bd12b9, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _roughess:
+        m_Texture: {fileID: 2800000, guid: 00199f29b66294efbb6940944b03658a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _A: 1.523623
+    - _Cutoff: 0.5
+    - _M: 0.3461539
+    - _R: 1
+    - _alpha: 0
+    - _node_1654: 1
+    - _node_245: 1
+    - _node_3226: 1.5
+    - _rongjie: 1
+    m_Colors:
+    - _liuwencolor: {r: 0.06617647, g: 0.3431034, b: 1, a: 1}
+    - _rongjiebiancolor: {r: 0.09558821, g: 0.9251521, b: 1, a: 1}

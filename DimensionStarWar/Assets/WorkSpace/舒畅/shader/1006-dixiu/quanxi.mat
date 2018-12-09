@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: quanxi
+  m_Shader: {fileID: 4800000, guid: 8bace0dcfb7380643bb0b9050599416f, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _Maintex:
+        m_Texture: {fileID: 2800000, guid: 81fcaacc3d9ac9c499b123c6cf659269, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _node_1982:
+        m_Texture: {fileID: 2800000, guid: 1c6df1ebfac48e949ba92847089b6db5, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _Cutoff: 0.5
+    - _node_9407: -0.01709402
+    m_Colors:
+    - _color: {r: 0.2685986, g: 1.4999999, b: 1.4999999, a: 1}

@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Shader Forge_BlockEffect
+  m_Shader: {fileID: 4800000, guid: 14a02af7f0f114f87a8b00794ec17385, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _LitTex:
+        m_Texture: {fileID: 2800000, guid: ee340054b14d95b42967b6f017654790, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 9d1319597a7588d44a0148743614aa6f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _node_4062:
+        m_Texture: {fileID: 2800000, guid: b9d6c5b05059c6c429143498db2233cd, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _Cutoff: 0.5
+    - _Depth: -5
+    - _Noise: 30
+    - _Power: -5
+    - _Transform: 0
+    m_Colors:
+    - _LitColor: {r: 0, g: 0, b: 0, a: 1}
+    - _MainColor: {r: 0.2941177, g: 0.44705844, b: 2, a: 1}
+    - _TargetPoint: {r: 0, g: 6, b: 0, a: 0}
+    - _center: {r: 0, g: 0, b: 0, a: 0}
+    - _height: {r: 0, g: 2, b: 0, a: 0}

@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: shangjiajudian 2
+  m_Shader: {fileID: 4800000, guid: 88c758155365e9d49a36fedf5090fd61, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _caiwen:
+        m_Texture: {fileID: 2800000, guid: 24e2243db5e39a54d8f7d6f5632d2f0c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _node_3992:
+        m_Texture: {fileID: 2800000, guid: 61006e6e36adde9449bba3fc79ce4346, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _node_8561:
+        m_Texture: {fileID: 2800000, guid: 20294435796a70a44b512a1aab4a56a3, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _node_9598:
+        m_Texture: {fileID: 2800000, guid: dbe7741aaadea684abc54d114f25a1fb, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _caiwenqiang: 10.94
+    - _node_5813: 0.5
+    m_Colors: []

@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 1006-daiji chuansong
+  m_Shader: {fileID: 4800000, guid: 1d14949cd42bf1445b1bba898ac8f70b, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AO:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _basecolor:
+        m_Texture: {fileID: 2800000, guid: e0c80fef459c84f41bea40b427f507ba, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _liuwen1:
+        m_Texture: {fileID: 2800000, guid: 2a9af0d6364f8da43bc827ff5408c4a9, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _liuwen2:
+        m_Texture: {fileID: 2800000, guid: d22778733a18de44d8da6d6b0d744ff1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _metallic:
+        m_Texture: {fileID: 2800000, guid: d8fc65c7e0b8a4a48972331f9baffdc0, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _node_1900:
+        m_Texture: {fileID: 2800000, guid: 7f739bfad4b8d8f48992e84d3ed584fa, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _normal:
+        m_Texture: {fileID: 2800000, guid: 9bd2185ec9d317342beaaff3c7275289, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _rongjietex:
+        m_Texture: {fileID: 2800000, guid: 0839562779f0c0543aaa239b78bd12b9, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _roughess:
+        m_Texture: {fileID: 2800000, guid: 7f16caafde1c2c049b989b2d65973a33, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _Cutoff: 0.5
+    - _alpha: 0
+    - _rongjie: 1
+    m_Colors:
+    - _bodyglow: {r: 0, g: 0.9, b: 0.9, a: 1}
+    - _liuwencolor: {r: 0.06617647, g: 0.3431034, b: 1, a: 1}
+    - _rongjiebiancolor: {r: 0.09558821, g: 0.9251521, b: 1, a: 1}

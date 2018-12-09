@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Shader Forge_RoomGroundOutLight
+  m_Shader: {fileID: 4800000, guid: 1bf9bd32f5fef824d914c5ff55f109d9, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: c86057ba59580bb44b10e6b14e8d6428, type: 3}
+        m_Scale: {x: 10, y: 10}
+        m_Offset: {x: 0, y: 0}
+    - _background:
+        m_Texture: {fileID: 2800000, guid: 6990348d3c916cd4db38586245edd36e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _Cutoff: 0.5
+    - _Diss: 1
+    - _Legth: 5
+    - _LightDiss: 1
+    - _NoiseSize: 39.5
+    m_Colors:
+    - _Center: {r: 0, g: 0, b: 0, a: 0}
+    - _LightColor: {r: 0.6530061, g: 2.6911764, b: 2.3538241, a: 1}
+    - _gray: {r: 0.5, g: 0.5, b: 0.5, a: 1}

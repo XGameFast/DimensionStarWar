@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: dongping
+  m_Shader: {fileID: 4800000, guid: 34e0b6c94fd6ba849877319fd9ebbbba, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _node_1185:
+        m_Texture: {fileID: 2800000, guid: 95450a34df3571d47bf19f79077026c1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _node_2726:
+        m_Texture: {fileID: 2800000, guid: 6984d0f0a51ba3b42af582ce5758453e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _node_5054:
+        m_Texture: {fileID: 2800000, guid: 0ab64991ea79a6944a80b524cd0f9704, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _node_5489:
+        m_Texture: {fileID: 2800000, guid: 28cad48a0e53b324f9cf1ad3c03a76f1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _node_6406:
+        m_Texture: {fileID: 2800000, guid: f15404cf047b0804c8a781f8479ee5da, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _Cutoff: 0.5
+    - _jiebing: 1
+    - _node_877: 1
+    - _toumingdu: 0.7
+    m_Colors:
+    - _Color: {r: 0.85080874, g: 1.0292412, b: 1.102, a: 1}
+    - _liuwen: {r: 0.3641323, g: 1.0798408, b: 2.251, a: 1}

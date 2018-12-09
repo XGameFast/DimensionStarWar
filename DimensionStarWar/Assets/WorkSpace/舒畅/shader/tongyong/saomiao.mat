@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: saomiao
+  m_Shader: {fileID: 4800000, guid: 783ae440f7033d14e9d5395c873b2d79, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _node_2633:
+        m_Texture: {fileID: 2800000, guid: 1c1dc9b2cc93d15468f7c8f4faeb55ec, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _node_7601:
+        m_Texture: {fileID: 2800000, guid: a12a870693898be4e82d880524c9a7cf, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _Alpha: 1
+    - _Cutoff: 0.5
+    - _suofang: 0.129
+    m_Colors:
+    - _node_1859: {r: 0.1176471, g: 0.342799, b: 1, a: 1}
+    - _node_2377: {r: 0.2573529, g: 0.7848884, b: 1, a: 1}

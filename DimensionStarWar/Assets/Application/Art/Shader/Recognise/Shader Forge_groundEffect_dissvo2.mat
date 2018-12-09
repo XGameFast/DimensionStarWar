@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Shader Forge_groundEffect_dissvo2
+  m_Shader: {fileID: 4800000, guid: 17795e28df1c39941a0d997b3457cd56, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: d20e7f29c887e5b42b16a27ffb63e607, type: 3}
+        m_Scale: {x: 4, y: 4}
+        m_Offset: {x: 0, y: 0}
+    - _node_178:
+        m_Texture: {fileID: 2800000, guid: d20e7f29c887e5b42b16a27ffb63e607, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _Cutoff: 0.5
+    - _Diss: 10
+    - _Dissvo: 10
+    m_Colors:
+    - _Center: {r: 0, g: -1.6, b: 0, a: 0}
+    - _mainCol: {r: 0.09450692, g: 0.5079017, b: 0.6764705, a: 1}

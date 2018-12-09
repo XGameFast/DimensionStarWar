@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Shader Forge_yetibiaomian
+  m_Shader: {fileID: 4800000, guid: 29e1289b81b321745b9f92c668a3f61d, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: d22778733a18de44d8da6d6b0d744ff1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _node_3489:
+        m_Texture: {fileID: 2800000, guid: 29fdeb96a8a58844f88641ff8f07f2fb, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _Cutoff: 0.5
+    - _FRESNEL: 1.8
+    - _node_3467: 0.4
+    - _yemianbodongqiangdu: 0.0247
+    - _yemiangaodu: 0.987
+    m_Colors:
+    - _fresnelcolor: {r: 1, g: 0.8259635, b: 0.5147059, a: 1}
+    - _liuwencolor: {r: 1, g: 0.9849898, b: 0.4558824, a: 1}
+    - _neicecolor: {r: 0.141, g: 0.4191176, b: 0, a: 1}
+    - _node_7742: {r: 0.6022313, g: 1, b: 0.2205882, a: 1}
+    - _waice: {r: 0.30485103, g: 0.5661765, b: 0.054119796, a: 1}

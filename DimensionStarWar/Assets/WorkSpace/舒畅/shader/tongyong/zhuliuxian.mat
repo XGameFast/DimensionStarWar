@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: zhuliuxian
+  m_Shader: {fileID: 4800000, guid: e18233cbe57dd444d84aaecf7ede5c0e, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 406c7f69df15daa4081b82605d91cceb, type: 3}
+        m_Scale: {x: 1, y: 4}
+        m_Offset: {x: 0, y: 0.1}
+    m_Floats:
+    - _Cutoff: 0.5
+    - _liudong: 1
+    - _node_4165: 0.6191307
+    m_Colors:
+    - _maincolor: {r: 0.52941173, g: 1.262069, b: 3, a: 1}

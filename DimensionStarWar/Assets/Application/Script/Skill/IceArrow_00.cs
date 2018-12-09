@@ -1,0 +1,74 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class IceArrow_00 : SkillBallistic {
+
+    private bool mainObjIsMoving=false;
+
+    public override void OnDispawn()
+    {
+        ObjBackToSelf(mainObj);
+        ObjBackToSelf(exploreObj);
+        ObjBackToSelf(GatheringObj);
+        base.OnDispawn();
+    }
+
+    protected override void StraightLineMovement()
+    {
+        base.StraightLineMovement();
+        if(!isHitTarget && mainObjIsMoving)
+            mainObj.transform.position += mainObj.transform.forward.normalized * Time.deltaTime * playerSkillAttribute.baseSkillAttribute.skillMoveSpeed.DoubleToFloat();
+    }
+
+    protected override void Explore()
+    {
+        base.Explore();
+
+        SetObjtToTargetPoint(exploreObj.gameObject , mainObj.transform.position);
+        mainObj.gameObject.SetActive(false);
+    }
+
+    protected override void Hit(AndaObjectBasic hitTarget, string hitLayer)
+    {
+        //击中后就延迟2秒消除
+        ResetDestory(2f);
+        mainObjIsMoving=false;
+        if (host != null) host.ControllerHitEnemy();
+        base.Hit(hitTarget, hitLayer);
+       
+    }
+    
+    protected override void StartSkill()
+    {
+        base.StartSkill();
+        ResetDestory(2f);
+        SetObjtToTargetPoint(GatheringObj.gameObject,insPoint.transform.position,true);
+        //SetObjtToTargetPoint(GatheringObj.gameObject, insPoint);
+        List<string> hitLayer = new List<string> { host.isPlayer ? "Monster" : "Player", "Objects","Defense"};
+        dandao.RegisterEvent(Hit, hitLayer, 0);
+    }
+    protected override void RunningSkill()
+    {
+        base.RunningSkill();
+        mainObjIsMoving = true;
+        SetObjtToTargetPoint(mainObj.gameObject, insPoint.position, true);
+    }
+
+    protected override void OnUpdate()
+    {
+        base.OnUpdate();
+        if (GatheringObj.gameObject.activeSelf)
+        {
+            gSounds.transform.position = GatheringObj.transform.position;
+        }
+        if (mainObj.gameObject.activeSelf)
+        {
+            fSounds.transform.position = mainObj.transform.position;
+        }
+        if (hSounds.gameObject.activeSelf)
+        {
+            hSounds.transform.position = exploreObj.transform.position;
+        }
+    }
+}

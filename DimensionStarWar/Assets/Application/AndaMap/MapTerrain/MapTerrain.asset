@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a6523094c07d4ee683da5d826fce510, type: 3}
+  m_Name: MapTerrain
+  m_EditorClassIdentifier: 
+  _baseMaterial: {fileID: 2100000, guid: 247aa72e96a3f7642a097b6a90f869f1, type: 2}
+  _createSideWalls: 0
+  _sideWallHeight: 10
+  _sideWallMaterial: {fileID: 2100000, guid: e0ae84d101b17a5468f98ceb916a367a, type: 2}
+  _addCollider: 0
+  _addToLayer: 0
+  _layerId: 0

@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: zhuguangrongjie 2
+  m_Shader: {fileID: 4800000, guid: 29f07d2e66535fe41aa098bf71ce641e, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _node_554:
+        m_Texture: {fileID: 2800000, guid: 959b620c5db1bbe458a611ce4276d3a4, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _node_8646:
+        m_Texture: {fileID: 2800000, guid: 2e49480a1b693254997ab24797142856, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _Cutoff: 0.5
+    - _liangdu: 1
+    - _rongjiebian: 2
+    m_Colors:
+    - _bianse: {r: 1, g: 0, b: 0, a: 1}

@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: hudun
+  m_Shader: {fileID: 4800000, guid: 4b7ff73c3ebf5794caea785d3854d2b1, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _duncolor:
+        m_Texture: {fileID: 2800000, guid: ded7c2d24fad976449b44aaf0e8a4909, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _node_2612:
+        m_Texture: {fileID: 2800000, guid: 93e16e47b6aa5ba4a82d46635fe2d7a0, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _node_6745:
+        m_Texture: {fileID: 2800000, guid: dc0b42b84e090a34db616972eb72206d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _Alpha: 1
+    - _Cutoff: 0.5
+    - _node_2344: 1
+    - _node_2589: 0.06837609
+    - _node_5291: 0
+    - _node_5636: 1
+    m_Colors:
+    - _bianse: {r: 0.7732251, g: 1, b: 0.6838235, a: 1}
+    - _node_1451: {r: 0.07417818, g: 0.7205882, b: 0.1321322, a: 1}
+    - _xiankuangcolor: {r: 0.31328613, g: 1, b: 0.18382353, a: 1}

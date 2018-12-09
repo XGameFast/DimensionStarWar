@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: nanguo
+  m_Shader: {fileID: 4800000, guid: 607ede5b8c4f0f342bb0ba734699be4c, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _node_4192:
+        m_Texture: {fileID: 2800000, guid: 63f90b1b6bdfc1d46956a292097d6f22, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _node_4966:
+        m_Texture: {fileID: 2800000, guid: 54a9e93bd528c7046a2c76a0d41e9907, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _node_6689:
+        m_Texture: {fileID: 2800000, guid: 068ce1583ba0d794681c528cdc63e910, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _Cutoff: 0.5
+    - _node_2043: 0.4959576
+    - _node_8088: 0
+    m_Colors:
+    - _node_3613: {r: 0, g: 0, b: 0, a: 1}

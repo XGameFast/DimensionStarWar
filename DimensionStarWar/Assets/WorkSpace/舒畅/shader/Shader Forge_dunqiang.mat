@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Shader Forge_dunqiang
+  m_Shader: {fileID: 4800000, guid: ef890a151c9c8084ca588e9f1d48a29d, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _node_248:
+        m_Texture: {fileID: 2800000, guid: e7b7fed7a9148144fb2b77cfc7b535da, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _node_2923:
+        m_Texture: {fileID: 2800000, guid: 6a340f64d0c419d44982d6cae286affe, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _node_486:
+        m_Texture: {fileID: 2800000, guid: d22778733a18de44d8da6d6b0d744ff1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _node_8204:
+        m_Texture: {fileID: 2800000, guid: 29fdeb96a8a58844f88641ff8f07f2fb, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _Cutoff: 0.5
+    - _Ffanwei: 1.5
+    - _chuxianxiaoshi: 1
+    - _liuqiang: 1
+    - _node_3577: 0.1899237
+    - _node_787: 5
+    - _wangqiang: 3
+    - _wenliliangdu: 2
+    m_Colors:
+    - _liuse: {r: 0.32352933, g: 0.6081135, b: 1, a: 1}
+    - _node_4391: {r: 0.29411757, g: 0.53265727, b: 1, a: 1}
+    - _wangse: {r: 0, g: 0.5034484, b: 1, a: 1}

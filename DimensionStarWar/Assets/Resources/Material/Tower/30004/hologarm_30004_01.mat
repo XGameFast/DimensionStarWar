@@ -1,0 +1,66 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: hologarm_30004_01
+  m_Shader: {fileID: 4800000, guid: c0e2e60a7952d4b3196349a39fde7c66, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 71174ca0a22f84696996a4a1461ed581, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Mask:
+        m_Texture: {fileID: 2800000, guid: 19d266fa5c960c040a50b0f329867adf, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _node_2327:
+        m_Texture: {fileID: 2800000, guid: b2a540be76464ba4c8a604f021f51157, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _node_8391:
+        m_Texture: {fileID: 2800000, guid: d22778733a18de44d8da6d6b0d744ff1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _ClipPower: 300
+    - _Cutoff: 0.737
+    - _Diss: 0
+    - _Grid: 300
+    - _Growup: 0
+    - _Height: 0
+    - _HologarmGrowup: 0
+    - _Power: 256
+    - _RimPower: 0.1
+    - _Skingrowup: 0
+    - _dissvo: 1
+    - _liangwenqiang: 3
+    - _niuquliangdu: 2
+    - _node_5631: 0.351
+    m_Colors:
+    - _BaseColor: {r: 0, g: 0.17641994, b: 0.52205884, a: 1}
+    - _Center: {r: 0, g: 0, b: 0, a: 0}
+    - _Color: {r: 0.67058825, g: 0.67058825, b: 0.67058825, a: 1}
+    - _LItColor: {r: 0.11764705, g: 1.5326569, b: 2, a: 1}
+    - _LitColor: {r: 0, g: 0.58620644, b: 1, a: 1}
+    - _MainColor: {r: 0.72988755, g: 1.5177636, b: 1.9852941, a: 1}
+    - _RimColor: {r: 0.6911764, g: 0.9488843, b: 1, a: 0.141}
+    - _center: {r: 0, g: 0, b: 0, a: 0}
+    - _liangwenyanse: {r: 0.42745098, g: 1, b: 1, a: 1}
+    - _niuquyanse: {r: 0, g: 1, b: 0.11372546, a: 1}
