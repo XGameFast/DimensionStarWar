@@ -10,7 +10,9 @@ public class JIRVISContent_BussinessStrongholdInfo : UIBasic2
     public Image strongholdImg;
     public Image strongholdLevelImg;
     public Text playerDescription;
+    public Text monsterNickName;
 
+    public Image monsterLevelImage;
     public Image monsterSprite;
     public Slider monsterPower;
     public Text monsterPowerValue;
@@ -56,6 +58,7 @@ public class JIRVISContent_BussinessStrongholdInfo : UIBasic2
         businessStrongholdAttribute = _businessStrongholdAttribute;
         SetStrongholdInfo();
         BuildActivity();
+        BuildMonsterInfomation();
         PlayTips();
     }
 
@@ -113,13 +116,56 @@ public class JIRVISContent_BussinessStrongholdInfo : UIBasic2
     }
 
 
-
+    /// <summary>
+    /// 设置宠物信息
+    /// </summary>
     public void BuildMonsterInfomation()
     {
+        MonsterBaseConfig mbc = MonsterGameData.GetMonsterBaseConfig(businessStrongholdAttribute.statueID);
+        List<int>skilID = mbc.monsterBaseSkillList;
+        SkillBaseAttribute nk = MonsterGameData.GetSkillBaseAttribute(skilID[0]);
+        SkillBaseAttribute sk= MonsterGameData.GetSkillBaseAttribute(skilID[2]);
+        SkillBaseAttribute dk = MonsterGameData.GetSkillBaseAttribute(skilID[1]);
+        monsterSprite.sprite = AndaDataManager.Instance.GetMonsterIconSprite(mbc.monsterID.ToString());
+        monsterLevelImage.sprite = AndaDataManager.Instance.GetMonsterLevelBoardSprite(4);
+        monsterNickName.text = mbc.monsterName;
+         
+        normalAttackNickName.text = nk.skillName;
+        defenseSkillNickName.text = dk.skillName;
+        specialSkillNickName.text = sk.skillName;
+
+        StartCoroutine(ExcuteSetMonsterInfo(mbc,nk, sk,dk));
+
 
     }
-  
 
+    private IEnumerator ExcuteSetMonsterInfo(MonsterBaseConfig mc ,SkillBaseAttribute nk, SkillBaseAttribute sk, SkillBaseAttribute dk)
+    {
+        float t = 0;
+        while(t < 1)
+        {
+            t += Time.deltaTime;
+            t = Mathf.Clamp01(t);
+
+            monsterPower.value = t;
+            monsterPowerValue.text = GetValueStr(mc.monsterBaseBlood,t);
+
+            monsterNormalAttackSlider.value = t;
+            monsterDefenseSkillSlider.value =t;
+            monsterDefenseSkillSlider.value = t;
+
+            monsterNomralAttackValue.text = GetValueStr(nk.skillPower[0],t);
+            monsterDefenseSkillValue.text = GetValueStr(dk.skillPower[0],t);
+            monsterSpecialSkillValue.text = GetValueStr(sk.skillPower[0],t);
+
+            yield return null;
+        }
+    }
+  
+    private string GetValueStr(int v, float t)
+    {
+        return ((int)(v*t)).ToString();
+    }
 
 
 

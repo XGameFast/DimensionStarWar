@@ -164,6 +164,7 @@ public static class ConvertTool{
         convert.autoGraph = value.autograph;
         convert.businessData = value.BusinessData;
         convert.monsterCount = value.monsterCount;
+        convert.statueID = value.statueID;
         convert.hostType = value.hostType;
         convert.strongholdID = value.strongholdID;
         convert.strongholdIndex = value.strongholdIndex;

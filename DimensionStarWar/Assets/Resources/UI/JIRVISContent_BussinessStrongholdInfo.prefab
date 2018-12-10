@@ -662,7 +662,7 @@ GameObject:
   - component: {fileID: 222795707474258028}
   - component: {fileID: 114664599058959810}
   m_Layer: 5
-  m_Name: Image
+  m_Name: monsterLevelImg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1260,7 +1260,7 @@ GameObject:
   - component: {fileID: 222797335107357002}
   - component: {fileID: 114253992726402642}
   m_Layer: 5
-  m_Name: Image (1)
+  m_Name: monsterImg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2508,7 +2508,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0.5213995, b: 0.7794118, a: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -2800,20 +2800,22 @@ MonoBehaviour:
   strongholdImg: {fileID: 114290941020388948}
   strongholdLevelImg: {fileID: 114950260961478916}
   playerDescription: {fileID: 114390690647786574}
-  monsterSprite: {fileID: 0}
-  monsterPower: {fileID: 0}
-  monsterPowerValue: {fileID: 0}
-  normalAttackNickName: {fileID: 0}
-  monsterNormalAttackSlider: {fileID: 0}
-  monsterNomralAttackValue: {fileID: 0}
+  monsterNickName: {fileID: 114718101550151808}
+  monsterLevelImage: {fileID: 114664599058959810}
+  monsterSprite: {fileID: 114253992726402642}
+  monsterPower: {fileID: 114690525634764322}
+  monsterPowerValue: {fileID: 114594009179895046}
+  normalAttackNickName: {fileID: 114430890978720000}
+  monsterNormalAttackSlider: {fileID: 114581466551803006}
+  monsterNomralAttackValue: {fileID: 114494431043372270}
   monsterNormalAttackSliderImage: {fileID: 0}
-  defenseSkillNickName: {fileID: 0}
-  monsterDefenseSkillSlider: {fileID: 0}
-  monsterDefenseSkillValue: {fileID: 0}
+  defenseSkillNickName: {fileID: 114178382217099958}
+  monsterDefenseSkillSlider: {fileID: 114006359665460890}
+  monsterDefenseSkillValue: {fileID: 114240681043717816}
   monsterDefenseSliderImage: {fileID: 0}
-  specialSkillNickName: {fileID: 0}
-  monsterSpecialSkillSlider: {fileID: 0}
-  monsterSpecialSkillValue: {fileID: 0}
+  specialSkillNickName: {fileID: 114518855678434968}
+  monsterSpecialSkillSlider: {fileID: 114806860682056722}
+  monsterSpecialSkillValue: {fileID: 114000212607073676}
   monsterSpecialSliderImage: {fileID: 0}
   currentProtectPeople: {fileID: 0}
   rewardImage: {fileID: 0}
@@ -3185,7 +3187,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.5588235, g: 0.5588235, b: 0.5588235, a: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -3239,7 +3241,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -3588,12 +3590,12 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 12800000, guid: 107355acd2822a64fb30410649985237, type: 3}
-    m_FontSize: 34
+    m_FontSize: 53
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
     m_MaxSize: 85
-    m_Alignment: 3
+    m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
@@ -5982,8 +5984,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 75, y: 40}
-  m_SizeDelta: {x: 326.5, y: 62.73}
+  m_AnchoredPosition: {x: 28, y: 59}
+  m_SizeDelta: {x: 727.7, y: 85.34}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224764985344433174
 RectTransform:
