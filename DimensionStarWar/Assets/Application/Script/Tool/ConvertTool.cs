@@ -162,6 +162,7 @@ public static class ConvertTool{
         convert.hostIndex = value.hostIndex;
         convert.headImage = value.headImage;
         convert.autoGraph = value.autograph;
+        convert.businessData = value.BusinessData;
         convert.monsterCount = value.monsterCount;
         convert.hostType = value.hostType;
         convert.strongholdID = value.strongholdID;

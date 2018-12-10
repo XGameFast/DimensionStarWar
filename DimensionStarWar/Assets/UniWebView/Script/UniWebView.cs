@@ -262,7 +262,13 @@ public class UniWebView: MonoBehaviour {
         }
     }
 
-    void Awake() {
+    public void Build()
+    {
+
+        Transform t = transform.GetChild(0);
+        t.gameObject.SetActive(true);
+        referenceRectTransform = t.GetComponent<RectTransform>();
+        fullScreen = true;
         var listenerObject = new GameObject(id);
         listener = listenerObject.AddComponent<UniWebViewNativeListener>();
         listenerObject.transform.parent = transform;
@@ -270,25 +276,29 @@ public class UniWebView: MonoBehaviour {
         UniWebViewNativeListener.AddListener(listener);
 
         Rect rect;
-        if (fullScreen) {
+        if (fullScreen)
+        {
             rect = new Rect(0, 0, Screen.width, Screen.height);
-        } else {
+        }
+        else
+        {
             rect = NextFrameRect();
         }
 
-        UniWebViewInterface.Init(listener.Name, (int)rect.x, (int)rect. y, (int)rect.width, (int)rect.height);
+        UniWebViewInterface.Init(listener.Name, (int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height);
         isPortrait = Screen.height >= Screen.width;
     }
 
-    void Start() {
-        if (showOnStart) {
-            Show();
-        }
-        if (!string.IsNullOrEmpty(urlOnStart)) {
-            Load(urlOnStart);
+    public void SetURL(string url)
+    {
+        Show();
+        if (!string.IsNullOrEmpty(url))
+        {
+            Load(url);
         }
         started = true;
-        if (referenceRectTransform != null) {
+        if (referenceRectTransform != null)
+        {
             UpdateFrame();
         }
     }
@@ -974,6 +984,10 @@ public class UniWebView: MonoBehaviour {
     }
 
     void OnDestroy() {
+        if(referenceRectTransform!=null)
+        {
+            referenceRectTransform.gameObject.SetActive(false);
+        }
         UniWebViewNativeListener.RemoveListener(listener.Name);
         UniWebViewInterface.Destroy(listener.Name);
         Destroy(listener.gameObject);

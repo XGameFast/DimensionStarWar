@@ -42,4 +42,5 @@ public class BusinessData : UserBaseData
 {
     public List<BusinessStrongholdGrowUpAttribute> strongholdList { get; set; }
     public List<BusinessCoupon> businessCoupons { get; set; }
+    public List<BusinessActivity> ActiveData{get;set;}
 }

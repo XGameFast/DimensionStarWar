@@ -86,6 +86,12 @@ public class NetdataManager : ManagerBase {
 
     #endregion
 
+    #region 从服务器上获取 点击的商家据点的活动信息
+
+   // public void CallServerGetBSHActiveInfomation()
+
+
+    #endregion
 
     #region 从服务器获取玩家数据
     public void TestLoginOnce(System.Action<bool> callback,string name)
@@ -301,7 +307,7 @@ public class NetdataManager : ManagerBase {
         StartCoroutine(ExcuteGetMonsterList(path, _wForm, callback));
     }
 
-    private IEnumerator ExcuteGetMonsterList(string _url, WWWForm _wForm,System.Action<List<PlayerMonsterAttribute>> callback)
+    private IEnumerator ExcuteGetMonsterList(string _url, WWWForm _wForm, System.Action<List<PlayerMonsterAttribute>> callback)
     {
         WWW postData = new WWW(_url, _wForm);
         yield return postData;
@@ -310,15 +316,14 @@ public class NetdataManager : ManagerBase {
             JIRVIS.Instance.PlayTips(postData.error);
         }else
         {
-
             StrongHold strongHold = JsonMapper.ToObject<StrongHold>(postData.text);
-            if(strongHold.code == "200")
+            if (strongHold.code == "200")
             {
 
                 Debug.Log(postData.text);
                 int count = strongHold.MonsterList.Count;
                 List<PlayerMonsterAttribute> monsterAttributes = new List<PlayerMonsterAttribute>();
-                for(int i = 0 ; i < count; i++)
+                for (int i = 0; i < count; i++)
                 {
                     if (strongHold.MonsterList[i] != null)
                     {
@@ -329,7 +334,8 @@ public class NetdataManager : ManagerBase {
 
                 callback(monsterAttributes);
 
-            }else
+            }
+            else
             {
                 JIRVIS.Instance.PlayTips(strongHold.detail);
             }
