@@ -4,7 +4,17 @@ using UnityEngine;
 using UnityEngine.UI;
 public class JIRVISContent_BussinessStrongholdInfo : UIBasic2
 {
+
+
+    public CanvasGroup shGroup;
+    public CanvasGroup monsterGroup;
+    public CanvasGroup rewardGroup;
+
+    public Animator BSHPorItemAnimation;
+
     public Text playerName;
+
+    public Text info;
 
     public Text strongholdNickName;
     public Image strongholdImg;
@@ -37,6 +47,7 @@ public class JIRVISContent_BussinessStrongholdInfo : UIBasic2
     public Image rewardImage;
     public Text rewardName;
     public Text rewardDescription;
+    public Text rewardRate;
     public GameObject checkActiveBtn;
     private BusinessStrongholdAttribute businessStrongholdAttribute;
     private BusinessActivity currentSelectBusinessActity;
@@ -48,7 +59,39 @@ public class JIRVISContent_BussinessStrongholdInfo : UIBasic2
 
     public override void OnDispawn()
     {
-        currentSelectBusinessActity =null;
+        shGroup.alpha =0;
+        monsterGroup.alpha =0;
+        rewardGroup.alpha =0;
+        info.text = "";
+        strongholdNickName.text ="";
+        playerDescription.text ="";
+        strongholdImg.gameObject.SetActive(false);
+
+        monsterNickName.text = "";
+        monsterPower.value = 0;
+        monsterPowerValue.text ="";
+
+        normalAttackNickName.text ="";
+        monsterNormalAttackSlider.value =0;
+        monsterNomralAttackValue.text = "";
+
+        specialSkillNickName.text ="";
+        monsterSpecialSkillValue.text ="";
+        monsterSpecialSkillSlider.value =0;
+
+        defenseSkillNickName.text ="";
+        monsterDefenseSkillValue.text ="";
+        monsterDefenseSkillSlider.value = 0;//.text =
+        monsterSprite.gameObject.SetActive(false);// = null;
+        monsterLevelImage.gameObject.SetActive(false);// = null;
+
+        rewardImage.gameObject.SetActive(false);
+        rewardName.text ="";
+        rewardDescription.text ="";
+        rewardRate.text = "";
+
+
+        currentSelectBusinessActity = null;
         dropdown.ClearOptions();
         base.OnDispawn();
     }
@@ -56,14 +99,64 @@ public class JIRVISContent_BussinessStrongholdInfo : UIBasic2
     public void SetInfo(BusinessStrongholdAttribute _businessStrongholdAttribute)
     {
         businessStrongholdAttribute = _businessStrongholdAttribute;
-        SetStrongholdInfo();
-        BuildActivity();
-        BuildMonsterInfomation();
+       
+        StartCoroutine(ExcuteFadeInItem());
         PlayTips();
     }
 
+    private IEnumerator ExcuteFadeInItem()
+    {
+        yield return new WaitForSeconds(1f);
+        float t = 0;
+        int itemGropIndex =0;
+        while(itemGropIndex<3)
+        {
+            t+= Time.deltaTime*3f;
+            t = Mathf.Clamp01(t);
+            if(itemGropIndex == 0)
+            {
+                shGroup.alpha = t;
+                if (t >= 1)
+                {
+                    BSHPorItemAnimation.Play("BSHPorItemFadeIn");
+                    SetStrongholdInfo();
+                    BuildActivity();
+                    yield return new WaitForSeconds(0.25f);
+                    t = 0;
+                    itemGropIndex += 1;
+                }
+            }
+            else if (itemGropIndex == 1)
+            {
+                monsterGroup.alpha = t;
+                if (t >= 1)
+                {
+                    BuildMonsterInfomation();
+                    yield return new WaitForSeconds(0.5f);
+                    t = 0;
+                    itemGropIndex += 1;
+                }
+            }
+            else if (itemGropIndex == 2)
+            {
+                rewardGroup.alpha = t;
+                if (t >= 1)
+                {
+                    BuildRewardInfo();
+                    itemGropIndex += 1;
+                }
+            }
+            yield return null;
+        }
+    }
+
+
+
     private void SetStrongholdInfo()
     {
+        strongholdImg.gameObject.SetActive(true);
+        int t = Random.Range(134,320);
+        info.text = "当前有" + AndaGameExtension.ChangeTextColorToYellow(t.ToString()) + "位读星者正在前往保护据点";
         playerName.text = businessStrongholdAttribute.hostNickName;
         strongholdNickName.text = businessStrongholdAttribute.strongholdNickName;
         AndaDataManager.Instance.GetStrongholdImg(businessStrongholdAttribute.headImage,(result=>
@@ -126,6 +219,7 @@ public class JIRVISContent_BussinessStrongholdInfo : UIBasic2
         SkillBaseAttribute nk = MonsterGameData.GetSkillBaseAttribute(skilID[0]);
         SkillBaseAttribute sk= MonsterGameData.GetSkillBaseAttribute(skilID[2]);
         SkillBaseAttribute dk = MonsterGameData.GetSkillBaseAttribute(skilID[1]);
+        monsterSprite.gameObject.SetActive(true);
         monsterSprite.sprite = AndaDataManager.Instance.GetMonsterIconSprite(mbc.monsterID.ToString());
         monsterLevelImage.sprite = AndaDataManager.Instance.GetMonsterLevelBoardSprite(4);
         monsterNickName.text = mbc.monsterName;
@@ -165,6 +259,25 @@ public class JIRVISContent_BussinessStrongholdInfo : UIBasic2
     private string GetValueStr(int v, float t)
     {
         return ((int)(v*t)).ToString();
+    }
+
+
+    public void BuildRewardInfo()
+    {
+        if(businessStrongholdAttribute.businessData == null)
+        {
+            rewardGroup.alpha = 0;
+            return;
+        }
+        BusinessCoupon businessCoupon = businessStrongholdAttribute.businessData.businessCoupons[0];
+        AndaDataManager.Instance.GetBSHRewardImg(businessCoupon.image,(Result =>
+        {
+            rewardImage.gameObject.SetTargetActiveOnce(true);
+            rewardImage.sprite = Result;
+        }));
+        rewardName.text = businessCoupon.title;
+        rewardDescription.text = businessCoupon.description;
+        rewardRate.text = "概率" + businessCoupon.rewardDropRate+"%";
     }
 
 

@@ -344,6 +344,33 @@ public class NetdataManager : ManagerBase {
 
     #endregion
 
+    #region 获取商家奖励物品的图标
+
+    public IEnumerator GetBSHRewardImg(string adress, System.Action<Sprite> callback)
+    {
+        AndaUIManager.Instance.OpenWaitBoard("请稍等");
+        WWW wWW = new WWW(networkAdress4 + adress);
+        yield return wWW;
+        AndaUIManager.Instance.CloseWaitBoard();
+        if (string.IsNullOrEmpty(wWW.text))
+        {
+            JIRVIS.Instance.PlayTips("有点错误");
+        }
+        else
+        {
+
+            byte[] btye = wWW.texture.EncodeToPNG();
+            Texture2D texture2D = ConvertTool.ConvertToTexture2d(wWW.texture);
+            Sprite sprite = ConvertTool.ConvertToSpriteWithTexture2d(texture2D);
+            string t = ConvertTool.BytesToString(btye);
+            PlayerPrefs.SetString("RW_" + adress, t);
+            callback(sprite);
+        }
+    }
+
+    #endregion
+
+
     #region 获取商家据点的头像
     public IEnumerator GetStrongholdImg(string adress, System.Action<Sprite> callback)
     {
@@ -366,7 +393,13 @@ public class NetdataManager : ManagerBase {
             callback(sprite);
         }
     }
-
+    /// <summary>
+    /// 这个可以直接用更新数据
+    /// </summary>
+    /// <returns>The bussiness por image.</returns>
+    /// <param name="adress">Adress.</param>
+    /// <param name="strongholdIndex">Stronghold index.</param>
+    /// <param name="callback">Callback.</param>
     public IEnumerator GetBussinessPorImage(string adress, int strongholdIndex ,System.Action<int,Sprite> callback)
     {
         AndaUIManager.Instance.OpenWaitBoard("请稍等");

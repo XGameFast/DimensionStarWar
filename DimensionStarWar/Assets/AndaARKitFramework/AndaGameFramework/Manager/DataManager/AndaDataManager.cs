@@ -322,6 +322,28 @@ public class AndaDataManager {
             callback(sp);
         }
     }
+    /// <summary>
+    /// 获取奖励的图标
+    /// </summary>
+    public void GetBSHRewardImg(string img, System.Action<Sprite> callback)
+    {
+        string s = PlayerPrefs.GetString("RW_" + img);
+        if (s == "")
+        {
+            naetdataManager.StartCoroutine(naetdataManager.GetBSHRewardImg(img, callback));
+        }
+        else
+        {
+            byte[] v = ConvertTool.StringToBytes(s);
+            Texture2D texture = new Texture2D(128, 128);
+            texture.LoadImage(v);
+            texture = ConvertTool.ConvertToTexture2d(texture);
+            Sprite sp = ConvertTool.ConvertToSpriteWithTexture2d(texture);
+            callback(sp);
+        }
+    }
+
+
 
     public Sprite GetMedalLevelBoardSprite(string name)
     {
