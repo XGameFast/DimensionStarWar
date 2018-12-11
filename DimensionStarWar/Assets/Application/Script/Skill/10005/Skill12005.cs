@@ -104,6 +104,5 @@ public class Skill12005 : SkillBallistic
 
         //设置移动特效起始位置
         SetObjtToTargetPoint(mainObj.gameObject, insPoint.position, true);
-
     }
 }

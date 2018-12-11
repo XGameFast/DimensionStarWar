@@ -105,7 +105,9 @@ public class Skill12009 : SkillBallistic
     }
 
     protected override void RunningSkill()
-    {
+    {       //设置移动特效起始位置
+        host.GetComponent<M_1009>().headrender.gameObject.SetTargetActiveOnce(false);
+
         ObjBackToSelf(GatheringObj);
 
         ResetDestory(4f);
@@ -117,7 +119,6 @@ public class Skill12009 : SkillBallistic
 
       
         SetObjtToTargetPoint(mainObj.gameObject, host.GetComponent<M_1009>().top.position, true);
-        //设置移动特效起始位置
-        host.GetComponent<M_1009>().headrender.gameObject.SetTargetActiveOnce(false);
+ 
     }
 }

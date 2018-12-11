@@ -11,6 +11,7 @@ public class TestGameBaseController : MonoBehaviour {
         翼宿 = 1003,
         毕宿 = 1004,
         柳宿 = 1005,
+        氐宿 = 1006,
         角宿 = 1007,
         女宿 = 1008,
         牛宿 = 1009,

@@ -67,13 +67,12 @@ public class SkillBallistic : SkillBasic {
     /// </summary>
     public void SetObjtToTargetPoint(GameObject target, Vector3 point , bool needOutSelf = false)
     {
+        target.transform.position = point;
         if (needOutSelf)
         {
             SetObjOutSelf(target);
         }
         target.gameObject.SetActive(true);
-      
-        target.transform.position = point;
     }
 
     public void SetObjtToTargetPoint(GameObject target, Transform targetPoint)
