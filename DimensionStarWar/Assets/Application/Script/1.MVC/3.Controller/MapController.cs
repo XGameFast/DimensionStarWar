@@ -548,6 +548,7 @@ public class MapController : BaseController {
     #region 玩家的选择 放弃进入 。路过
     private void PlayerGiveUpEnterminstrongholdNow()
     {
+        JIRVIS.Instance.BuildFunctionBtn();
         JIRVIS.Instance.CloseTips();
         RegisterSelectMapItem(true);
     }
@@ -563,6 +564,7 @@ public class MapController : BaseController {
         }
         else
         {
+            BuildJIRVISFunctionBtn();
             JIRVIS.Instance.PlayTips("放弃保卫据点");
         }
      
@@ -690,6 +692,7 @@ public class MapController : BaseController {
     #region 点击地图上的据点图标
     public void ClickSelectMapItem(StrongholdBaseAttribution shAttr)
     {
+        JIRVIS.Instance.RemoveCurrentBtnList();
         switch(shAttr.hostType)
         {
             case 0:
@@ -1058,7 +1061,7 @@ public class MapController : BaseController {
             JIRVIS.Instance.PlayTipsForchoose(content, OTYPE.TipsType.chooseTips, "挑战", "不挑战", CallBackComfirmGame, CallCancelChanllenge);
             //[目前就默认挑选第一只]
             data.BuildJIRVISEditor_ChanllengeGameStorngholdInfomationBar((PlayerStrongholdAttribute)JIRVIS.Instance.jIRVISData.getCurChallengeStrongholdAttr, playerMonsters[0]);
-            JIRVIS.Instance.CloseBtnBar();
+            //JIRVIS.Instance.CloseBtnBar();
             #endregion
         }
        
@@ -1068,6 +1071,7 @@ public class MapController : BaseController {
     //【玩家统一挑战】挑战据点
     private void CallBackComfirmGame()
     {
+        JIRVIS.Instance.CloseTips();
         JIRVIS.Instance.jIRVISData.ClearRewardList();
         if (TestManager.Instance.isTestLoadinglocalData)
         {
@@ -1085,11 +1089,12 @@ public class MapController : BaseController {
     //【放弃挑战】
     private void CallCancelChanllenge()
     {
+        JIRVIS.Instance.CloseTips();
         JIRVIS.Instance.OpenBtnBar();
         data.SetOpenchildBar(false);//对地图的操作允许
         RegisterControlCamera(true);
         RegisterSelectMapItem(true);
-        JIRVIS.Instance.CloseTips();
+        JIRVIS.Instance.BuildFunctionBtn();
         data.RemoveJIRVISEditor_ChanllengeGameStorngholdInfomationBar();
     }
 

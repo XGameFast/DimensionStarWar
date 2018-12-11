@@ -412,6 +412,6 @@ public static class ConvertTool{
 
     public static byte[] StringToBytes(string str)
     {
-        return System.Text.Encoding.Default.GetBytes(str);
+        return System.Convert.FromBase64String(str);
     }
 }

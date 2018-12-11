@@ -52,6 +52,9 @@ public class JIRVISContent_BussinessStrongholdInfo : UIBasic2
     private BusinessStrongholdAttribute businessStrongholdAttribute;
     private BusinessActivity currentSelectBusinessActity;
 
+    public GameObject haveRewardItem;
+    public GameObject NoRewardItem;
+
     public System.Action<bool> callBackPlayerChoose;
 
 
@@ -90,6 +93,8 @@ public class JIRVISContent_BussinessStrongholdInfo : UIBasic2
         rewardDescription.text ="";
         rewardRate.text = "";
 
+        haveRewardItem.gameObject.SetActive(false);
+        haveRewardItem.gameObject.SetActive(true);
 
         currentSelectBusinessActity = null;
         dropdown.ClearOptions();
@@ -99,7 +104,6 @@ public class JIRVISContent_BussinessStrongholdInfo : UIBasic2
     public void SetInfo(BusinessStrongholdAttribute _businessStrongholdAttribute)
     {
         businessStrongholdAttribute = _businessStrongholdAttribute;
-       
         StartCoroutine(ExcuteFadeInItem());
         PlayTips();
     }
@@ -118,7 +122,6 @@ public class JIRVISContent_BussinessStrongholdInfo : UIBasic2
                 shGroup.alpha = t;
                 if (t >= 1)
                 {
-                    BSHPorItemAnimation.Play("BSHPorItemFadeIn");
                     SetStrongholdInfo();
                     BuildActivity();
                     yield return new WaitForSeconds(0.25f);
@@ -159,14 +162,14 @@ public class JIRVISContent_BussinessStrongholdInfo : UIBasic2
         info.text = "当前有" + AndaGameExtension.ChangeTextColorToYellow(t.ToString()) + "位读星者正在前往保护据点";
         playerName.text = businessStrongholdAttribute.hostNickName;
         strongholdNickName.text = businessStrongholdAttribute.strongholdNickName;
-        AndaDataManager.Instance.GetStrongholdImg(businessStrongholdAttribute.headImage,(result=>
-        {
-            if(result!=null)
-            {
-                strongholdImg.sprite = result;
-            }
-        }));
+        AndaDataManager.Instance.GetStrongholdImg(businessStrongholdAttribute.strongholdIndex,businessStrongholdAttribute.headImage, UpdateSHPor);
         playerDescription.text = businessStrongholdAttribute.autoGraph;
+        BSHPorItemAnimation.Play("BSHPorItemFadeIn");
+    }
+
+    private void UpdateSHPor(int _index,Sprite sp)
+    {
+         strongholdImg.sprite = sp;
     }
 
     private void BuildActivity()
@@ -264,11 +267,16 @@ public class JIRVISContent_BussinessStrongholdInfo : UIBasic2
 
     public void BuildRewardInfo()
     {
-        if(businessStrongholdAttribute.businessData == null)
+        if(businessStrongholdAttribute.businessData.businessCoupons == null)
         {
-            rewardGroup.alpha = 0;
+            haveRewardItem.gameObject.SetActive(false);
+            NoRewardItem.gameObject.SetActive(true);
             return;
         }
+
+        haveRewardItem.gameObject.SetActive(true);
+        NoRewardItem.gameObject.SetActive(false);
+
         BusinessCoupon businessCoupon = businessStrongholdAttribute.businessData.businessCoupons[0];
         AndaDataManager.Instance.GetBSHRewardImg(businessCoupon.image,(Result =>
         {
