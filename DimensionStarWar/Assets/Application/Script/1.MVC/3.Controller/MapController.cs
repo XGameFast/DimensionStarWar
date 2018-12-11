@@ -559,7 +559,7 @@ public class MapController : BaseController {
     {
         if(_protect)
         {
-            JIRVIS.Instance.PlayTips("前往保卫据点");
+            JIRVIS.Instance.PlayTips("当前无法直接前往保卫，侵略者过于强大");
 
         }
         else
