@@ -308,6 +308,7 @@ public class AndaDataManager {
 
     public void GetStrongholdImg(int shIndex, string imgPath, System.Action<int, Sprite> callback)
     {
+        //PlayerPrefs.SetString("SH_Por" + shIndex ,"");
         string s = PlayerPrefs.GetString("SH_Por" + shIndex );
         if (s == "")
         {

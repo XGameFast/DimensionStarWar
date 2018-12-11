@@ -269,6 +269,8 @@ public class UniWebView: MonoBehaviour {
         t.gameObject.SetActive(true);
         referenceRectTransform = t.GetComponent<RectTransform>();
         fullScreen = true;
+        useToolbar = true;
+        toolbarPosition = UniWebViewToolbarPosition.Bottom;
         var listenerObject = new GameObject(id);
         listener = listenerObject.AddComponent<UniWebViewNativeListener>();
         listenerObject.transform.parent = transform;

@@ -69,10 +69,8 @@ public class MapController : BaseController {
         {   
             FingerEvent.OnUpdate();
         }
-        #if UNITY_EDITOR 
         MoveCamera();
         RotateCamera();
-        #endif
         //检查据点是否范围内
         //CheckTowerInRect();
         //只有在 放置据点的时候，回去检测与其他据点的位置
@@ -121,7 +119,7 @@ public class MapController : BaseController {
 
     private void RegisterControlCamera(bool _isRegister)
     {
-        if(_isRegister)
+        /*if(_isRegister)
         {
             if (FingerEvent.doubleFingerRotateEvent!= ControlRotateCamera)
             {
@@ -147,7 +145,7 @@ public class MapController : BaseController {
             }
            //FingerEvent.doubleFingerDragSameDirection -= ControlUpDownCamera;
 
-        }
+        }*/
     }
 
     private void RegisterSelectMapItem(bool _isRegister)
@@ -1161,7 +1159,7 @@ public class MapController : BaseController {
             Vector3 fwd = new Vector3(data.getMapcamera.forward.normalized.x, 0, data.getMapcamera.forward.normalized.z);
             vector3 += fwd * Time.deltaTime * -dragValue.y;
             vector3 += data.getMapcamera.right * Time.deltaTime * -dragValue.x;
-           
+            Debug.Log("dragValue" + dragValue);
         }
         data.getMapcamera.position = vector3;
        // UpdateMedalFaceToMapCamera50();
@@ -1307,7 +1305,7 @@ public class MapController : BaseController {
                 data.getMineStrongholdItem[i].transform.position = p;
             }
         }
-        if (data.getOtherPlayerStrongholdAttribute != null && data.shDisplayType == 1 || data.shDisplayType == 4)
+        if (data.getOtherPlayerStrongholdAttribute != null && (data.shDisplayType == 1 || data.shDisplayType == 4))
         {
             int count1 = data.getOtherPlayerStrongholdAttribute.Count;
             for (int i = 0; i < count1; i++)
@@ -1318,7 +1316,7 @@ public class MapController : BaseController {
             }
         }
 
-        if (data.getOtherPlayerStrongholdAttribute != null && data.shDisplayType == 2 || data.shDisplayType == 4)
+        if (data.getOtherPlayerStrongholdAttribute != null && (data.shDisplayType == 2 || data.shDisplayType == 4))
         {
             int count1 = data.getBussinessStrongholdAttribute.Count;
             for (int i = 0; i < count1; i++)
@@ -1375,14 +1373,19 @@ public class MapController : BaseController {
 
     private Vector3 startMousePose;
     private bool isUpdateMouseEuler;
-
-
     private bool isUpdateMousePose;
+
+
+    #region 旋转相机
+
+
+    static Touch oldTouch1;
+    static Touch oldTouch2;
 
     private void RotateCamera()
     {
 
-
+        #if UNITY_EDITOR
         if (Input.GetMouseButtonDown(1))
         {
             isUpdateMouseEuler = true;
@@ -1398,6 +1401,7 @@ public class MapController : BaseController {
                 {
                     Vector3 euler = ARMonsterSceneDataManager.Instance.MapCamera.transform.eulerAngles;
                     euler.y -= Time.deltaTime * 100;
+                    //ControlRotateCamera(euler);
                     ARMonsterSceneDataManager.Instance.MapCamera.transform.eulerAngles = euler;
                 }
                 else if (delta.x < -5)
@@ -1405,8 +1409,9 @@ public class MapController : BaseController {
                     Vector3 euler = ARMonsterSceneDataManager.Instance.MapCamera.transform.eulerAngles;
                     euler.y += Time.deltaTime * 100;
                     ARMonsterSceneDataManager.Instance.MapCamera.transform.eulerAngles = euler;
+                    //ControlRotateCamera(euler);
                 }
-                UpdatePlayerShUIPose();
+
                 startMousePose = Input.mousePosition;
             }
         }
@@ -1417,10 +1422,47 @@ public class MapController : BaseController {
         }
 
 
+
+#else
+
+        if (Input.touchCount == 2)
+        {
+            Touch touch1 = Input.GetTouch(0);
+            Touch touch2 = Input.GetTouch(1);
+
+            //启用双指，尚未旋转
+            if (touch2.phase == TouchPhase.Began)
+            {
+                oldTouch2 = touch2;
+                oldTouch1 = touch1;
+                return;
+            }
+            if (touch1.phase == TouchPhase.Moved || touch2.phase == TouchPhase.Moved)
+            {
+                Vector2 curVec = touch2.position - touch1.position;
+                Vector2 oldVec = oldTouch2.position - oldTouch1.position;
+                float angle = Vector2.Angle(oldVec, curVec);
+                angle *= Mathf.Sign(Vector3.Cross(oldVec, curVec).z);
+                ControlRotateCamera(new Vector3(0, angle, 0));
+                oldTouch1 = touch1;
+                oldTouch2 = touch2;
+            }
+        }
+
+
+#endif
+
+        UpdatePlayerShUIPose();
+
     }
+    #endregion
+
+    #region 移动相机
 
     private void MoveCamera()
     {
+        #if UNITY_EDITOR
+
         if (Input.GetMouseButtonDown(0))
         {
             isUpdateMousePose = true;
@@ -1432,14 +1474,15 @@ public class MapController : BaseController {
             if (isUpdateMousePose)
             {
                 Vector3 delta = Input.mousePosition - startMousePose;//new Vector3(Screen.width/2 , Screen.height/2,0);
-
-                Vector3 vector3 = ARMonsterSceneDataManager.Instance.MapCamera.transform.position;
+                ControlDragMoveCamera(delta);
+                startMousePose = Input.mousePosition;
+                /*Vector3 vector3 = ARMonsterSceneDataManager.Instance.MapCamera.transform.position;
                 Vector3 fwd = new Vector3(ARMonsterSceneDataManager.Instance.MapCamera.transform.forward.normalized.x, 0, ARMonsterSceneDataManager.Instance.MapCamera.transform.forward.normalized.z);
                 vector3 += fwd * Time.deltaTime * -delta.y * 2;
                 vector3 += ARMonsterSceneDataManager.Instance.MapCamera.transform.right * Time.deltaTime * -delta.x * 2;
                 ARMonsterSceneDataManager.Instance.MapCamera.transform.position = vector3;
-                startMousePose = Input.mousePosition;
-                UpdatePlayerShUIPose();
+               */
+
             }
         }
 
@@ -1447,8 +1490,23 @@ public class MapController : BaseController {
         {
             isUpdateMousePose = false;
         }
+
+
+
+#else
+        if (Input.touchCount == 1)
+        {
+              Touch touch = Input.GetTouch(0);
+                Vector2 deltaPos = touch.deltaPosition;
+             ControlDragMoveCamera(deltaPos);
+        }
+
+#endif
+
+        UpdatePlayerShUIPose();
     }
 
-
+    #endregion
 
 }
+
