@@ -336,29 +336,14 @@ public class MapCtrData : ControllerData {
         int count = bussinessStrongholdAttributes.Count;
         for(int i = 0 ; i < count; i++)
         {
-            //先判断本地有没有 
-
             BusinessStrongholdAttribute b = bussinessStrongholdAttributes[i];
-            string s = PlayerPrefs.GetString("SH_" +b.headImage);
-            Debug.Log("s" + b.headImage);
-            if(s == "")
-            {
-                yield return mapController.StartCoroutine(AndaDataManager.Instance.naetdataManager.GetBussinessPorImage(b.headImage, b.strongholdIndex, UpdateBussinessStrongholdHeadImange));
-            }else
-            {
-                byte[] v = ConvertTool.StringToBytes(s);
-                Texture2D texture = new Texture2D(128,128);
-                texture.LoadImage(v);
-                texture = ConvertTool.ConvertToTexture2d(texture);
-                Sprite sp = ConvertTool.ConvertToSpriteWithTexture2d(texture);
-                UpdateBussinessStrongholdHeadImange(b.strongholdIndex,sp);
-            }
+            AndaDataManager.Instance.GetStrongholdImg(b.strongholdIndex, b.headImage, UpdateBussinessStrongholdHeadImange);
+            yield return null;
         }
     }
 
     private void UpdateBussinessStrongholdHeadImange(int _index, Sprite _sprite)
     {
-       
         businessStrongholdItems.FirstOrDefault(s=>s.dataIndex == _index).UpdatePorImage(_sprite);
         Debug.Log(_index);
     }

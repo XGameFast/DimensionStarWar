@@ -162,7 +162,9 @@ public static class ConvertTool{
         convert.hostIndex = value.hostIndex;
         convert.headImage = value.headImage;
         convert.autoGraph = value.autograph;
+        convert.businessData = value.BusinessData;
         convert.monsterCount = value.monsterCount;
+        convert.statueID = value.statueID;
         convert.hostType = value.hostType;
         convert.strongholdID = value.strongholdID;
         convert.strongholdIndex = value.strongholdIndex;
@@ -410,6 +412,6 @@ public static class ConvertTool{
 
     public static byte[] StringToBytes(string str)
     {
-        return System.Text.Encoding.Default.GetBytes(str);
+        return System.Convert.FromBase64String(str);
     }
 }

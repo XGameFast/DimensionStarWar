@@ -45,6 +45,15 @@ public class Result
 }
 
 /// <summary>
+/// 商家的活动回调
+/// </summary>
+public class BusinessActivityRequest :Result
+{
+    public BusinessActivity data { get;set;}
+}
+
+
+/// <summary>
 /// 奖励回调 single
 /// </summary>
 public class BusinessCouponRequest : Result
@@ -115,6 +124,8 @@ public class BusinessStrongHoldInfo : Result
 public class StrongHold:Result
 {
     public List<MonsterGrowUpAttribute> MonsterList {get; set;}
+    public PlayerData pd{get;set;}
+    public BusinessData bd {get;set;}
 }
 
 public class ResRegion

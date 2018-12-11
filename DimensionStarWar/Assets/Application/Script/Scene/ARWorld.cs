@@ -54,8 +54,11 @@ public class  ARWorld : AndaObjectBasic
 
     public GameObject focuse ;
 
+    public GameObject uiWebView;
+
     private void Start()
     {
+        WebManager.Instance.webUIObj = uiWebView;
         ARMonsterSceneDataManager.Instance.aRWorld = this;
     }
 

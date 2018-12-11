@@ -306,13 +306,36 @@ public class AndaDataManager {
         return null;
     }
 
-    public void GetStrongholdImg(string img,System.Action<Sprite> callback)
+    public void GetStrongholdImg(int shIndex, string imgPath, System.Action<int, Sprite> callback)
     {
-        string s = PlayerPrefs.GetString("SH_" + img);
+        //PlayerPrefs.SetString("SH_Por" + shIndex ,"");
+        string s = PlayerPrefs.GetString("SH_Por" + shIndex );
         if (s == "")
-        { 
-            naetdataManager.StartCoroutine(naetdataManager.GetStrongholdImg(img,callback));
-        }else
+        {
+            naetdataManager.StartCoroutine(naetdataManager.GetStrongholdImg(imgPath, shIndex , callback));
+        }
+        else
+        {
+            byte[] v = ConvertTool.StringToBytes(s);
+            Texture2D texture = new Texture2D(128, 128);
+            texture.LoadImage(v);
+            texture = ConvertTool.ConvertToTexture2d(texture);
+            Sprite sp = ConvertTool.ConvertToSpriteWithTexture2d(texture);
+            callback(shIndex,sp);
+        }
+    }
+
+    /// <summary>
+    /// 获取奖励的图标
+    /// </summary>
+    public void GetBSHRewardImg(string img, System.Action<Sprite> callback)
+    {
+        string s = PlayerPrefs.GetString("RW_" + img);
+        if (s == "")
+        {
+            naetdataManager.StartCoroutine(naetdataManager.GetBSHRewardImg(img, callback));
+        }
+        else
         {
             byte[] v = ConvertTool.StringToBytes(s);
             Texture2D texture = new Texture2D(128, 128);
@@ -322,6 +345,8 @@ public class AndaDataManager {
             callback(sp);
         }
     }
+
+
 
     public Sprite GetMedalLevelBoardSprite(string name)
     {

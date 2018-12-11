@@ -6,6 +6,14 @@ public class StrongholdStructure {
 
 }
 
+public class BusinessActivity
+{
+    public int activityIndex { get; set; }
+    public int hostInedex { get; set; }
+    public string activeDescription { get; set; }
+    public string activeURL { get; set; }
+}
+
 public class BusinessCoupon
 {
     //优惠卷Index
@@ -259,5 +267,5 @@ public class PlayerStrongholdAttribute : StrongholdBaseAttribution
 }
 public class BusinessStrongholdAttribute : StrongholdBaseAttribution
 {
-
+    public BusinessData businessData {get;set;}
 }

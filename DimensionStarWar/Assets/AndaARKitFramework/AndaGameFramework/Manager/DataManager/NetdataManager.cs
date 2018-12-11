@@ -86,6 +86,12 @@ public class NetdataManager : ManagerBase {
 
     #endregion
 
+    #region 从服务器上获取 点击的商家据点的活动信息
+
+   // public void CallServerGetBSHActiveInfomation()
+
+
+    #endregion
 
     #region 从服务器获取玩家数据
     public void TestLoginOnce(System.Action<bool> callback,string name)
@@ -301,7 +307,7 @@ public class NetdataManager : ManagerBase {
         StartCoroutine(ExcuteGetMonsterList(path, _wForm, callback));
     }
 
-    private IEnumerator ExcuteGetMonsterList(string _url, WWWForm _wForm,System.Action<List<PlayerMonsterAttribute>> callback)
+    private IEnumerator ExcuteGetMonsterList(string _url, WWWForm _wForm, System.Action<List<PlayerMonsterAttribute>> callback)
     {
         WWW postData = new WWW(_url, _wForm);
         yield return postData;
@@ -310,15 +316,14 @@ public class NetdataManager : ManagerBase {
             JIRVIS.Instance.PlayTips(postData.error);
         }else
         {
-
             StrongHold strongHold = JsonMapper.ToObject<StrongHold>(postData.text);
-            if(strongHold.code == "200")
+            if (strongHold.code == "200")
             {
 
                 Debug.Log(postData.text);
                 int count = strongHold.MonsterList.Count;
                 List<PlayerMonsterAttribute> monsterAttributes = new List<PlayerMonsterAttribute>();
-                for(int i = 0 ; i < count; i++)
+                for (int i = 0; i < count; i++)
                 {
                     if (strongHold.MonsterList[i] != null)
                     {
@@ -329,7 +334,8 @@ public class NetdataManager : ManagerBase {
 
                 callback(monsterAttributes);
 
-            }else
+            }
+            else
             {
                 JIRVIS.Instance.PlayTips(strongHold.detail);
             }
@@ -338,8 +344,9 @@ public class NetdataManager : ManagerBase {
 
     #endregion
 
-    #region 获取商家据点的头像
-    public IEnumerator GetStrongholdImg(string adress, System.Action<Sprite> callback)
+    #region 获取商家奖励物品的图标
+
+    public IEnumerator GetBSHRewardImg(string adress, System.Action<Sprite> callback)
     {
         AndaUIManager.Instance.OpenWaitBoard("请稍等");
         WWW wWW = new WWW(networkAdress4 + adress);
@@ -356,12 +363,23 @@ public class NetdataManager : ManagerBase {
             Texture2D texture2D = ConvertTool.ConvertToTexture2d(wWW.texture);
             Sprite sprite = ConvertTool.ConvertToSpriteWithTexture2d(texture2D);
             string t = ConvertTool.BytesToString(btye);
-            PlayerPrefs.SetString("SH_" + adress, t);
+            PlayerPrefs.SetString("RW_" + adress, t);
             callback(sprite);
         }
     }
 
-    public IEnumerator GetBussinessPorImage(string adress, int strongholdIndex ,System.Action<int,Sprite> callback)
+    #endregion
+
+
+    #region 获取商家据点的头像
+    /// <summary>
+    /// 这个可以直接用更新数据
+    /// </summary>
+    /// <returns>The bussiness por image.</returns>
+    /// <param name="adress">Adress.</param>
+    /// <param name="strongholdIndex">Stronghold index.</param>
+    /// <param name="callback">Callback.</param>
+    public IEnumerator GetStrongholdImg(string adress, int strongholdIndex ,System.Action<int,Sprite> callback)
     {
         AndaUIManager.Instance.OpenWaitBoard("请稍等");
         WWW wWW = new WWW(networkAdress4 + adress);
@@ -377,7 +395,7 @@ public class NetdataManager : ManagerBase {
             Texture2D texture2D = ConvertTool.ConvertToTexture2d(wWW.texture);
             Sprite sprite = ConvertTool.ConvertToSpriteWithTexture2d(texture2D);
             string t = ConvertTool.BytesToString(btye);
-            PlayerPrefs.SetString("SH_"+ adress , t);
+            PlayerPrefs.SetString("SH_Por" + strongholdIndex, t);
             callback(strongholdIndex,sprite);
         }
     }
