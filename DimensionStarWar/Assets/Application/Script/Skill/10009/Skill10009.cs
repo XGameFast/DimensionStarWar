@@ -6,9 +6,13 @@ public class Skill10009 : SkillBallistic
 {
     private bool mainObjIsMoving = false;
 
+    public TrailRenderer l;
+    public TrailRenderer r;
     //特效结束
     public override void OnDispawn()
     {
+        l.Clear();
+        r.Clear();
         //特效返回
         ObjBackToSelf(mainObj);
         ObjBackToSelf(GatheringObj);
@@ -105,6 +109,9 @@ public class Skill10009 : SkillBallistic
         GatheringObj.transform.parent = null;
         //激活特效
         GatheringObj.gameObject.SetTargetActiveOnce(true);
+
+        l.Clear();
+        r.Clear();
 
         GatheringObj.transform.position = insPoint.position;
 

@@ -9,6 +9,7 @@ public class Skill10007 : SkillBallistic
     //特效结束
     public override void OnDispawn()
     {
+        trailObj.GetComponent<TrailRenderer>().Clear();
         //特效返回
         ObjBackToSelf(mainObj);
         ObjBackToSelf(GatheringObj);
@@ -101,6 +102,8 @@ public class Skill10007 : SkillBallistic
         GatheringObj.transform.SetInto(insPoint);
         //激活特效
         GatheringObj.gameObject.SetTargetActiveOnce(true);
+
+        trailObj.GetComponent<TrailRenderer>().Clear();
 
         GatheringObj.parent = null;
     
