@@ -23,6 +23,7 @@ public class Skill11006 : SkillDefense
     protected override void RunningSkill()
     {
         base.RunningSkill();
+        transform.SetInto(host.bot);
         defenseObj.gameObject.SetTargetActiveOnce(true);
         defenseBoxCollider.enabled = true;
     }
