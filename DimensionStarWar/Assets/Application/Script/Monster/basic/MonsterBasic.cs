@@ -670,8 +670,10 @@ public class MonsterBasic : AndaObjectBasic
                         break;
                     case 2:
                         PlaySkillStep02();
+                        Debug.Log("Steal Step 02");
                         break;
                     case 3:
+                        Debug.Log("Steal Step 03");
                         PlaySkillStep03();
                         break;
                 }

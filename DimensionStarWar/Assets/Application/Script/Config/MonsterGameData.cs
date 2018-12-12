@@ -111,9 +111,20 @@ public static class MonsterGameData
                         monsterID = 1005,
                         skillAnimationConfigs = new List<SkillAnimationConfig>
                         {
-                            new SkillAnimationConfig { skillID = 10005, skillAnimationLength = 2f , skillAnimationInterval = new List<float> { 10f ,20f, 40}},
+                            new SkillAnimationConfig { skillID = 10005, skillAnimationLength = 2f , skillAnimationInterval = new List<float> { 6f ,20f, 40}},
                             new SkillAnimationConfig { skillID = 11005, skillAnimationLength = 3.734f , skillAnimationInterval = new List<float> { 18f, 26f, 35f }},
                             new SkillAnimationConfig { skillID = 12005, skillAnimationLength = 1.167f , skillAnimationInterval = new List<float> { 67f,75f, 112f }},
+                        }
+                    }
+                    ,
+                     new MonsterSkillAnimationConfig
+                    {
+                        monsterID = 1006,
+                        skillAnimationConfigs = new List<SkillAnimationConfig>
+                        {
+                            new SkillAnimationConfig { skillID = 10006, skillAnimationLength = 1.067f , skillAnimationInterval = new List<float> { 10f ,18f, 32f}},
+                            new SkillAnimationConfig { skillID = 11006, skillAnimationLength = 1f , skillAnimationInterval = new List<float> { 10f, 26f, 30f }},
+                            new SkillAnimationConfig { skillID = 12006, skillAnimationLength = 2.6f , skillAnimationInterval = new List<float> { 34f,45f, 77f }},
                         }
                     }
                     ,
@@ -134,7 +145,7 @@ public static class MonsterGameData
                         {
                             new SkillAnimationConfig { skillID = 10009, skillAnimationLength = 0.833f , skillAnimationInterval = new List<float> { 4f ,13f, 25}},
                             new SkillAnimationConfig { skillID = 11009, skillAnimationLength = 1.533f , skillAnimationInterval = new List<float> { 12f, 25f, 30f }},
-                            new SkillAnimationConfig { skillID = 12009, skillAnimationLength = 1f , skillAnimationInterval = new List<float> { 34f,35f, 46f }},
+                            new SkillAnimationConfig { skillID = 12009, skillAnimationLength = 1f , skillAnimationInterval = new List<float> { 24f,35f, 46f }},
                         }
                     },
                     new MonsterSkillAnimationConfig

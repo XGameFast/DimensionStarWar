@@ -123,6 +123,7 @@ public class Skill12003 : SkillBallistic
         ResetDestory(5f);
 
         //激活特效
+        GatheringObj.SetInto(host.centerForward);
         GatheringObj.gameObject.SetTargetActiveOnce(true);
 
           

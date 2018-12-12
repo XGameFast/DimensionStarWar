@@ -198,6 +198,7 @@ public class BuildDimensionMenu_MonsterInforBar : MonoBehaviour {
 
     public void FinishSearche()
     {
+        MonsterSearch02.gameObject.GetComponent<Button>().enabled = false;
         AndaDataManager.Instance.CallUpFinishSearch(pma.monsterIndex, FinishiSearchCallBack);
     }
     public void StartSearchCallBack(bool success)
@@ -241,6 +242,7 @@ public class BuildDimensionMenu_MonsterInforBar : MonoBehaviour {
         {
             searchTimePanel.SetTargetActiveOnce(true);
         }
+        MonsterSearch02.gameObject.GetComponent<Button>().enabled = true;
     }
 
     public void ShowExp()
@@ -284,7 +286,7 @@ public class BuildDimensionMenu_MonsterInforBar : MonoBehaviour {
             t += Time.deltaTime;
             float per = Mathf.Lerp(0, pma.mosterPower,t) / pma.monsterMaxPower;
             monsterMaxPower.value = per;
-            monsterMaxPowerValue.text = Mathf.Lerp(0, pma.mosterPower, t) + "/" + maxPower; 
+            monsterMaxPowerValue.text =(int)Mathf.Lerp(0, pma.mosterPower, t) + "/" + maxPower; 
             yield return null;
         }
 
@@ -321,8 +323,9 @@ public class BuildDimensionMenu_MonsterInforBar : MonoBehaviour {
                 btn2.gameObject.SetTargetActiveOnce(false);
                 btn3.gameObject.SetTargetActiveOnce(false);
                 btn4.gameObject.SetTargetActiveOnce(false);
+                btn5.gameObject.SetTargetActiveOnce(false);
             }
-      
+
         }
       
       

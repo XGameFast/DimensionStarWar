@@ -10,6 +10,7 @@ public class Skill10005 : SkillBallistic
     //特效结束
     public override void OnDispawn()
     {
+        trailObj.GetComponent<TrailRenderer>().Clear();
         //特效返回
         ObjBackToSelf(mainObj);
         ObjBackToSelf(GatheringObj);
@@ -24,7 +25,10 @@ public class Skill10005 : SkillBallistic
         //技能移动 每帧都在刷新
         base.StraightLineMovement();
         if (!isHitTarget && mainObjIsMoving)//判断是否为击中以及在移动状态下
-            mainObj.transform.position += mainObj.transform.forward.normalized * Time.deltaTime * playerSkillAttribute.baseSkillAttribute.skillMoveSpeed.DoubleToFloat() * ARMonsterSceneDataManager.Instance.getARWorldScale; 
+        {
+            mainObj.transform.position += mainObj.transform.forward.normalized * Time.deltaTime * playerSkillAttribute.baseSkillAttribute.skillMoveSpeed.DoubleToFloat() * ARMonsterSceneDataManager.Instance.getARWorldScale;
+            GatheringObj.LookAt(mainObj);
+        }
     }
 
     //击中时发生
@@ -96,18 +100,16 @@ public class Skill10005 : SkillBallistic
         mainObjIsMoving = true;
 
 
-
-        GatheringObj.transform.parent = null;
+        //初始化特效位置  host为 monster
+        GatheringObj.transform.SetInto(insPoint);
         //激活特效
         GatheringObj.gameObject.SetTargetActiveOnce(true);
 
-        //初始化特效位置  host为 monster
-        GatheringObj.transform.position = insPoint.position;
+        trailObj.GetComponent<TrailRenderer>().Clear();
 
+        GatheringObj.parent = null;
+  
         //设置移动特效起始位置
         SetObjtToTargetPoint(mainObj.gameObject, insPoint.position, true);
-
-
-      
     }
 }
