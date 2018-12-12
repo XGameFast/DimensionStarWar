@@ -323,8 +323,9 @@ public class BuildDimensionMenu_MonsterInforBar : MonoBehaviour {
                 btn2.gameObject.SetTargetActiveOnce(false);
                 btn3.gameObject.SetTargetActiveOnce(false);
                 btn4.gameObject.SetTargetActiveOnce(false);
+                btn5.gameObject.SetTargetActiveOnce(false);
             }
-      
+
         }
       
       
