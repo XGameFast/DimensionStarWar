@@ -6,10 +6,14 @@ public class Skill12006 : SkillBallistic
 {
     private bool mainObjIsMoving = false;
 
+    public Transform l;
+    public Transform r;
     //特效结束
     public override void OnDispawn()
     {
         //特效返回
+        ObjBackToSelf(l);
+        ObjBackToSelf(r);
         ObjBackToSelf(mainObj);
         ObjBackToSelf(GatheringObj);
         ObjBackToSelf(exploreObj);
@@ -41,10 +45,6 @@ public class Skill12006 : SkillBallistic
 
         Debug.Log("击中目标");
 
-        //特效回收
-        ObjBackToSelf(GatheringObj);
-        //击中时执行
-
         //击中后2秒消除
         ResetDestory(2f);
 
@@ -72,6 +72,9 @@ public class Skill12006 : SkillBallistic
 
     protected override void StartSkill()
     {
+
+
+
         //技能开始
         base.StartSkill();
 
@@ -83,9 +86,18 @@ public class Skill12006 : SkillBallistic
         //初始化 可击中单位的Layer
         List<string> hitLayer = new List<string> { host.isPlayer ? "Monster" : "Player", "Objects", "Defense", "Skill" };
         GatheringObj.gameObject.SetTargetActiveOnce(true);
-      
         //注册被击中事件
         dandao.RegisterEvent(Hit, hitLayer, 0);
+
+        //初始化特效位置  host为 monster
+        l.gameObject.SetInto(host.leftHand);
+        //激活特效
+        l.gameObject.SetTargetActiveOnce(true);
+
+        //初始化特效位置  host为 monster
+        r.gameObject.SetInto(host.rightHand);
+        //激活特效
+        r.gameObject.SetTargetActiveOnce(true);
     }
 
     protected override void RunningSkill()
@@ -93,19 +105,6 @@ public class Skill12006 : SkillBallistic
         //当技能动画到某帧时触发
 
         base.RunningSkill();
-
-        var list = GatheringObj.transform.GetChildList();
-
-        //初始化特效位置  host为 monster
-        list[0].gameObject.SetInto(host.leftHand);
-        //激活特效
-        list[0].gameObject.SetTargetActiveOnce(true);
-
-
-        //初始化特效位置  host为 monster
-        list[1].gameObject.SetInto(host.rightHand);
-        //激活特效
-        list[1].gameObject.SetTargetActiveOnce(true);
 
         Debug.Log(insPoint.transform.name);
         //设置移动特效起始位置
