@@ -34,6 +34,7 @@ public class MapController : BaseController {
         ARMonsterSceneDataManager.Instance.SetUsedCamera(ARMonsterSceneDataManager.Instance.MapCamera);
         ARMonsterSceneDataManager.Instance.OpenGameLight(true);
         BuildData();
+
         BuildMenu();
         StartCheckDisplayType();
 
@@ -71,6 +72,7 @@ public class MapController : BaseController {
         }
         MoveCamera();
         RotateCamera();
+        UpdatePlayerShUIPose();
         //检查据点是否范围内
         //CheckTowerInRect();
         //只有在 放置据点的时候，回去检测与其他据点的位置
@@ -195,6 +197,7 @@ public class MapController : BaseController {
 
     private void SwitchVVMap()
     {
+        data.SetCurCamera();
         /*List<JIRVISFuncBtnStruct> jIRVISFuncBtnStructs = new List<JIRVISFuncBtnStruct>
         {
             new JIRVISFuncBtnStruct { btnName = "AR" , btnIconKey = ONAME.ARIcon, clickCallBack = SwitchARMap },
@@ -291,16 +294,16 @@ public class MapController : BaseController {
     private void BuildMapItem()
     {
         #region 构建据点
-        if (data.getOtherPlayerStrongholdAttribute != null && data.getOtherPlayerStrongholdAttribute.Count != 0)
+        if (data.getOtherPlayerStrongholdAttribute != null )
         {
              data.BuildAnotherPlayerSHUI();
         }
-        if (data.getSeflStrongholdAttribute != null && data.getSeflStrongholdAttribute.Count != 0)
+        if (data.getSeflStrongholdAttribute != null )
         {
             data.BuildMineSHUI();
         }
 
-        if(data.getBussinessStrongholdAttribute !=null && data.getBussinessStrongholdAttribute.Count !=0 )
+        if(data.getBussinessStrongholdAttribute !=null  )
         {
             data.BuildAllRangeBussinessStrongholdItems();
         }
@@ -334,6 +337,39 @@ public class MapController : BaseController {
     }
 
     #endregion
+
+
+    #region 贾维斯 按钮点击 ，点击了切换到AR模式
+
+    private void JIRVISClick_ChangeToARMode()
+    {
+        JIRVIS.Instance.RemoveCurrentBtnList();
+        JIRVIS.Instance.jIRVISData.SetCurrentDisplayType(OTYPE.GameDisplayType.AR);
+        ARMonsterSceneDataManager.Instance.MapCamera.gameObject.SetTargetActiveOnce(false);
+        data.SetCurCamera();
+        AndaARManager.Instance.StartAR(FinishBuildARMode);
+    }
+
+    #endregion
+
+    #region 完成了AR构建
+
+    private void FinishBuildARMode()
+    { 
+        BuildJIRVISFunctionBtn();
+    }
+
+    #endregion
+
+    #region 贾维斯按钮点击 切换到VV模式
+
+    public void JIRVISClikc_ChangeToVVMode()
+    {
+        JIRVIS.Instance.jIRVISData.SetCurrentDisplayType(OTYPE.GameDisplayType.VV);
+        data.SetCurCamera();
+    }
+    #endregion
+
 
     #region JIRVIS按钮点击，选择我想要的占星庭【切换占星庭】
 
@@ -377,15 +413,31 @@ public class MapController : BaseController {
     private void BuildJIRVISFunctionBtn()
     {
         if (data.isOpenJirvisChildBar) return;//如果打开 子导航栏，那么就不执行了
-
-        List<JIRVISFuncBtnStruct> jIRVISFuncBtnStructs = new List<JIRVISFuncBtnStruct>()
+        JIRVIS.Instance.RemoveCurrentBtnList();
+        if(JIRVIS.Instance.jIRVISData.getCurDisplayType == OTYPE.GameDisplayType.VV)
         {
-            new JIRVISFuncBtnStruct { btnName = "我的据点" , btnIconKey = ONAME.mineStrongholIcon ,clickCallBack = JIRVISBuildMinestrongholdListBtn },
-            new JIRVISFuncBtnStruct { btnName = data.getIsMap2D?"3D地图":"2D地图" , btnIconKey = data.getIsMap2D? ONAME.mapAngle3D:ONAME.mapAngle2D ,clickCallBack = ChangeMapAngle },
-            new JIRVISFuncBtnStruct { btnName = "回退" , btnIconKey = ONAME.BackStep ,clickCallBack = BackToBuildDimensionRoomController }
-        };
+            List<JIRVISFuncBtnStruct> jIRVISFuncBtnStructs = new List<JIRVISFuncBtnStruct>()
+            {
+               // new JIRVISFuncBtnStruct { btnName = "AR" , btnIconKey = ONAME.ARIcon ,clickCallBack = JIRVISClick_ChangeToARMode },
+                new JIRVISFuncBtnStruct { btnName = "我的据点" , btnIconKey = ONAME.mineStrongholIcon ,clickCallBack = JIRVISBuildMinestrongholdListBtn },
+                new JIRVISFuncBtnStruct { btnName = data.getIsMap2D?"3D地图":"2D地图" , btnIconKey = data.getIsMap2D? ONAME.mapAngle3D:ONAME.mapAngle2D ,clickCallBack = ChangeMapAngle },
+                new JIRVISFuncBtnStruct { btnName = "回退" , btnIconKey = ONAME.BackStep ,clickCallBack = BackToBuildDimensionRoomController }
+            };
 
-        JIRVIS.Instance.BuildFunctionBtn(jIRVISFuncBtnStructs);
+            JIRVIS.Instance.BuildFunctionBtn(jIRVISFuncBtnStructs);
+        }else
+        {
+            List<JIRVISFuncBtnStruct> jIRVISFuncBtnStructs = new List<JIRVISFuncBtnStruct>()
+            {
+                new JIRVISFuncBtnStruct { btnName = "返回" , btnIconKey = ONAME.VVIcon ,clickCallBack = JIRVISClikc_ChangeToVVMode },
+                new JIRVISFuncBtnStruct { btnName = "我的据点" , btnIconKey = ONAME.mineStrongholIcon ,clickCallBack = JIRVISBuildMinestrongholdListBtn },
+                new JIRVISFuncBtnStruct { btnName = data.getIsMap2D?"3D地图":"2D地图" , btnIconKey = data.getIsMap2D? ONAME.mapAngle3D:ONAME.mapAngle2D ,clickCallBack = ChangeMapAngle },
+                new JIRVISFuncBtnStruct { btnName = "回退" , btnIconKey = ONAME.BackStep ,clickCallBack = BackToBuildDimensionRoomController }
+            };
+
+            JIRVIS.Instance.BuildFunctionBtn(jIRVISFuncBtnStructs);
+        }
+       
     }
 
 
@@ -1130,7 +1182,7 @@ public class MapController : BaseController {
 
     private void ControlRotateCamera(Vector3 _rotate)
     {
-        Debug.Log("RotateY" + _rotate.y);
+        //Debug.Log("RotateY" + _rotate.y);
         Vector3 vector3 = data.getMapcamera.eulerAngles;
         vector3.y += _rotate.y;
         data.getMapcamera.eulerAngles = vector3;
@@ -1138,7 +1190,7 @@ public class MapController : BaseController {
 
     private void ControlUpDownCamera(float _value)
     {
-        Debug.Log("Rotate_value" + _value);
+       //Debug.Log("Rotate_value" + _value);
         Vector3 vector3 = data.getMapcamera.eulerAngles;
         float v = Mathf.Clamp(vector3.x + _value, 50f, 90f);
         vector3.x = v;
@@ -1159,7 +1211,7 @@ public class MapController : BaseController {
             Vector3 fwd = new Vector3(data.getMapcamera.forward.normalized.x, 0, data.getMapcamera.forward.normalized.z);
             vector3 += fwd * Time.deltaTime * -dragValue.y;
             vector3 += data.getMapcamera.right * Time.deltaTime * -dragValue.x;
-            Debug.Log("dragValue" + dragValue);
+           // Debug.Log("dragValue" + dragValue);
         }
         data.getMapcamera.position = vector3;
        // UpdateMedalFaceToMapCamera50();
@@ -1295,12 +1347,15 @@ public class MapController : BaseController {
     private void UpdatePlayerShUIPose()
     {
         if(data==null)return;
+
+        if(data.GetCurCamera == null)return;
+
         if(data.getSeflStrongholdAttribute !=null && (data.shDisplayType == 1 || data.shDisplayType == 4))
         {
             int count1 = data.getSeflStrongholdAttribute.Count;
             for (int i = 0; i < count1; i++)
             {
-                Vector2 vector2 = ARMonsterSceneDataManager.Instance.MapCamera.WorldToScreenPoint(data.getSeflStrongholdAttribute[i].strongholdInMapPosition);
+                Vector2 vector2 = data.GetCurCamera.WorldToScreenPoint(data.getSeflStrongholdAttribute[i].strongholdInMapPosition);
                 Vector3 p = ARMonsterSceneDataManager.Instance.UICamera.ScreenToWorldPoint(new Vector3(vector2.x, vector2.y, 90));
                 data.getMineStrongholdItem[i].transform.position = p;
             }
@@ -1310,18 +1365,18 @@ public class MapController : BaseController {
             int count1 = data.getOtherPlayerStrongholdAttribute.Count;
             for (int i = 0; i < count1; i++)
             {
-                Vector2 vector2 = ARMonsterSceneDataManager.Instance.MapCamera.WorldToScreenPoint(data.getOtherPlayerStrongholdAttribute[i].strongholdInMapPosition);
+                Vector2 vector2 = data.GetCurCamera.WorldToScreenPoint(data.getOtherPlayerStrongholdAttribute[i].strongholdInMapPosition);
                 Vector3 p = ARMonsterSceneDataManager.Instance.UICamera.ScreenToWorldPoint(new Vector3(vector2.x, vector2.y, 90));
                 data.getOtherStrongholdItem[i].transform.position = p;
             }
         }
 
-        if (data.getOtherPlayerStrongholdAttribute != null && (data.shDisplayType == 2 || data.shDisplayType == 4))
+        if (data.getBussinessStrongholdAttribute != null && (data.shDisplayType == 2 || data.shDisplayType == 4))
         {
             int count1 = data.getBussinessStrongholdAttribute.Count;
             for (int i = 0; i < count1; i++)
             {
-                Vector2 vector2 = ARMonsterSceneDataManager.Instance.MapCamera.WorldToScreenPoint(data.getBussinessStrongholdAttribute[i].strongholdInMapPosition);
+                Vector2 vector2 = data.GetCurCamera.WorldToScreenPoint(data.getBussinessStrongholdAttribute[i].strongholdInMapPosition);
                 Vector3 p = ARMonsterSceneDataManager.Instance.UICamera.ScreenToWorldPoint(new Vector3(vector2.x, vector2.y, 90));
                 data.getBussinesStronghldItem[i].transform.position = p;
             }
@@ -1384,6 +1439,7 @@ public class MapController : BaseController {
 
     private void RotateCamera()
     {
+        if(JIRVIS.Instance.jIRVISData.getCurDisplayType == OTYPE.GameDisplayType.AR)return;
 
         #if UNITY_EDITOR
         if (Input.GetMouseButtonDown(1))
@@ -1452,7 +1508,7 @@ public class MapController : BaseController {
 
 #endif
 
-        UpdatePlayerShUIPose();
+//UpdatePlayerShUIPose();
 
     }
     #endregion
@@ -1461,7 +1517,9 @@ public class MapController : BaseController {
 
     private void MoveCamera()
     {
-        #if UNITY_EDITOR
+        if (JIRVIS.Instance.jIRVISData.getCurDisplayType == OTYPE.GameDisplayType.AR) return;
+
+#if UNITY_EDITOR
 
         if (Input.GetMouseButtonDown(0))
         {
@@ -1503,7 +1561,7 @@ public class MapController : BaseController {
 
 #endif
 
-        UpdatePlayerShUIPose();
+       // UpdatePlayerShUIPose();
     }
 
     #endregion

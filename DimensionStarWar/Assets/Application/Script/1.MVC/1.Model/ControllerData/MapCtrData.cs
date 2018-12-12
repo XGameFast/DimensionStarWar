@@ -86,8 +86,10 @@ public class MapCtrData : ControllerData {
     public bool isOpenJirvisChildBar =false;
     public TowerBase mapCameraHitToweritem;
 
-    private int currentSelectSelfStrongholdIndex;
+    public Camera GetCurCamera{get {return curCamera ;} }
 
+    private int currentSelectSelfStrongholdIndex;
+    private Camera curCamera;
     private MapMenu mapMenu;
     private MapController mapController;
 
@@ -128,6 +130,8 @@ public class MapCtrData : ControllerData {
     }
     public void InitData()
     {
+
+
         isCheckReward =false;
         isOpenJirvisChildBar = false;
         isWait=false;
@@ -481,6 +485,18 @@ public class MapCtrData : ControllerData {
     public void SetMapViewAnlge(bool isMap2D)
     {
         curMapIs2D = isMap2D;
+    }
+
+    public void SetCurCamera()
+    {
+        if(JIRVIS.Instance.jIRVISData.getCurDisplayType == OTYPE.GameDisplayType.AR)
+        {
+            curCamera = ARMonsterSceneDataManager.Instance.mainCamera;
+        }else
+        {
+            curCamera = ARMonsterSceneDataManager.Instance.MapCamera;
+        }
+        
     }
 
 

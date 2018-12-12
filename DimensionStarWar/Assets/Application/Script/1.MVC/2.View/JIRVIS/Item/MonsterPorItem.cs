@@ -60,6 +60,7 @@ public class MonsterPorItem : AndaObjectBasic {
         boardButton = levelBoardItem.GetComponentInChildren<Button>();
         levelBoardItem.SetInto(transform);
         if (stuteItem != null) AndaDataManager.Instance.RecieveItem(stuteItem);
+        Debug.Log("monsterID" + monsterID);
         stuteItem = AndaDataManager.Instance.InstantiateMenu<AndaObjectBasic>("monsterPor" + monsterID);
         stuteItem.SetInto(levelBoardItem.transform);
         SetMonsterExpSlider(gloryExp, color);
