@@ -49,6 +49,7 @@ public class MonsterPorItem : AndaObjectBasic {
         levelBoardItem.SetInto(transform);
         if(stuteItem!=null)AndaDataManager.Instance.RecieveItem(stuteItem);
         stuteItem = AndaDataManager.Instance.InstantiateMenu<AndaObjectBasic>("strongholdPor" + stuteID);
+//      stuteItem.GetComponent<Button>().enabled =false;
         stuteItem.SetInto(levelBoardItem.transform);
         SetStrongholdExpSlider(gloryExp , color);
     }
@@ -60,8 +61,8 @@ public class MonsterPorItem : AndaObjectBasic {
         boardButton = levelBoardItem.GetComponentInChildren<Button>();
         levelBoardItem.SetInto(transform);
         if (stuteItem != null) AndaDataManager.Instance.RecieveItem(stuteItem);
-        Debug.Log("monsterID" + monsterID);
         stuteItem = AndaDataManager.Instance.InstantiateMenu<AndaObjectBasic>("monsterPor" + monsterID);
+        //stuteItem.GetComponent<Button>().enabled = false;
         stuteItem.SetInto(levelBoardItem.transform);
         SetMonsterExpSlider(gloryExp, color);
     }

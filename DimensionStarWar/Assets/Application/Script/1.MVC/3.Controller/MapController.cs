@@ -72,6 +72,7 @@ public class MapController : BaseController {
         }
         MoveCamera();
         RotateCamera();
+        ScaleMap();
         UpdatePlayerShUIPose();
         //检查据点是否范围内
         //CheckTowerInRect();
@@ -186,7 +187,8 @@ public class MapController : BaseController {
     //开始检测一下是那种显示方式
     private void StartCheckDisplayType()
     {
-        if(JIRVIS.Instance.jIRVISData.getCurDisplayType == OTYPE.GameDisplayType.VV)
+        data.SetCurCamera();
+        if (JIRVIS.Instance.jIRVISData.getCurDisplayType == OTYPE.GameDisplayType.VV)
         {
             SwitchVVMap();
         }else
@@ -194,20 +196,14 @@ public class MapController : BaseController {
             SwitchARMap();
         }
     }
-
+    /// <summary>
+    /// Switchs the VVM ap.
+    /// </summary>
     private void SwitchVVMap()
     {
-        data.SetCurCamera();
-        /*List<JIRVISFuncBtnStruct> jIRVISFuncBtnStructs = new List<JIRVISFuncBtnStruct>
-        {
-            new JIRVISFuncBtnStruct { btnName = "AR" , btnIconKey = ONAME.ARIcon, clickCallBack = SwitchARMap },
-        };*/
-
         ARMonsterSceneDataManager.Instance.aRWorld.CloseBlur();
         ARMonsterSceneDataManager.Instance.aRWorld.ClosebackgroundVV();
         ARMonsterSceneDataManager.Instance.aRWorld.OpenMapCamera();
-
-
         if(data.getCommissionEventContainsBuildstronghold)
         {
             AndaLocaltion.Instance.GetLocationOnce(FinishLocation);
@@ -220,6 +216,19 @@ public class MapController : BaseController {
             GetPOIData();
         }
     }
+
+    private void SwitchARMap()
+    {
+        ARMonsterSceneDataManager.Instance.mainCamera.gameObject.SetActive(true);
+        //隐藏map tiles
+        AndaMap.Instance.SetTileState(false);
+    }
+
+
+
+
+
+
 
     private void FinishLocationf2(Location location)
     {
@@ -343,11 +352,8 @@ public class MapController : BaseController {
 
     private void JIRVISClick_ChangeToARMode()
     {
-        JIRVIS.Instance.RemoveCurrentBtnList();
-        JIRVIS.Instance.jIRVISData.SetCurrentDisplayType(OTYPE.GameDisplayType.AR);
-        ARMonsterSceneDataManager.Instance.MapCamera.gameObject.SetTargetActiveOnce(false);
-        data.SetCurCamera();
-        AndaARManager.Instance.StartAR(FinishBuildARMode);
+        JIRVIS.Instance.jIRVISData.SetCurrentDisplayType( OTYPE.GameDisplayType.AR);
+        StartCheckDisplayType();
     }
 
     #endregion
@@ -366,7 +372,7 @@ public class MapController : BaseController {
     public void JIRVISClikc_ChangeToVVMode()
     {
         JIRVIS.Instance.jIRVISData.SetCurrentDisplayType(OTYPE.GameDisplayType.VV);
-        data.SetCurCamera();
+        StartCheckDisplayType();
     }
     #endregion
 
@@ -573,8 +579,6 @@ public class MapController : BaseController {
     {
         if(JIRVIS.Instance.jIRVISData.IsAutoEnterAstroloy)
         {
-           
-
             JIRVIS.Instance.PlayTipsForchoose("现在您可以进入到占星庭据点，在庭内放置星宿", OTYPE.TipsType.onlyOneChooseTips, "立即进入", "", PlayerChooseEntermienStrongholdNow);
             RegisterSelectMapItem(false);
         }
@@ -590,7 +594,6 @@ public class MapController : BaseController {
     #region 玩家的选择，立刻进入
     private void PlayerChooseEntermienStrongholdNow()
     {
-
         BackToBuildDimensionRoomController();
     }
     #endregion
@@ -598,7 +601,7 @@ public class MapController : BaseController {
     #region 玩家的选择 放弃进入 。路过
     private void PlayerGiveUpEnterminstrongholdNow()
     {
-        JIRVIS.Instance.BuildFunctionBtn();
+        BuildJIRVISFunctionBtn();
         JIRVIS.Instance.CloseTips();
         RegisterSelectMapItem(true);
     }
@@ -610,7 +613,7 @@ public class MapController : BaseController {
         if(_protect)
         {
             JIRVIS.Instance.PlayTips("当前无法直接前往保卫，侵略者过于强大");
-
+            BuildJIRVISFunctionBtn();
         }
         else
         {
@@ -657,11 +660,7 @@ public class MapController : BaseController {
 
     #endregion
 
-    private void SwitchARMap()
-    {
-        
-    }
-
+  
     #region 更新相机位置，每次切换据点或者重新定位，相机都会对焦到相应位置
 
     private void InitCameraPose()
@@ -1092,11 +1091,13 @@ public class MapController : BaseController {
     { 
         if(playerMonsters == null || playerMonsters.Count == 0 )
         {
+            BuildJIRVISFunctionBtn();
             JIRVIS.Instance.PlayTips("当前据点无守护宠物，不可挑战");
             data.SetWaitState(false);
         }
         else
         {
+
             data.SetWaitState(false);
             data.SetOpenchildBar(true);//对地图的操作的禁止
             RegisterControlCamera(false);
@@ -1111,7 +1112,7 @@ public class MapController : BaseController {
             JIRVIS.Instance.PlayTipsForchoose(content, OTYPE.TipsType.chooseTips, "挑战", "不挑战", CallBackComfirmGame, CallCancelChanllenge);
             //[目前就默认挑选第一只]
             data.BuildJIRVISEditor_ChanllengeGameStorngholdInfomationBar((PlayerStrongholdAttribute)JIRVIS.Instance.jIRVISData.getCurChallengeStrongholdAttr, playerMonsters[0]);
-            //JIRVIS.Instance.CloseBtnBar();
+            //JIRVIS.Instance.RemoveCurrentBtnList();
             #endregion
         }
        
@@ -1140,11 +1141,11 @@ public class MapController : BaseController {
     private void CallCancelChanllenge()
     {
         JIRVIS.Instance.CloseTips();
-        JIRVIS.Instance.OpenBtnBar();
         data.SetOpenchildBar(false);//对地图的操作允许
         RegisterControlCamera(true);
         RegisterSelectMapItem(true);
-        JIRVIS.Instance.BuildFunctionBtn();
+        BuildJIRVISFunctionBtn();
+
         data.RemoveJIRVISEditor_ChanllengeGameStorngholdInfomationBar();
     }
 
@@ -1176,6 +1177,8 @@ public class MapController : BaseController {
             JIRVIS.Instance.PlayTips("成功进入游戏");
         }else
         {
+
+            BuildJIRVISFunctionBtn();
             JIRVIS.Instance.PlayTips("当前不能游戏，请检查网络");
         }
     }
@@ -1355,9 +1358,13 @@ public class MapController : BaseController {
             int count1 = data.getSeflStrongholdAttribute.Count;
             for (int i = 0; i < count1; i++)
             {
-                Vector2 vector2 = data.GetCurCamera.WorldToScreenPoint(data.getSeflStrongholdAttribute[i].strongholdInMapPosition);
+                Vector3 rP = data.getSeflStrongholdAttribute[i].strongholdInMapPosition;
+                Vector2 vector2 = data.GetCurCamera.WorldToScreenPoint(rP);
                 Vector3 p = ARMonsterSceneDataManager.Instance.UICamera.ScreenToWorldPoint(new Vector3(vector2.x, vector2.y, 90));
-                data.getMineStrongholdItem[i].transform.position = p;
+                data.getMineStrongholdItem[i].UpdatePose(p);
+                float scale = 1300f / Vector3.Distance(rP, data.GetCurCamera.transform.position);
+                scale = (float)Mathf.Clamp(scale,0.3f, 2.5f);
+                data.getMineStrongholdItem[i].UpdateScale(scale);
             }
         }
         if (data.getOtherPlayerStrongholdAttribute != null && (data.shDisplayType == 1 || data.shDisplayType == 4))
@@ -1365,9 +1372,13 @@ public class MapController : BaseController {
             int count1 = data.getOtherPlayerStrongholdAttribute.Count;
             for (int i = 0; i < count1; i++)
             {
-                Vector2 vector2 = data.GetCurCamera.WorldToScreenPoint(data.getOtherPlayerStrongholdAttribute[i].strongholdInMapPosition);
+                Vector3 rP = data.getOtherPlayerStrongholdAttribute[i].strongholdInMapPosition;
+                Vector2 vector2 = data.GetCurCamera.WorldToScreenPoint(rP);
                 Vector3 p = ARMonsterSceneDataManager.Instance.UICamera.ScreenToWorldPoint(new Vector3(vector2.x, vector2.y, 90));
-                data.getOtherStrongholdItem[i].transform.position = p;
+                data.getOtherStrongholdItem[i].UpdatePose(p);
+                float scale = 1300f / Vector3.Distance(rP, data.GetCurCamera.transform.position);
+                scale = (float)Mathf.Clamp(scale, 0.3f, 2.5f);
+                data.getOtherStrongholdItem[i].UpdateScale(scale);
             }
         }
 
@@ -1376,9 +1387,13 @@ public class MapController : BaseController {
             int count1 = data.getBussinessStrongholdAttribute.Count;
             for (int i = 0; i < count1; i++)
             {
-                Vector2 vector2 = data.GetCurCamera.WorldToScreenPoint(data.getBussinessStrongholdAttribute[i].strongholdInMapPosition);
+                Vector3 rP = data.getBussinessStrongholdAttribute[i].strongholdInMapPosition;
+                Vector2 vector2 = data.GetCurCamera.WorldToScreenPoint(rP);
                 Vector3 p = ARMonsterSceneDataManager.Instance.UICamera.ScreenToWorldPoint(new Vector3(vector2.x, vector2.y, 90));
-                data.getBussinesStronghldItem[i].transform.position = p;
+                data.getBussinesStronghldItem[i].UpdatePose(p);
+                float scale = 1300f / Vector3.Distance(rP, data.GetCurCamera.transform.position);
+                scale = (float)Mathf.Clamp(scale, 0.3f, 2.5f);
+                data.getBussinesStronghldItem[i].UpdateScale(scale);
             }
         }
 
@@ -1441,7 +1456,7 @@ public class MapController : BaseController {
     {
         if(JIRVIS.Instance.jIRVISData.getCurDisplayType == OTYPE.GameDisplayType.AR)return;
 
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         if (Input.GetMouseButtonDown(1))
         {
             isUpdateMouseEuler = true;
@@ -1508,7 +1523,7 @@ public class MapController : BaseController {
 
 #endif
 
-//UpdatePlayerShUIPose();
+        //UpdatePlayerShUIPose();
 
     }
     #endregion
@@ -1522,47 +1537,110 @@ public class MapController : BaseController {
 #if UNITY_EDITOR
 
         if (Input.GetMouseButtonDown(0))
-        {
-            isUpdateMousePose = true;
-            startMousePose = Input.mousePosition;
-        }
+         {
+             isUpdateMousePose = true;
+             startMousePose = Input.mousePosition;
+         }
 
-        if (Input.GetMouseButton(0))
-        {
-            if (isUpdateMousePose)
-            {
-                Vector3 delta = Input.mousePosition - startMousePose;//new Vector3(Screen.width/2 , Screen.height/2,0);
-                ControlDragMoveCamera(delta);
-                startMousePose = Input.mousePosition;
-                /*Vector3 vector3 = ARMonsterSceneDataManager.Instance.MapCamera.transform.position;
-                Vector3 fwd = new Vector3(ARMonsterSceneDataManager.Instance.MapCamera.transform.forward.normalized.x, 0, ARMonsterSceneDataManager.Instance.MapCamera.transform.forward.normalized.z);
-                vector3 += fwd * Time.deltaTime * -delta.y * 2;
-                vector3 += ARMonsterSceneDataManager.Instance.MapCamera.transform.right * Time.deltaTime * -delta.x * 2;
-                ARMonsterSceneDataManager.Instance.MapCamera.transform.position = vector3;
-               */
-
-            }
-        }
-
-        if (Input.GetMouseButtonUp(0))
-        {
-            isUpdateMousePose = false;
-        }
+         if (Input.GetMouseButton(0))
+         {
+             if (isUpdateMousePose)
+             {
+                 Vector3 delta = Input.mousePosition - startMousePose;//new Vector3(Screen.width/2 , Screen.height/2,0);
+                 ControlDragMoveCamera(delta * 5);
+                 startMousePose = Input.mousePosition;
 
 
+             }
+         }
+
+         if (Input.GetMouseButtonUp(0))
+         {
+             isUpdateMousePose = false;
+         }
+
+
+      
 
 #else
         if (Input.touchCount == 1)
         {
               Touch touch = Input.GetTouch(0);
                 Vector2 deltaPos = touch.deltaPosition;
-             ControlDragMoveCamera(deltaPos);
+             ControlDragMoveCamera(deltaPos*5);
         }
 
 #endif
 
-       // UpdatePlayerShUIPose();
+        // UpdatePlayerShUIPose();
     }
+
+    #endregion
+
+
+    #region 缩放地图
+
+    public void ScaleMap()
+    {
+        if(JIRVIS.Instance.isARType)return;
+
+#if UNITY_EDITOR
+
+        Vector3 v = ARMonsterSceneDataManager.Instance.MapCamera.transform.position;
+         v.y+=Input.mouseScrollDelta.y * 3;
+         v.y = Mathf.Clamp(v.y,500, 2500);
+        ARMonsterSceneDataManager.Instance.MapCamera.transform.position = v;
+
+
+
+
+
+#else
+
+        if (Input.touchCount == 2)
+        {
+            Touch newTouch1 = Input.GetTouch(0);
+            Touch newTouch2 = Input.GetTouch(1);
+            if (newTouch2.phase == TouchPhase.Began)
+            {
+                oldTouch2 = newTouch2;
+                oldTouch1 = newTouch1;
+                return;
+
+            }
+
+
+            //计算老的两点距离和新的两点间距离，变大要放大模型，变小要缩放模型
+            float oldDistance = Vector2.Distance(oldTouch1.position, oldTouch2.position);
+            float newDistance = Vector2.Distance(newTouch1.position, newTouch2.position);
+
+            //两个距离之差，为正表示放大手势， 为负表示缩小手势
+            float offset = newDistance - oldDistance;
+
+            //放大因子， 一个像素按 0.01倍来算(100可调整)
+            float scaleFactor = offset / 100f;
+            Vector3 localScale = Vector3.zero;
+            Vector3 scale = new Vector3(localScale.x + scaleFactor,
+                                            localScale.y + scaleFactor,
+                                            localScale.z + scaleFactor);
+            //最小缩放到 0.3 倍
+            if (Mathf.Abs(scale.x) > 0.1f && Mathf.Abs(scale.y) > 0.1f && Mathf.Abs(scale.z) > 0.1f)
+            {
+                Vector3 v3 = ARMonsterSceneDataManager.Instance.MapCamera.transform.position;
+                v3.y -= scale.y *10;
+                v3.y = Mathf.Clamp(v3.y,500f,2500f);
+                ARMonsterSceneDataManager.Instance.MapCamera.transform.position = v3;
+            }
+
+            //记住最新的触摸点，下次使用
+            oldTouch1 = newTouch1;
+            oldTouch2 = newTouch2;
+        }
+
+
+#endif
+    }
+
 
     #endregion
 

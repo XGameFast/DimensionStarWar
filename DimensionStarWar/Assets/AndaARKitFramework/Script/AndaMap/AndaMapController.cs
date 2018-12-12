@@ -28,7 +28,7 @@ public class AndaMapController : MonoBehaviour {
     {
         if(!isBuildedMap)
         {
-            abstractMap.Initialize(latlon , 15);
+            abstractMap.Initialize(latlon , 14);
             isBuildedMap = true;
         }else
         {
@@ -51,7 +51,15 @@ public class AndaMapController : MonoBehaviour {
         
     }
 
-  
+    public void TileState(bool isDisplay)
+    {
+        List<Transform> ts = abstractMap.transform.GetChildList();
+        int count =  ts.Count;
+        for(int i = 0; i < count; i++)
+        {
+            ts[i].gameObject.SetActive(isDisplay);
+        }
+    }
 
     public Vector3 GeoToWorldPosition(Vector2d vector2d)
     {

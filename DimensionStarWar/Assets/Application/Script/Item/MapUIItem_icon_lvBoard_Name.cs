@@ -55,4 +55,14 @@ public class MapUIItem_icon_lvBoard_Name : AndaObjectBasic {
             clickCallBack(strongholdBaseAttribution);
         }
     }
+
+    public void UpdatePose(Vector3 v)
+    {
+        transform.position = v;
+    }
+
+    public void UpdateScale(float v)
+    {
+        transform.localScale = Vector3.one*v;
+    }
 }
