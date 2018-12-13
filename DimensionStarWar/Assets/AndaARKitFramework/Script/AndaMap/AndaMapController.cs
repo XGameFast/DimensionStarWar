@@ -53,7 +53,9 @@ public class AndaMapController : MonoBehaviour {
 
     public void TileState(bool isDisplay)
     {
+
         List<Transform> ts = abstractMap.transform.GetChildList();
+        if (ts == null)return;
         int count =  ts.Count;
         for(int i = 0; i < count; i++)
         {

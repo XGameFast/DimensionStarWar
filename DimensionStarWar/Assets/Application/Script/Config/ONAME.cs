@@ -143,6 +143,7 @@ public static class ONAME
     public static string PackageConsumableItem = "PackageConsumableItem";
     public static string MallConsumableItem = "MallConsumableItem";
 
+    public static string MapUIItemShboard_LocationPoint = "MapUIItemShboard_LocationPoint";
     public static string MapUIItemShboard_PlayerSH = "MapUIItemShboard_PlayerSH";
     public static string MapUIItemShboard_BussinesssSH = "MapUIItemShboard_BussinesssSH";
     public static string MapUIItemShboard_BossSh = "MapUIItemShboard_BossSh";

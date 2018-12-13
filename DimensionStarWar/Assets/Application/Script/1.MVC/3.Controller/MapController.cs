@@ -34,10 +34,9 @@ public class MapController : BaseController {
         ARMonsterSceneDataManager.Instance.SetUsedCamera(ARMonsterSceneDataManager.Instance.MapCamera);
         ARMonsterSceneDataManager.Instance.OpenGameLight(true);
         BuildData();
-
         BuildMenu();
         StartCheckDisplayType();
-
+        CheckNeedLocation();
         RegisterControlCamera(true);
         RegisterSelectMapItem(true);
     }
@@ -68,11 +67,14 @@ public class MapController : BaseController {
         //[打开了 高层级的面板 底层的触控逻辑将不被执行]
         if(!data.isOpenJirvisChildBar)
         {   
-            FingerEvent.OnUpdate();
+            if (!JIRVIS.Instance.isARType)
+            {
+                MoveCamera();
+                RotateCamera();
+                ScaleMap();
+            }
         }
-        MoveCamera();
-        RotateCamera();
-        ScaleMap();
+
         UpdatePlayerShUIPose();
         //检查据点是否范围内
         //CheckTowerInRect();
@@ -201,10 +203,56 @@ public class MapController : BaseController {
     /// </summary>
     private void SwitchVVMap()
     {
+        AndaARManager.Instance.StopAR(FinishBuildARMode);
         ARMonsterSceneDataManager.Instance.aRWorld.CloseBlur();
         ARMonsterSceneDataManager.Instance.aRWorld.ClosebackgroundVV();
         ARMonsterSceneDataManager.Instance.aRWorld.OpenMapCamera();
-        if(data.getCommissionEventContainsBuildstronghold)
+        AndaMap.Instance.SetTileState(true);
+    }
+
+    private void SwitchARMap()
+    {
+        AndaARManager.Instance.StartAR(FinishBuildARMode);
+        //隐藏map tiles
+        AndaMap.Instance.SetTileState(false);
+        ARMonsterSceneDataManager.Instance.MapCamera.gameObject.SetActive(false);
+    }
+
+
+    #region 贾维斯 按钮点击 ，点击了切换到AR模式
+
+    private void JIRVISClick_ChangeToARMode()
+    {
+        JIRVIS.Instance.jIRVISData.SetCurrentDisplayType(OTYPE.GameDisplayType.AR);
+        StartCheckDisplayType();
+    }
+
+    #endregion
+
+    #region JIRVIS 按钮点击 。切换到VV 模式
+    private void JIRVISClikc_ChangeToVVMode()
+    {
+        JIRVIS.Instance.jIRVISData.SetCurrentDisplayType(OTYPE.GameDisplayType.VV);
+        StartCheckDisplayType();
+    }
+    #endregion
+
+    #region 完成了AR构建
+
+    private void FinishBuildARMode()
+    {
+        BuildJIRVISFunctionBtn();
+    }
+
+    #endregion
+
+
+
+    #region 检查是否需要定位
+
+    private void CheckNeedLocation()
+    {
+        if (data.getCommissionEventContainsBuildstronghold)
         {
             AndaLocaltion.Instance.GetLocationOnce(FinishLocation);
         }
@@ -213,35 +261,26 @@ public class MapController : BaseController {
             data.curMineStrongholdAttr = AndaDataManager.Instance.GetStrongholdAtrrWithJIRVISSaveIndexs();
             AndaMap.Instance.andaMapData.SetCurrentMapCenterLatlong(data.curMineStrongholdAttr.strongholdPosition);
             AndaLocaltion.Instance.GetLocationOnce(FinishLocationf2);//也要定位一下
-            GetPOIData();
+          
         }
     }
 
-    private void SwitchARMap()
-    {
-        ARMonsterSceneDataManager.Instance.mainCamera.gameObject.SetActive(true);
-        //隐藏map tiles
-        AndaMap.Instance.SetTileState(false);
-    }
-
-
-
-
-
-
-
-    private void FinishLocationf2(Location location)
-    {
-
-    }
-
-
+    #endregion
 
     private void FinishLocation(Location location)
     {
         AndaMap.Instance.andaMapData.SetCurrentMapCenterLatlong(new List<double> { location.LatitudeLongitude.x, location.LatitudeLongitude.y});
         GetPOIData();
        
+    }
+
+    private void FinishLocationf2(Location location)
+    {
+        GetPOIData();
+        //AndaMap.Instance.andaMapData.SetCurrentMapCenterLatlong(new List<double> { location.LatitudeLongitude.x, location.LatitudeLongitude.y });
+        //AndaMap.Instance.andaMapData.SetCurrentMapCenterLatlong(new List<double> { location.LatitudeLongitude.x, location.LatitudeLongitude.y });
+        //GetPOIData();
+
     }
 
     #region 通过当前位置获取周边数据
@@ -321,6 +360,11 @@ public class MapController : BaseController {
         {
             RegisterSelectMapItem(false);
         }
+
+        if(AndaLocaltion.Instance._locationProvider!=null)
+        {
+            data.BuildCurrentLocationPoint();
+        }
         #region 据点构建完之后，刷新一下朝向
         //UpdateMedalFaceToMapCamera50();
         #endregion
@@ -348,33 +392,8 @@ public class MapController : BaseController {
     #endregion
 
 
-    #region 贾维斯 按钮点击 ，点击了切换到AR模式
-
-    private void JIRVISClick_ChangeToARMode()
-    {
-        JIRVIS.Instance.jIRVISData.SetCurrentDisplayType( OTYPE.GameDisplayType.AR);
-        StartCheckDisplayType();
-    }
-
-    #endregion
-
-    #region 完成了AR构建
-
-    private void FinishBuildARMode()
-    { 
-        BuildJIRVISFunctionBtn();
-    }
-
-    #endregion
-
-    #region 贾维斯按钮点击 切换到VV模式
-
-    public void JIRVISClikc_ChangeToVVMode()
-    {
-        JIRVIS.Instance.jIRVISData.SetCurrentDisplayType(OTYPE.GameDisplayType.VV);
-        StartCheckDisplayType();
-    }
-    #endregion
+  
+   
 
 
     #region JIRVIS按钮点击，选择我想要的占星庭【切换占星庭】
@@ -424,7 +443,7 @@ public class MapController : BaseController {
         {
             List<JIRVISFuncBtnStruct> jIRVISFuncBtnStructs = new List<JIRVISFuncBtnStruct>()
             {
-               // new JIRVISFuncBtnStruct { btnName = "AR" , btnIconKey = ONAME.ARIcon ,clickCallBack = JIRVISClick_ChangeToARMode },
+                new JIRVISFuncBtnStruct { btnName = "AR" , btnIconKey = ONAME.ARIcon ,clickCallBack = JIRVISClick_ChangeToARMode },
                 new JIRVISFuncBtnStruct { btnName = "我的据点" , btnIconKey = ONAME.mineStrongholIcon ,clickCallBack = JIRVISBuildMinestrongholdListBtn },
                 new JIRVISFuncBtnStruct { btnName = data.getIsMap2D?"3D地图":"2D地图" , btnIconKey = data.getIsMap2D? ONAME.mapAngle3D:ONAME.mapAngle2D ,clickCallBack = ChangeMapAngle },
                 new JIRVISFuncBtnStruct { btnName = "回退" , btnIconKey = ONAME.BackStep ,clickCallBack = BackToBuildDimensionRoomController }
@@ -437,8 +456,8 @@ public class MapController : BaseController {
             {
                 new JIRVISFuncBtnStruct { btnName = "返回" , btnIconKey = ONAME.VVIcon ,clickCallBack = JIRVISClikc_ChangeToVVMode },
                 new JIRVISFuncBtnStruct { btnName = "我的据点" , btnIconKey = ONAME.mineStrongholIcon ,clickCallBack = JIRVISBuildMinestrongholdListBtn },
-                new JIRVISFuncBtnStruct { btnName = data.getIsMap2D?"3D地图":"2D地图" , btnIconKey = data.getIsMap2D? ONAME.mapAngle3D:ONAME.mapAngle2D ,clickCallBack = ChangeMapAngle },
-                new JIRVISFuncBtnStruct { btnName = "回退" , btnIconKey = ONAME.BackStep ,clickCallBack = BackToBuildDimensionRoomController }
+                //new JIRVISFuncBtnStruct { btnName = data.getIsMap2D?"3D地图":"2D地图" , btnIconKey = data.getIsMap2D? ONAME.mapAngle3D:ONAME.mapAngle2D ,clickCallBack = ChangeMapAngle },
+                //new JIRVISFuncBtnStruct { btnName = "回退" , btnIconKey = ONAME.BackStep ,clickCallBack = BackToBuildDimensionRoomController }
             };
 
             JIRVIS.Instance.BuildFunctionBtn(jIRVISFuncBtnStructs);
@@ -477,7 +496,6 @@ public class MapController : BaseController {
         {
             JIRVIS.Instance.PlayTipsForchoose("您可以尝试滑动屏幕，移动占星庭徽章，选择一个位置来作为你的根据地。如果您准备好了，就点击确定，我会立刻安排建立占星庭",
                                               OTYPE.TipsType.onlyOneChooseTips, "确定", "", ClickComfirmtoSetStronghold, null);
-
         }
     }
 
@@ -601,6 +619,7 @@ public class MapController : BaseController {
     #region 玩家的选择 放弃进入 。路过
     private void PlayerGiveUpEnterminstrongholdNow()
     {
+        data.SetOpenchildBar(false);//对地图的操作允许
         BuildJIRVISFunctionBtn();
         JIRVIS.Instance.CloseTips();
         RegisterSelectMapItem(true);
@@ -619,6 +638,7 @@ public class MapController : BaseController {
         {
             BuildJIRVISFunctionBtn();
             JIRVIS.Instance.PlayTips("放弃保卫据点");
+            data.SetOpenchildBar(false);//对地图的操作允
         }
      
     }
@@ -741,6 +761,7 @@ public class MapController : BaseController {
     #region 点击地图上的据点图标
     public void ClickSelectMapItem(StrongholdBaseAttribution shAttr)
     {
+        data.SetOpenchildBar(true);//对地图的操作禁止
         JIRVIS.Instance.RemoveCurrentBtnList();
         switch(shAttr.hostType)
         {
@@ -1094,6 +1115,7 @@ public class MapController : BaseController {
             BuildJIRVISFunctionBtn();
             JIRVIS.Instance.PlayTips("当前据点无守护宠物，不可挑战");
             data.SetWaitState(false);
+                data.SetOpenchildBar(false);//对地图的操作允许
         }
         else
         {
@@ -1397,6 +1419,17 @@ public class MapController : BaseController {
             }
         }
 
+        if(data.GetmapUIItem_Icon_UserPor!=null)
+        {
+            Vector3 rP = data.GetCurrentLocationInMapPostion;
+            Vector2 vector2 = data.GetCurCamera.WorldToScreenPoint(rP);
+            Vector3 p = ARMonsterSceneDataManager.Instance.UICamera.ScreenToWorldPoint(new Vector3(vector2.x, vector2.y, 90));
+            data.GetmapUIItem_Icon_UserPor.UpdatePose(p);
+            float scale = 1300f / Vector3.Distance(rP, data.GetCurCamera.transform.position);
+            scale = (float)Mathf.Clamp(scale, 0.3f, 2.5f);
+            data.GetmapUIItem_Icon_UserPor.UpdateScale(scale);
+        }
+
         /*for (int i = 0; i < count3; i++)
         {
             if (i >= 0 && i < count1)
@@ -1587,7 +1620,7 @@ public class MapController : BaseController {
 #if UNITY_EDITOR
 
         Vector3 v = ARMonsterSceneDataManager.Instance.MapCamera.transform.position;
-         v.y+=Input.mouseScrollDelta.y * 3;
+         v.y-=Input.mouseScrollDelta.y * 3;
          v.y = Mathf.Clamp(v.y,500, 2500);
         ARMonsterSceneDataManager.Instance.MapCamera.transform.position = v;
 
