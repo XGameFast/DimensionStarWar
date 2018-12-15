@@ -309,9 +309,11 @@ public class NetdataManager : ManagerBase {
 
     private IEnumerator ExcuteGetMonsterList(string _url, WWWForm _wForm, System.Action<List<PlayerMonsterAttribute>> callback)
     {
+        AndaUIManager.Instance.OpenWaitBoard("稍等");
         WWW postData = new WWW(_url, _wForm);
         yield return postData;
-        if(postData.error!=null)
+        AndaUIManager.Instance.CloseWaitBoard();
+        if (postData.error!=null)
         {
             JIRVIS.Instance.PlayTips(postData.error);
         }else
@@ -346,7 +348,7 @@ public class NetdataManager : ManagerBase {
 
     #region 获取商家奖励物品的图标
 
-    public IEnumerator GetBSHRewardImg(string adress, System.Action<Sprite> callback)
+    public IEnumerator GetBSHRewardImg(string adress,System.Action<Sprite> callback)
     {
         AndaUIManager.Instance.OpenWaitBoard("请稍等");
         WWW wWW = new WWW(networkAdress4 + adress);
@@ -364,12 +366,39 @@ public class NetdataManager : ManagerBase {
             Sprite sprite = ConvertTool.ConvertToSpriteWithTexture2d(texture2D);
             string t = ConvertTool.BytesToString(btye);
             PlayerPrefs.SetString("RW_" + adress, t);
+             callback(sprite);
+        }
+    }
+
+    #endregion
+    #region 获取玩家头像
+
+    public IEnumerator GetUserPorImg(string adress, System.Action<Sprite> callback)
+    {
+        AndaUIManager.Instance.OpenWaitBoard("请稍等");
+        WWW wWW = new WWW(networkAdress4 + adress);
+        yield return wWW;
+        AndaUIManager.Instance.CloseWaitBoard();
+        if (string.IsNullOrEmpty(wWW.text))
+        {
+            JIRVIS.Instance.PlayTips("有点错误");
+        }
+        else
+        {
+
+            byte[] btye = wWW.texture.EncodeToPNG();
+            Texture2D texture2D = ConvertTool.ConvertToTexture2d(wWW.texture);
+            Sprite sprite = ConvertTool.ConvertToSpriteWithTexture2d(texture2D);
+            string t = ConvertTool.BytesToString(btye);
+            //保存图像数据
+            PlayerPrefs.SetString("UserPorImg" + AndaDataManager.Instance.userData.userIndex, t);
+            //同时把地址也保存一下
+            PlayerPrefs.SetString("UserPorPath" + AndaDataManager.Instance.userData.userIndex , adress);
             callback(sprite);
         }
     }
 
     #endregion
-
 
     #region 获取商家据点的头像
     /// <summary>
@@ -396,6 +425,9 @@ public class NetdataManager : ManagerBase {
             Sprite sprite = ConvertTool.ConvertToSpriteWithTexture2d(texture2D);
             string t = ConvertTool.BytesToString(btye);
             PlayerPrefs.SetString("SH_Por" + strongholdIndex, t);
+            //同时把地址也保存一下
+            PlayerPrefs.SetString("SH_PorPath" + strongholdIndex, adress);
+
             callback(strongholdIndex,sprite);
         }
     }

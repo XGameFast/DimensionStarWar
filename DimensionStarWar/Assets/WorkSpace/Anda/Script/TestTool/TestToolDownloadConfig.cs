@@ -75,13 +75,13 @@ public class TestToolDownloadConfig : MonoBehaviour {
     {
         if(isNeedGetUserData)
         {
-            AndaDataManager.Instance.TestLogin(CallBackUserData,"12345678901","000000");
+            AndaDataManager.Instance.TestLogin(CallBackUserData,"18668437531","000000");
            
         }else
         {
             if(string.IsNullOrEmpty(PlayerPrefs.GetString("TestToolUserData")))
             {
-                AndaDataManager.Instance.TestLogin(CallBackUserData, "12345678901", "000000");
+                AndaDataManager.Instance.TestLogin(CallBackUserData, "18668437531", "000000");
             }else
             {
                 PlayerData playerData = LitJson.JsonMapper.ToObject<PlayerData>(PlayerPrefs.GetString("TestToolUserData"));

@@ -134,7 +134,10 @@ public class AndaMap  {
         curMapLatlon = latlog;
     }
 
-
+    public void SetTileState(bool isDisplay)
+    {
+        andaMapController.TileState(isDisplay);
+    }
 
    
 }

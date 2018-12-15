@@ -15,6 +15,11 @@ public class BossLogic {
         magicl =6,//释放一些技能之前的前置动画 状态。比如聚能的时候动画，
     }
 
+    public virtual void Clear()
+    {
+
+    }
+
     public virtual void BuildBossLogic(BossBasic _bossBasic)
     {
         

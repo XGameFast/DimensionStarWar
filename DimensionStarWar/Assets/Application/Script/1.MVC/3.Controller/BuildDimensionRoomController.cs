@@ -42,7 +42,7 @@ public class BuildDimensionRoomController : BaseController {
     {
         base.EndController();
         UnregisterFingerEvent();
-        FingerEvent.slierForX-=SliderHori;
+        //FingerEvent.slierForX-=SliderHori;
         data.InitValue();
     }
 
@@ -370,15 +370,17 @@ public class BuildDimensionRoomController : BaseController {
 
     private void RegisterFingerEvent()
     {
-        FingerEvent.slierForX += SliderHori;
+        /*FingerEvent.slierForX += SliderHori;
         FingerEvent.clickSelectItemEvent += TouchItem;
+        */
         data.getm_Menu.FadeIn();
     }
 
     private void UnregisterFingerEvent()
     {
-        FingerEvent.slierForX -= SliderHori;
+        /*FingerEvent.slierForX -= SliderHori;
         FingerEvent.clickSelectItemEvent -= TouchItem;
+        */
         if(data.getm_Menu!=null)
         {
             data.getm_Menu.FadeOut(null);

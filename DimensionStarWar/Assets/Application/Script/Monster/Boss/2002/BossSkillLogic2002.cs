@@ -21,7 +21,7 @@ public class BossSkillLogic2002 : BossSkillLogic {
 
     public void InstanceElectromagneticGun(PlayerSkillAttribute _playerSkillAttribute , Transform point)
     {
-        BossSkillBasic _el = AndaDataManager.Instance.InstantaiteSkillObj<BossSkillBasic>(_playerSkillAttribute.skillID.ToString());
+        BossSkill_2001_Basic _el = AndaDataManager.Instance.InstantaiteSkillObj<BossSkill_2001_Basic>(_playerSkillAttribute.skillID.ToString());
         _el.transform.SetInto(point);
         _el.SetInfo(_playerSkillAttribute , bossBasic);
         boss2002.getBossData2002.AddElgunObjTolist(_el);

@@ -306,24 +306,78 @@ public class AndaDataManager {
         return null;
     }
 
+    /// <summary>
+    /// 获取据点头像，一般用于商家的的据点
+    /// </summary>
+    /// <param name="shIndex">Sh index.</param>
+    /// <param name="imgPath">Image path.</param>
+    /// <param name="callback">Callback.</param>
     public void GetStrongholdImg(int shIndex, string imgPath, System.Action<int, Sprite> callback)
     {
         //PlayerPrefs.SetString("SH_Por" + shIndex ,"");
-        string s = PlayerPrefs.GetString("SH_Por" + shIndex );
-        if (s == "")
+        string path = PlayerPrefs.GetString("SH_PorPath" + shIndex);
+        if(path == "")
         {
-            naetdataManager.StartCoroutine(naetdataManager.GetStrongholdImg(imgPath, shIndex , callback));
-        }
-        else
+            naetdataManager.StartCoroutine(naetdataManager.GetStrongholdImg(imgPath, shIndex, callback));
+
+        }else
         {
-            byte[] v = ConvertTool.StringToBytes(s);
-            Texture2D texture = new Texture2D(128, 128);
-            texture.LoadImage(v);
-            texture = ConvertTool.ConvertToTexture2d(texture);
-            Sprite sp = ConvertTool.ConvertToSpriteWithTexture2d(texture);
-            callback(shIndex,sp);
+            if(imgPath == path)
+            {
+                string s = PlayerPrefs.GetString("SH_Por" + shIndex);
+                //相同 =》 直接从本地拿
+                byte[] v = ConvertTool.StringToBytes(s);
+                Texture2D texture = new Texture2D(128, 128);
+                texture.LoadImage(v);
+                texture = ConvertTool.ConvertToTexture2d(texture);
+                Sprite sp = ConvertTool.ConvertToSpriteWithTexture2d(texture);
+                callback(shIndex, sp);
+
+            }
+            else
+            {
+                // 不同 = >向服务器要数据
+                naetdataManager.StartCoroutine(naetdataManager.GetStrongholdImg(imgPath, shIndex, callback));
+            }
         }
     }
+
+    public void GetPlayerPorImg(System.Action<Sprite> callback)
+    {
+        string path = userData.playerdata.headImg;
+        if (path == null || path == "")
+        {
+            callback(GetUISprite("NoPerson"));
+
+        }else
+        {
+            string s = PlayerPrefs.GetString("UserPorImg" +userData.userIndex);
+            if (s == "")
+            {
+                naetdataManager.StartCoroutine(naetdataManager.GetUserPorImg(path,callback));
+            }
+            else
+            {
+                //与老的头像进行匹配，是否一致，不一致的话要进重新拉取
+                string oldPath = PlayerPrefs.GetString("UserPorPath" + userData.userIndex);
+                if(oldPath == path)
+                {
+                    byte[] v = ConvertTool.StringToBytes(s);
+                    Texture2D texture = new Texture2D(128, 128);
+                    texture.LoadImage(v);
+                    texture = ConvertTool.ConvertToTexture2d(texture);
+                    Sprite sp = ConvertTool.ConvertToSpriteWithTexture2d(texture);
+                    callback(sp);
+                }else
+                {
+                    naetdataManager.StartCoroutine(naetdataManager.GetUserPorImg(path, callback));
+                }
+            }
+        }
+    }
+
+
+
 
     /// <summary>
     /// 获取奖励的图标

@@ -33,6 +33,7 @@ public class JIRVISContent_ChanllengeGameStrongholdInfo : UIBasic2 {
     public Slider monsterSpecialSkillSlider;
     public Text monsterSpecialSkillValue;
     public Image monsterSpecialSliderImage;
+    public System.Action<bool> CallBackResult;
     public override void OnDispawn()
     {
         if(medalBasic!=null)
@@ -69,6 +70,36 @@ public class JIRVISContent_ChanllengeGameStrongholdInfo : UIBasic2 {
        //FingerEvent.HoriDragGetSpeed += ControlMedalRotate;
       //  FingerEvent.clickSelectItemEvent+= TabMonster;
         canControl=true;
+
+        PlayTips();
+    }
+
+    public void PlayTips()
+    {
+        OTYPE.Tipscontent tipscontent = OTYPE.Tipscontent.challegeStronghold;
+        string content = "是否立刻对[" + AndaGameExtension.ChangeTextColorToYellow(JIRVIS.Instance.jIRVISData.getCurChallengeStrongholdAttr.strongholdNickName) + "]" + MonsterGameData.GetTipsContent(tipscontent);
+        JIRVIS.Instance.PlayTipsForchoose(content, OTYPE.TipsType.chooseTips, "挑战", "不挑战", Comfirm, Cancel);
+    }
+
+    private void Comfirm()
+    {
+        if(CallBackResult!=null)
+        {
+            CallBackResult(true);
+        }
+
+        JIRVIS.Instance.CloseTips();
+        AndaDataManager.Instance.RecieveItem(this);
+    }
+
+    public void Cancel()
+    {
+        if (CallBackResult != null)
+        {
+            CallBackResult(false);
+        }
+        JIRVIS.Instance.CloseTips();
+        AndaDataManager.Instance.RecieveItem(this);
     }
 
     private void BuildMonster(PlayerMonsterAttribute playerMonster)

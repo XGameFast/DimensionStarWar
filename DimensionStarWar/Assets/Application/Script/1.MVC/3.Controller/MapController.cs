@@ -34,10 +34,9 @@ public class MapController : BaseController {
         ARMonsterSceneDataManager.Instance.SetUsedCamera(ARMonsterSceneDataManager.Instance.MapCamera);
         ARMonsterSceneDataManager.Instance.OpenGameLight(true);
         BuildData();
-
         BuildMenu();
         StartCheckDisplayType();
-
+        CheckNeedLocation();
         RegisterControlCamera(true);
         RegisterSelectMapItem(true);
     }
@@ -51,7 +50,7 @@ public class MapController : BaseController {
         {
             JIRVIS.Instance.RemoveCommisionEventForAddStronghold();
         }
-         ARMonsterSceneDataManager.Instance.OpenGameLight(false);
+        ARMonsterSceneDataManager.Instance.OpenGameLight(false);
         data.InitData();
         ARMonsterSceneDataManager.Instance.aRWorld.CloseMapCamera();
         AndaMap.Instance.CloseMap();
@@ -68,10 +67,14 @@ public class MapController : BaseController {
         //[打开了 高层级的面板 底层的触控逻辑将不被执行]
         if(!data.isOpenJirvisChildBar)
         {   
-            FingerEvent.OnUpdate();
+            if (!JIRVIS.Instance.isARType)
+            {
+                MoveCamera();
+                RotateCamera();
+                ScaleMap();
+            }
         }
-        MoveCamera();
-        RotateCamera();
+
         UpdatePlayerShUIPose();
         //检查据点是否范围内
         //CheckTowerInRect();
@@ -186,7 +189,8 @@ public class MapController : BaseController {
     //开始检测一下是那种显示方式
     private void StartCheckDisplayType()
     {
-        if(JIRVIS.Instance.jIRVISData.getCurDisplayType == OTYPE.GameDisplayType.VV)
+        data.SetCurCamera();
+        if (JIRVIS.Instance.jIRVISData.getCurDisplayType == OTYPE.GameDisplayType.VV)
         {
             SwitchVVMap();
         }else
@@ -194,21 +198,61 @@ public class MapController : BaseController {
             SwitchARMap();
         }
     }
-
+    /// <summary>
+    /// Switchs the VVM ap.
+    /// </summary>
     private void SwitchVVMap()
     {
-        data.SetCurCamera();
-        /*List<JIRVISFuncBtnStruct> jIRVISFuncBtnStructs = new List<JIRVISFuncBtnStruct>
-        {
-            new JIRVISFuncBtnStruct { btnName = "AR" , btnIconKey = ONAME.ARIcon, clickCallBack = SwitchARMap },
-        };*/
-
+        AndaARManager.Instance.StopAR(FinishBuildARMode);
         ARMonsterSceneDataManager.Instance.aRWorld.CloseBlur();
         ARMonsterSceneDataManager.Instance.aRWorld.ClosebackgroundVV();
         ARMonsterSceneDataManager.Instance.aRWorld.OpenMapCamera();
+        AndaMap.Instance.SetTileState(true);
+    }
+
+    private void SwitchARMap()
+    {
+        AndaARManager.Instance.StartAR(FinishBuildARMode);
+        //隐藏map tiles
+        AndaMap.Instance.SetTileState(false);
+        ARMonsterSceneDataManager.Instance.MapCamera.gameObject.SetActive(false);
+    }
 
 
-        if(data.getCommissionEventContainsBuildstronghold)
+    #region 贾维斯 按钮点击 ，点击了切换到AR模式
+
+    private void JIRVISClick_ChangeToARMode()
+    {
+        JIRVIS.Instance.jIRVISData.SetCurrentDisplayType(OTYPE.GameDisplayType.AR);
+        StartCheckDisplayType();
+    }
+
+    #endregion
+
+    #region JIRVIS 按钮点击 。切换到VV 模式
+    private void JIRVISClikc_ChangeToVVMode()
+    {
+        JIRVIS.Instance.jIRVISData.SetCurrentDisplayType(OTYPE.GameDisplayType.VV);
+        StartCheckDisplayType();
+    }
+    #endregion
+
+    #region 完成了AR构建
+
+    private void FinishBuildARMode()
+    {
+        BuildJIRVISFunctionBtn();
+    }
+
+    #endregion
+
+
+
+    #region 检查是否需要定位
+
+    private void CheckNeedLocation()
+    {
+        if (data.getCommissionEventContainsBuildstronghold)
         {
             AndaLocaltion.Instance.GetLocationOnce(FinishLocation);
         }
@@ -217,22 +261,26 @@ public class MapController : BaseController {
             data.curMineStrongholdAttr = AndaDataManager.Instance.GetStrongholdAtrrWithJIRVISSaveIndexs();
             AndaMap.Instance.andaMapData.SetCurrentMapCenterLatlong(data.curMineStrongholdAttr.strongholdPosition);
             AndaLocaltion.Instance.GetLocationOnce(FinishLocationf2);//也要定位一下
-            GetPOIData();
+          
         }
     }
 
-    private void FinishLocationf2(Location location)
-    {
-
-    }
-
-
+    #endregion
 
     private void FinishLocation(Location location)
     {
         AndaMap.Instance.andaMapData.SetCurrentMapCenterLatlong(new List<double> { location.LatitudeLongitude.x, location.LatitudeLongitude.y});
         GetPOIData();
        
+    }
+
+    private void FinishLocationf2(Location location)
+    {
+        GetPOIData();
+        //AndaMap.Instance.andaMapData.SetCurrentMapCenterLatlong(new List<double> { location.LatitudeLongitude.x, location.LatitudeLongitude.y });
+        //AndaMap.Instance.andaMapData.SetCurrentMapCenterLatlong(new List<double> { location.LatitudeLongitude.x, location.LatitudeLongitude.y });
+        //GetPOIData();
+
     }
 
     #region 通过当前位置获取周边数据
@@ -312,6 +360,11 @@ public class MapController : BaseController {
         {
             RegisterSelectMapItem(false);
         }
+
+        if(AndaLocaltion.Instance._locationProvider!=null)
+        {
+            data.BuildCurrentLocationPoint();
+        }
         #region 据点构建完之后，刷新一下朝向
         //UpdateMedalFaceToMapCamera50();
         #endregion
@@ -339,36 +392,8 @@ public class MapController : BaseController {
     #endregion
 
 
-    #region 贾维斯 按钮点击 ，点击了切换到AR模式
-
-    private void JIRVISClick_ChangeToARMode()
-    {
-        JIRVIS.Instance.RemoveCurrentBtnList();
-        JIRVIS.Instance.jIRVISData.SetCurrentDisplayType(OTYPE.GameDisplayType.AR);
-        ARMonsterSceneDataManager.Instance.MapCamera.gameObject.SetTargetActiveOnce(false);
-        data.SetCurCamera();
-        AndaARManager.Instance.StartAR(FinishBuildARMode);
-    }
-
-    #endregion
-
-    #region 完成了AR构建
-
-    private void FinishBuildARMode()
-    { 
-        BuildJIRVISFunctionBtn();
-    }
-
-    #endregion
-
-    #region 贾维斯按钮点击 切换到VV模式
-
-    public void JIRVISClikc_ChangeToVVMode()
-    {
-        JIRVIS.Instance.jIRVISData.SetCurrentDisplayType(OTYPE.GameDisplayType.VV);
-        data.SetCurCamera();
-    }
-    #endregion
+  
+   
 
 
     #region JIRVIS按钮点击，选择我想要的占星庭【切换占星庭】
@@ -383,7 +408,7 @@ public class MapController : BaseController {
         data.SetCurrentPlayerstrongholdIndex(strongholdIndex);
         PlayerStrongholdAttribute playerStrongholdAttribute = AndaDataManager.Instance.GetPlayerCurrentStrongholdData(strongholdIndex);
         AndaMap.Instance.andaMapData.SetCurrentMapCenterLatlong(playerStrongholdAttribute.strongholdPosition);
-
+        JIRVIS.Instance.SetCurrentDimensionroomIndex(playerStrongholdAttribute.strongholdIndex);
         //切换地图中心坐标，需要重新构建POI数据
         GetPOIData();
     }
@@ -418,7 +443,7 @@ public class MapController : BaseController {
         {
             List<JIRVISFuncBtnStruct> jIRVISFuncBtnStructs = new List<JIRVISFuncBtnStruct>()
             {
-               // new JIRVISFuncBtnStruct { btnName = "AR" , btnIconKey = ONAME.ARIcon ,clickCallBack = JIRVISClick_ChangeToARMode },
+                new JIRVISFuncBtnStruct { btnName = "AR" , btnIconKey = ONAME.ARIcon ,clickCallBack = JIRVISClick_ChangeToARMode },
                 new JIRVISFuncBtnStruct { btnName = "我的据点" , btnIconKey = ONAME.mineStrongholIcon ,clickCallBack = JIRVISBuildMinestrongholdListBtn },
                 new JIRVISFuncBtnStruct { btnName = data.getIsMap2D?"3D地图":"2D地图" , btnIconKey = data.getIsMap2D? ONAME.mapAngle3D:ONAME.mapAngle2D ,clickCallBack = ChangeMapAngle },
                 new JIRVISFuncBtnStruct { btnName = "回退" , btnIconKey = ONAME.BackStep ,clickCallBack = BackToBuildDimensionRoomController }
@@ -431,8 +456,8 @@ public class MapController : BaseController {
             {
                 new JIRVISFuncBtnStruct { btnName = "返回" , btnIconKey = ONAME.VVIcon ,clickCallBack = JIRVISClikc_ChangeToVVMode },
                 new JIRVISFuncBtnStruct { btnName = "我的据点" , btnIconKey = ONAME.mineStrongholIcon ,clickCallBack = JIRVISBuildMinestrongholdListBtn },
-                new JIRVISFuncBtnStruct { btnName = data.getIsMap2D?"3D地图":"2D地图" , btnIconKey = data.getIsMap2D? ONAME.mapAngle3D:ONAME.mapAngle2D ,clickCallBack = ChangeMapAngle },
-                new JIRVISFuncBtnStruct { btnName = "回退" , btnIconKey = ONAME.BackStep ,clickCallBack = BackToBuildDimensionRoomController }
+                //new JIRVISFuncBtnStruct { btnName = data.getIsMap2D?"3D地图":"2D地图" , btnIconKey = data.getIsMap2D? ONAME.mapAngle3D:ONAME.mapAngle2D ,clickCallBack = ChangeMapAngle },
+                //new JIRVISFuncBtnStruct { btnName = "回退" , btnIconKey = ONAME.BackStep ,clickCallBack = BackToBuildDimensionRoomController }
             };
 
             JIRVIS.Instance.BuildFunctionBtn(jIRVISFuncBtnStructs);
@@ -471,7 +496,6 @@ public class MapController : BaseController {
         {
             JIRVIS.Instance.PlayTipsForchoose("您可以尝试滑动屏幕，移动占星庭徽章，选择一个位置来作为你的根据地。如果您准备好了，就点击确定，我会立刻安排建立占星庭",
                                               OTYPE.TipsType.onlyOneChooseTips, "确定", "", ClickComfirmtoSetStronghold, null);
-
         }
     }
 
@@ -573,8 +597,6 @@ public class MapController : BaseController {
     {
         if(JIRVIS.Instance.jIRVISData.IsAutoEnterAstroloy)
         {
-           
-
             JIRVIS.Instance.PlayTipsForchoose("现在您可以进入到占星庭据点，在庭内放置星宿", OTYPE.TipsType.onlyOneChooseTips, "立即进入", "", PlayerChooseEntermienStrongholdNow);
             RegisterSelectMapItem(false);
         }
@@ -590,7 +612,6 @@ public class MapController : BaseController {
     #region 玩家的选择，立刻进入
     private void PlayerChooseEntermienStrongholdNow()
     {
-
         BackToBuildDimensionRoomController();
     }
     #endregion
@@ -598,30 +619,90 @@ public class MapController : BaseController {
     #region 玩家的选择 放弃进入 。路过
     private void PlayerGiveUpEnterminstrongholdNow()
     {
-        JIRVIS.Instance.BuildFunctionBtn();
+        data.SetOpenchildBar(false);//对地图的操作允许
+        BuildJIRVISFunctionBtn();
         JIRVIS.Instance.CloseTips();
         RegisterSelectMapItem(true);
     }
     #endregion
 
-    #region 玩家对保卫的据点的选择，。 保卫或者不保卫
-    private void PlayerChooseToProtectBussinessSH(bool _protect)
-    {
-        if(_protect)
-        {
-            JIRVIS.Instance.PlayTips("当前无法直接前往保卫，侵略者过于强大");
+    #region 询问玩家是否 要进行挑战据点
 
+    private void PlayerComfirmGame(bool _comfirm)
+    {
+        if(_comfirm)
+        {
+            CallBackComfirmGame();
         }
         else
         {
-            BuildJIRVISFunctionBtn();
-            JIRVIS.Instance.PlayTips("放弃保卫据点");
+            CancelPlayGame();
         }
-     
     }
+
     #endregion
 
-  
+    #region 玩家统一进行游戏，现在进行验证
+
+    //【玩家统一挑战】挑战据点
+    private void CallBackComfirmGame()
+    {
+        JIRVIS.Instance.CloseTips();
+        JIRVIS.Instance.jIRVISData.ClearRewardList();
+        if (TestManager.Instance.isTestLoadinglocalData)
+        {
+            AndaDataManager.Instance.TestCallServerGetBlondStrongholdMonsterListData(
+                JIRVIS.Instance.jIRVISData.currentEnemyStrongholdIndex,
+                CallBackFinishAppleMatch);
+        }
+        else
+        {
+            int gameType = JIRVIS.Instance.jIRVISData.currentPlayGameType;
+            AndaDataManager.Instance.CallServerApplyMatch(gameType.ToString(),
+                                                          JIRVIS.Instance.jIRVISData.currentEnemyStrongholdIndex,
+                                                          JIRVIS.Instance.jIRVISData.getCurMineStrongholdIndex, CallBackFinishAppleMatch);
+        }
+    }
+    //【放弃挑战】
+    private void CancelPlayGame()
+    {
+        JIRVIS.Instance.CloseTips();
+        data.SetOpenchildBar(false);//对地图的操作允许
+        BuildJIRVISFunctionBtn();
+        //data.RemoveJIRVISEditor_ChanllengeGameStorngholdInfomationBar();
+        JIRVIS.Instance.PlayTips("明智的选择");
+    }
+
+    #endregion
+
+    //向服务器申请游戏验证，
+    private void CallBackFinishAppleMatch(bool Success)
+    {
+        if (Success)
+        {
+            JIRVIS.Instance.CloseTips();
+            switch (JIRVIS.Instance.jIRVISData.currentPlayGameType)
+            {
+                case 0://保卫战
+                    callbackFinishController(ONAME.PROTECTGAMECONTROLLER);
+                    break;
+                case 1://挑战
+                    callbackFinishController(ONAME.CHALLENGEGAMECONTROLLER);
+                    break;
+                case 2://捕捉
+
+                    break;
+            }
+            Debug.Log("成功进入游戏");
+            JIRVIS.Instance.PlayTips("成功进入游戏");
+        }
+        else
+        {
+
+            BuildJIRVISFunctionBtn();
+            JIRVIS.Instance.PlayTips("当前不能游戏，请检查网络");
+        }
+    }
 
     #region 服务器回调上传编辑的占星庭数据成功
 
@@ -657,11 +738,7 @@ public class MapController : BaseController {
 
     #endregion
 
-    private void SwitchARMap()
-    {
-        
-    }
-
+  
     #region 更新相机位置，每次切换据点或者重新定位，相机都会对焦到相应位置
 
     private void InitCameraPose()
@@ -742,6 +819,7 @@ public class MapController : BaseController {
     #region 点击地图上的据点图标
     public void ClickSelectMapItem(StrongholdBaseAttribution shAttr)
     {
+        data.SetOpenchildBar(true);//对地图的操作禁止
         JIRVIS.Instance.RemoveCurrentBtnList();
         switch(shAttr.hostType)
         {
@@ -780,7 +858,44 @@ public class MapController : BaseController {
         JIRVIS.Instance.jIRVISData.SetCurrentChallenggeStronghold((PlayerStrongholdAttribute)_shBase);
         CallSeverGetSelectStrongholdInfomation();
     }
+    #region 向服务器索取要挑战的据点数据
+    private void CallSeverGetSelectStrongholdInfomation()
+    {
+        data.SetWaitState(true);
+        AndaDataManager.Instance.CallServerGetFightMonsterForOtherPlayer(JIRVIS.Instance.jIRVISData.currentEnemyStrongholdIndex, CallBackGetStrongholdEnemyData);
+
+    }
     #endregion
+    #region 成功获取要挑战的据点数据
+
+    private void CallBackGetStrongholdEnemyData(List<PlayerMonsterAttribute> playerMonsters)
+    {
+        if (playerMonsters == null || playerMonsters.Count == 0)
+        {
+            BuildJIRVISFunctionBtn();
+            JIRVIS.Instance.PlayTips("当前据点无守护宠物，不可挑战");
+            data.SetWaitState(false);
+            data.SetOpenchildBar(false);//对地图的操作允许
+        }
+        else
+        {
+
+            data.SetWaitState(false);
+            data.SetOpenchildBar(true);//对地图的操作的禁止
+            RegisterControlCamera(false);
+            RegisterSelectMapItem(false);
+            JIRVIS.Instance.jIRVISData.SetEnemys(playerMonsters);
+            JIRVIS.Instance.BuildOtherPlayerStrongholdInformation((PlayerStrongholdAttribute)JIRVIS.Instance.jIRVISData.getCurChallengeStrongholdAttr,playerMonsters[0]);
+            JIRVIS.Instance.jIRVISData.jIRVISContent_ChanllengeGameStronghold.CallBackResult = PlayerComfirmGame;
+        }
+
+    }
+    #endregion
+
+    #endregion
+
+
+
 
     #region 打开商家据点信息面板
     private void OpenBussinessStrongholdInformation(StrongholdBaseAttribution _shBase)
@@ -789,69 +904,15 @@ public class MapController : BaseController {
         BusinessStrongholdAttribute bsa = (BusinessStrongholdAttribute)_shBase;
         JIRVIS.Instance.jIRVISData.SetCurrentProtectedStronghold(bsa);
         JIRVIS.Instance.BuildBussinessStrongholdInfomationBar(bsa);
-        JIRVIS.Instance.jIRVISData.jIRVISContent_Bussiness.callBackPlayerChoose = PlayerChooseToProtectBussinessSH;
+        JIRVIS.Instance.jIRVISData.jIRVISContent_Bussiness.callBackPlayerChoose = PlayerComfirmGame;
     }
 
     #endregion
+
+
+
+
   
-
-    #region 玩家点击了据点
-    private void CallbackSelectItem(Transform item)
-    {
-
-        /*//先检查一下这个据点有没有宠物
-        List<PlayerMonsterAttribute> tmpMonsterList = AndaDataManager.Instance.GetPlayerMonsterAttributeBelongThisStronghold(JIRVIS.Instance.jIRVISData.getCurMineStrongholdIndex);
-        if (tmpMonsterList == null || tmpMonsterList.Count == 0)
-        {
-            tmpMonsterList = AndaDataManager.Instance.GetUserFreesMonster();
-            if (tmpMonsterList.Count == 0)
-            {
-                JIRVIS.Instance.PlayTipsForchoose("当前没有可以出战的星宿，我发现有一个地方可以捕捉星宿，请随我而来！", OTYPE.TipsType.chooseTips, "那我们走八", "不感兴趣", ToSearchController, CloseJumpToDetectControllerTips);
-                data.SetOpenchildBar(true);//对地图的操作的禁止
-                return;
-            }
-            else
-            {
-                JIRVIS.Instance.BuildMonsterBtnList(tmpMonsterList, SetMonsterToThisStronghold);
-                JIRVIS.Instance.AddFunctionBtn(new JIRVISFuncBtnStruct { btnName = "返回", btnIconKey = ONAME.BackStep, clickCallBack = CloseInsterMonsterTostrongholdEditorBar });
-                JIRVIS.Instance.PlayTips("尊敬的读星者请将该星宿加入占星庭，为了+[" + AndaDataManager.Instance.GetPlayerAllStrongholdAttribute()[0].strongholdNickName + "而战！]");
-                return;
-            }
-
-        }*/
-
-        if (data.getCommissionEventContainsBuildstronghold) return;
-        BuildPlayerTower towerBase = item.GetComponent<BuildPlayerTower>();
-        if (towerBase != null)
-        {
-            if (towerBase.getStronholdType == 1)//商家
-            {
-                JIRVIS.Instance.PlayTips("星域商人正在穿越传送门的途中，即将登陆");
-
-                /* OTYPE.Tipscontent tipscontent = OTYPE.Tipscontent.protectStronghold;
-                string content = "是否立刻对" + towerBase.data.getStrongholdBaseAttribution.strongholdNickName + MonsterGameData.GetTipsContent(tipscontent);
-                JIRVIS.Instance.jIRVISData.SetCurrentProtectedStronghold((BusinessStrongholdAttribute)towerBase.data.getStrongholdBaseAttribution );
-                JIRVIS.Instance.PlayTipsForchoose(content,OTYPE.TipsType.chooseTips, "保卫" ,"瑟瑟发抖" ,CallBackComfirmGame, JIRVIS.Instance.CloseTips);
-               */
-            }
-            else if (towerBase.getStronholdType == 0)//个人
-            {
-                if (towerBase.getHostIndex == AndaDataManager.Instance.userData.userIndex)
-                {
-                    data.SetCurrentPlayerstrongholdIndex(towerBase.getStrongholdIndex);
-                    JIRVISAskForEnterMineStrongholdNow();
-                }
-                else
-                {
-                    JIRVIS.Instance.jIRVISData.SetCurrentChallenggeStronghold((PlayerStrongholdAttribute)towerBase.playerStrongholdAttribute);
-                    CallSeverGetSelectStrongholdInfomation();
-                }
-            }
-        }
-    }
-
-    #endregion
-
     #region BUILD
 
 
@@ -1002,13 +1063,7 @@ public class MapController : BaseController {
          AndaDataManager.Instance.TestInsertStronghold(ad);
     }
 
-    //[向服务器索要点击的据点数据]
-    private void CallSeverGetSelectStrongholdInfomation()
-    {
-        data.SetWaitState(true);
-        AndaDataManager.Instance.CallServerGetFightMonsterForOtherPlayer(JIRVIS.Instance.jIRVISData.currentEnemyStrongholdIndex,CallBackGetStrongholdEnemyData);
-       
-    }
+   
 
 
   
@@ -1088,65 +1143,9 @@ public class MapController : BaseController {
         BuildJIRVISFunctionBtn();
     }
 
-    private void CallBackGetStrongholdEnemyData(List<PlayerMonsterAttribute> playerMonsters)
-    { 
-        if(playerMonsters == null || playerMonsters.Count == 0 )
-        {
-            JIRVIS.Instance.PlayTips("当前据点无守护宠物，不可挑战");
-            data.SetWaitState(false);
-        }
-        else
-        {
-            data.SetWaitState(false);
-            data.SetOpenchildBar(true);//对地图的操作的禁止
-            RegisterControlCamera(false);
-            RegisterSelectMapItem(false);
-            #region 向JIRVIS 保存要挑战的角色信息
-            JIRVIS.Instance.jIRVISData.SetEnemys(playerMonsters);
-            #endregion
-           
-            #region JIRVIS 发出提示，是否要挑战该据点
-            OTYPE.Tipscontent tipscontent = OTYPE.Tipscontent.challegeStronghold;
-            string content = "是否立刻对[" + AndaGameExtension.ChangeTextColorToYellow(JIRVIS.Instance.jIRVISData.getCurChallengeStrongholdAttr.strongholdNickName) + "]"+ MonsterGameData.GetTipsContent(tipscontent);
-            JIRVIS.Instance.PlayTipsForchoose(content, OTYPE.TipsType.chooseTips, "挑战", "不挑战", CallBackComfirmGame, CallCancelChanllenge);
-            //[目前就默认挑选第一只]
-            data.BuildJIRVISEditor_ChanllengeGameStorngholdInfomationBar((PlayerStrongholdAttribute)JIRVIS.Instance.jIRVISData.getCurChallengeStrongholdAttr, playerMonsters[0]);
-            //JIRVIS.Instance.CloseBtnBar();
-            #endregion
-        }
-       
-    }
 
 
-    //【玩家统一挑战】挑战据点
-    private void CallBackComfirmGame()
-    {
-        JIRVIS.Instance.CloseTips();
-        JIRVIS.Instance.jIRVISData.ClearRewardList();
-        if (TestManager.Instance.isTestLoadinglocalData)
-        {
-            AndaDataManager.Instance.TestCallServerGetBlondStrongholdMonsterListData(
-                JIRVIS.Instance.jIRVISData.currentEnemyStrongholdIndex,
-                CallBackFinishAppleMatch);
-        }else
-        {
-            int gameType = JIRVIS.Instance.jIRVISData.currentPlayGameType;
-            AndaDataManager.Instance.CallServerApplyMatch(gameType.ToString(),
-                                                      JIRVIS.Instance.jIRVISData.currentEnemyStrongholdIndex,
-                                                      JIRVIS.Instance.jIRVISData.getCurMineStrongholdIndex,CallBackFinishAppleMatch);
-        }
-    }
-    //【放弃挑战】
-    private void CallCancelChanllenge()
-    {
-        JIRVIS.Instance.CloseTips();
-        JIRVIS.Instance.OpenBtnBar();
-        data.SetOpenchildBar(false);//对地图的操作允许
-        RegisterControlCamera(true);
-        RegisterSelectMapItem(true);
-        JIRVIS.Instance.BuildFunctionBtn();
-        data.RemoveJIRVISEditor_ChanllengeGameStorngholdInfomationBar();
-    }
+
 
 
     private void CallBackClickProtect()
@@ -1155,30 +1154,7 @@ public class MapController : BaseController {
 
     }
 
-    //向服务器申请游戏验证，
-    private void CallBackFinishAppleMatch(bool Success)
-    {
-        if(Success)
-        {
-            
-            JIRVIS.Instance.CloseTips();
-            switch(JIRVIS.Instance.jIRVISData.currentPlayGameType)
-            {
-                case 0://保卫战
-                    break;
-                case 1://挑战
-                    callbackFinishController(ONAME.CHALLENGEGAMECONTROLLER);
-                    break;
-                case 2://捕捉
-                    break;
-            }
-            Debug.Log("成功进入游戏");
-            JIRVIS.Instance.PlayTips("成功进入游戏");
-        }else
-        {
-            JIRVIS.Instance.PlayTips("当前不能游戏，请检查网络");
-        }
-    }
+
 
     private void ControlRotateCamera(Vector3 _rotate)
     {
@@ -1355,9 +1331,13 @@ public class MapController : BaseController {
             int count1 = data.getSeflStrongholdAttribute.Count;
             for (int i = 0; i < count1; i++)
             {
-                Vector2 vector2 = data.GetCurCamera.WorldToScreenPoint(data.getSeflStrongholdAttribute[i].strongholdInMapPosition);
+                Vector3 rP = data.getSeflStrongholdAttribute[i].strongholdInMapPosition;
+                Vector2 vector2 = data.GetCurCamera.WorldToScreenPoint(rP);
                 Vector3 p = ARMonsterSceneDataManager.Instance.UICamera.ScreenToWorldPoint(new Vector3(vector2.x, vector2.y, 90));
-                data.getMineStrongholdItem[i].transform.position = p;
+                data.getMineStrongholdItem[i].UpdatePose(p);
+                float scale = 1300f / Vector3.Distance(rP, data.GetCurCamera.transform.position);
+                scale = (float)Mathf.Clamp(scale,0.3f, 2.5f);
+                data.getMineStrongholdItem[i].UpdateScale(scale);
             }
         }
         if (data.getOtherPlayerStrongholdAttribute != null && (data.shDisplayType == 1 || data.shDisplayType == 4))
@@ -1365,9 +1345,13 @@ public class MapController : BaseController {
             int count1 = data.getOtherPlayerStrongholdAttribute.Count;
             for (int i = 0; i < count1; i++)
             {
-                Vector2 vector2 = data.GetCurCamera.WorldToScreenPoint(data.getOtherPlayerStrongholdAttribute[i].strongholdInMapPosition);
+                Vector3 rP = data.getOtherPlayerStrongholdAttribute[i].strongholdInMapPosition;
+                Vector2 vector2 = data.GetCurCamera.WorldToScreenPoint(rP);
                 Vector3 p = ARMonsterSceneDataManager.Instance.UICamera.ScreenToWorldPoint(new Vector3(vector2.x, vector2.y, 90));
-                data.getOtherStrongholdItem[i].transform.position = p;
+                data.getOtherStrongholdItem[i].UpdatePose(p);
+                float scale = 1300f / Vector3.Distance(rP, data.GetCurCamera.transform.position);
+                scale = (float)Mathf.Clamp(scale, 0.3f, 2.5f);
+                data.getOtherStrongholdItem[i].UpdateScale(scale);
             }
         }
 
@@ -1376,10 +1360,25 @@ public class MapController : BaseController {
             int count1 = data.getBussinessStrongholdAttribute.Count;
             for (int i = 0; i < count1; i++)
             {
-                Vector2 vector2 = data.GetCurCamera.WorldToScreenPoint(data.getBussinessStrongholdAttribute[i].strongholdInMapPosition);
+                Vector3 rP = data.getBussinessStrongholdAttribute[i].strongholdInMapPosition;
+                Vector2 vector2 = data.GetCurCamera.WorldToScreenPoint(rP);
                 Vector3 p = ARMonsterSceneDataManager.Instance.UICamera.ScreenToWorldPoint(new Vector3(vector2.x, vector2.y, 90));
-                data.getBussinesStronghldItem[i].transform.position = p;
+                data.getBussinesStronghldItem[i].UpdatePose(p);
+                float scale = 1300f / Vector3.Distance(rP, data.GetCurCamera.transform.position);
+                scale = (float)Mathf.Clamp(scale, 0.3f, 2.5f);
+                data.getBussinesStronghldItem[i].UpdateScale(scale);
             }
+        }
+
+        if(data.GetmapUIItem_Icon_UserPor!=null)
+        {
+            Vector3 rP = data.GetCurrentLocationInMapPostion;
+            Vector2 vector2 = data.GetCurCamera.WorldToScreenPoint(rP);
+            Vector3 p = ARMonsterSceneDataManager.Instance.UICamera.ScreenToWorldPoint(new Vector3(vector2.x, vector2.y, 90));
+            data.GetmapUIItem_Icon_UserPor.UpdatePose(p);
+            float scale = 1300f / Vector3.Distance(rP, data.GetCurCamera.transform.position);
+            scale = (float)Mathf.Clamp(scale, 0.3f, 2.5f);
+            data.GetmapUIItem_Icon_UserPor.UpdateScale(scale);
         }
 
         /*for (int i = 0; i < count3; i++)
@@ -1441,7 +1440,7 @@ public class MapController : BaseController {
     {
         if(JIRVIS.Instance.jIRVISData.getCurDisplayType == OTYPE.GameDisplayType.AR)return;
 
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         if (Input.GetMouseButtonDown(1))
         {
             isUpdateMouseEuler = true;
@@ -1508,7 +1507,7 @@ public class MapController : BaseController {
 
 #endif
 
-//UpdatePlayerShUIPose();
+        //UpdatePlayerShUIPose();
 
     }
     #endregion
@@ -1522,47 +1521,110 @@ public class MapController : BaseController {
 #if UNITY_EDITOR
 
         if (Input.GetMouseButtonDown(0))
-        {
-            isUpdateMousePose = true;
-            startMousePose = Input.mousePosition;
-        }
+         {
+             isUpdateMousePose = true;
+             startMousePose = Input.mousePosition;
+         }
 
-        if (Input.GetMouseButton(0))
-        {
-            if (isUpdateMousePose)
-            {
-                Vector3 delta = Input.mousePosition - startMousePose;//new Vector3(Screen.width/2 , Screen.height/2,0);
-                ControlDragMoveCamera(delta);
-                startMousePose = Input.mousePosition;
-                /*Vector3 vector3 = ARMonsterSceneDataManager.Instance.MapCamera.transform.position;
-                Vector3 fwd = new Vector3(ARMonsterSceneDataManager.Instance.MapCamera.transform.forward.normalized.x, 0, ARMonsterSceneDataManager.Instance.MapCamera.transform.forward.normalized.z);
-                vector3 += fwd * Time.deltaTime * -delta.y * 2;
-                vector3 += ARMonsterSceneDataManager.Instance.MapCamera.transform.right * Time.deltaTime * -delta.x * 2;
-                ARMonsterSceneDataManager.Instance.MapCamera.transform.position = vector3;
-               */
-
-            }
-        }
-
-        if (Input.GetMouseButtonUp(0))
-        {
-            isUpdateMousePose = false;
-        }
+         if (Input.GetMouseButton(0))
+         {
+             if (isUpdateMousePose)
+             {
+                 Vector3 delta = Input.mousePosition - startMousePose;//new Vector3(Screen.width/2 , Screen.height/2,0);
+                 ControlDragMoveCamera(delta * 5);
+                 startMousePose = Input.mousePosition;
 
 
+             }
+         }
+
+         if (Input.GetMouseButtonUp(0))
+         {
+             isUpdateMousePose = false;
+         }
+
+
+      
 
 #else
         if (Input.touchCount == 1)
         {
               Touch touch = Input.GetTouch(0);
                 Vector2 deltaPos = touch.deltaPosition;
-             ControlDragMoveCamera(deltaPos);
+             ControlDragMoveCamera(deltaPos*5);
         }
 
 #endif
 
-       // UpdatePlayerShUIPose();
+        // UpdatePlayerShUIPose();
     }
+
+    #endregion
+
+
+    #region 缩放地图
+
+    public void ScaleMap()
+    {
+        if(JIRVIS.Instance.isARType)return;
+
+#if UNITY_EDITOR
+
+        Vector3 v = ARMonsterSceneDataManager.Instance.MapCamera.transform.position;
+         v.y-=Input.mouseScrollDelta.y * 3;
+         v.y = Mathf.Clamp(v.y,500, 2500);
+        ARMonsterSceneDataManager.Instance.MapCamera.transform.position = v;
+
+
+
+
+
+#else
+
+        if (Input.touchCount == 2)
+        {
+            Touch newTouch1 = Input.GetTouch(0);
+            Touch newTouch2 = Input.GetTouch(1);
+            if (newTouch2.phase == TouchPhase.Began)
+            {
+                oldTouch2 = newTouch2;
+                oldTouch1 = newTouch1;
+                return;
+
+            }
+
+
+            //计算老的两点距离和新的两点间距离，变大要放大模型，变小要缩放模型
+            float oldDistance = Vector2.Distance(oldTouch1.position, oldTouch2.position);
+            float newDistance = Vector2.Distance(newTouch1.position, newTouch2.position);
+
+            //两个距离之差，为正表示放大手势， 为负表示缩小手势
+            float offset = newDistance - oldDistance;
+
+            //放大因子， 一个像素按 0.01倍来算(100可调整)
+            float scaleFactor = offset / 100f;
+            Vector3 localScale = Vector3.zero;
+            Vector3 scale = new Vector3(localScale.x + scaleFactor,
+                                            localScale.y + scaleFactor,
+                                            localScale.z + scaleFactor);
+            //最小缩放到 0.3 倍
+            if (Mathf.Abs(scale.x) > 0.1f && Mathf.Abs(scale.y) > 0.1f && Mathf.Abs(scale.z) > 0.1f)
+            {
+                Vector3 v3 = ARMonsterSceneDataManager.Instance.MapCamera.transform.position;
+                v3.y -= scale.y *10;
+                v3.y = Mathf.Clamp(v3.y,500f,2500f);
+                ARMonsterSceneDataManager.Instance.MapCamera.transform.position = v3;
+            }
+
+            //记住最新的触摸点，下次使用
+            oldTouch1 = newTouch1;
+            oldTouch2 = newTouch2;
+        }
+
+
+#endif
+    }
+
 
     #endregion
 

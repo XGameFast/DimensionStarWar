@@ -51,4 +51,8 @@ public class BossAnimation {
     {
         
     }
+    public virtual void PlayDead()
+    {
+
+    }
 }

@@ -34,6 +34,12 @@ public static class ONAME
     public static string ASTROLOGYLOBBY = "AstrologylobbyController";
     public static string MAPCONCTROLLER = "MapController";
     public static string CHALLENGEGAMECONTROLLER = "ChallengegameController";
+
+    public static string PROTECTGAMECONTROLLER = "ProtectGameController";
+    public static string PROTECTGAMECTR_2001 = "ProtectGameCtr_2001";
+
+
+
     public static string SHOOTINGTRAININGCONTROLLER = "ShootingTrainingController";
 
     public static string PACKAGECONTROLLER = "PackageController";
@@ -90,6 +96,8 @@ public static class ONAME
     public static string BuildDimensionRoomMenu = "BuildDimensionRoomMenu";
     public static string AstrologyMenu = "AstrologyMenu";
     public static string ChallengeGameMenu = "ChallengeGameView";
+    public static string ProtectGameView2001 = "ProtectGameView_2001";
+
     public static string ShootingTrainingMenu = "ShootingTrainingView";
     public static string PackageMenu = "PackageMenu";
     public static string MallMenu = "MallMenu";
@@ -143,10 +151,12 @@ public static class ONAME
     public static string PackageConsumableItem = "PackageConsumableItem";
     public static string MallConsumableItem = "MallConsumableItem";
 
+    public static string MapUIItemShboard_LocationPoint = "MapUIItemShboard_LocationPoint";
     public static string MapUIItemShboard_PlayerSH = "MapUIItemShboard_PlayerSH";
     public static string MapUIItemShboard_BussinesssSH = "MapUIItemShboard_BussinesssSH";
     public static string MapUIItemShboard_BossSh = "MapUIItemShboard_BossSh";
     public static string MapUIItemShboard_exchangeSH = "MapUIItemShboard_exchangeSH";
+    public static string TipsItemPoint = "TipsItemPoint";
 
     #endregion
     #region 消耗品

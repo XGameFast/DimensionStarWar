@@ -253,6 +253,15 @@ public class JIRVIS {
 
     #endregion
 
+    #region 打开其他玩家的详情面板
+    public void BuildOtherPlayerStrongholdInformation(PlayerStrongholdAttribute psa , PlayerMonsterAttribute pma)
+    {
+        jIRVISData.BuildChallengeGameStrongholdBar();
+        jIRVISData.jIRVISContent_ChanllengeGameStronghold.SetInfo(pma , psa);
+    }
+
+    #endregion
+
     #region 打开星宿的名字 和 据点修改 面板
     public void BuildEditorBarForMonsterChangeNameOrBelongStorngholdIndex(PlayerMonsterAttribute playerMonsterAttribute , int strongholdIndex , System.Action callbackSure , System.Action callbackCancel)
     {

@@ -262,6 +262,10 @@ public class SkillBasic : AndaObjectBasic
         {
             switch (hitLayer)
             {
+                case "Boss":
+                    SendSkillValue();
+                    ((BossBasic)hitTarget).HasBeenAttack(HitPower);
+                    break;
                 case "Monster":
                     SendSkillValue();
                     ((MonsterBasic)hitTarget).ControllerHasbeenHit(host, HitPower);

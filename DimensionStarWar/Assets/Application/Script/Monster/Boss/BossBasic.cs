@@ -13,7 +13,8 @@ public class BossBasic : AndaObjectBasic {
     public float elGun_interval;
     public float elGun_lifeTime;
 
-
+    public System.Action<int,int> BossHasBeenAttack;
+    public System.Action<int,bool> BossHadDeath;
 
     //[部件]
     public Transform headFwdPint;
@@ -105,6 +106,16 @@ public class BossBasic : AndaObjectBasic {
         } 
     }
 
+    public void ControlDead()
+    {
+        bossData.SetBossActive(false);
+        bossData.getBossAnimtion.PlayDead();
+        if(BossHadDeath!=null)
+        {
+            BossHadDeath(bossData.getCurrentPower, false);
+        }
+    }
+
     public void ControlIdle()
     {
         if(bossData.getBossActive!=null)
@@ -114,7 +125,28 @@ public class BossBasic : AndaObjectBasic {
             bossData.getBossAnimtion.PlayIdle();//动画
         }
     }
+
+    public virtual void HasBeenAttack(int hitValue)
+    {
+        if(!bossData.getBossIsActive)return;
+        int lessPower = bossData.UpdateBlood(hitValue);
+        if (lessPower == -1) return;
+        if(lessPower <=0 )
+        {
+            ControlDead();
+        }
+        else
+        {
+            //-- st
+        }
+
+        if (BossHasBeenAttack != null)
+        {
+            BossHasBeenAttack(lessPower,bossData.getMaxPower);
+        }
+    }
     #endregion
+
 
     public void Update()
     {

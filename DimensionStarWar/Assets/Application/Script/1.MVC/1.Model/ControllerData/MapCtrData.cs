@@ -28,6 +28,12 @@ public class MapCtrData : ControllerData {
     public int getRightStrongholdIndex
     {
         get {return rightStrongholdIndex ;}
+
+    }
+
+    public MapUIItem_icon_UserPor GetmapUIItem_Icon_UserPor
+    {
+        get {return currentLocationPointUIItem ;}
     }
 
     public List<MapUIItem_icon_lvBoard_Name> getMineStrongholdItem
@@ -78,6 +84,11 @@ public class MapCtrData : ControllerData {
         get {return curMapIs2D ;}
     }
 
+    public Vector3 GetCurrentLocationInMapPostion 
+    {
+        get {return curLocationInMapPostion ;}
+    }
+
 
     public List<int> getOtherPlayerStrongholdIndex { get {return  otherPlayerStrongholdIndexList ; }}
     public List<int> getBussinessStrongholdIndex {get {return bussinessStrongholdIndexList ; }}
@@ -102,7 +113,7 @@ public class MapCtrData : ControllerData {
     private List<MapUIItem_icon_lvBoard_Name> otherPlayerStrongholdItems = new List<MapUIItem_icon_lvBoard_Name>();
     private List<MapUIItem_icon_lvBoard_Name> minePlayerStrongholdItems = new List<MapUIItem_icon_lvBoard_Name>();
     private List<MapUIItem_icon_lvBoard_Name> businessStrongholdItems = new List<MapUIItem_icon_lvBoard_Name>();
-
+    private MapUIItem_icon_UserPor currentLocationPointUIItem;
     private List<TowerBase> seflStrongholdItem;//玩家自己
     private JIRVISContent_ChanllengeGameStrongholdInfo jIRVISContent_ChanllengeGameStronghold;
     private int rightStrongholdIndex = -1;
@@ -112,6 +123,9 @@ public class MapCtrData : ControllerData {
     private bool isForSetTmpStronghold = false;
     private bool curMapIs2D =false;
     private JIRVISEditorboard_StrongholdholdInfo jIRVISEditorboard_StrongholdholdInfo ;
+    private Vector3 curLocationInMapPostion ;
+
+
     //用于判断是否可以建立据点 
     private bool buildStrongholdstate = false;
     public PlayerStrongholdAttribute curMineStrongholdAttr;
@@ -138,7 +152,7 @@ public class MapCtrData : ControllerData {
         currentShowItemType = -1;
 
 
-      
+        RemoveMenu();
 
         RemoveAllMineStronghold();
         if(selfPlayerStrongholdAttributes!=null)selfPlayerStrongholdAttributes.Clear();
@@ -151,10 +165,24 @@ public class MapCtrData : ControllerData {
         RemoveAllBussinessStronghold();
         if(bussinessStrongholdAttributes!=null)bussinessStrongholdAttributes.Clear();
         if(bussinessStrongholdIndexList!=null)bussinessStrongholdIndexList.Clear();
-       
+
         RemoveJIRVISEditorbarForStrongholdInfo();
-        RemoveJIRVISEditor_ChanllengeGameStorngholdInfomationBar();
-       
+
+        RemoveCurrentLocationPointItem();
+    }
+
+    public override void RemoveMenu()
+    {
+        base.RemoveMenu();
+        mapMenu = null;
+    }
+
+    public void RemoveCurrentLocationPointItem()
+    {
+        if(currentLocationPointUIItem !=null)
+        {
+            AndaDataManager.Instance.RecieveItem(currentLocationPointUIItem);
+        }
     }
 
     public void RemoveAllMineStronghold()
@@ -225,6 +253,13 @@ public class MapCtrData : ControllerData {
         AndaDataManager.Instance.CallServerGetCurrentLocaitonRangeOfOtherData(location,callback);
     }
 
+    public void BuildCurrentLocationPoint()
+    { 
+        if(currentLocationPointUIItem!=null) AndaDataManager.Instance.RecieveItem(currentLocationPointUIItem);
+        currentLocationPointUIItem = AndaDataManager.Instance.InstantiateMenu<MapUIItem_icon_UserPor>(ONAME.MapUIItemShboard_LocationPoint);
+        currentLocationPointUIItem.SetInto(mapMenu.itemBox);
+    }
+
     /// <summary>
     /// 设置地图上据点的数据,从服务器来
     /// </summary>
@@ -266,6 +301,9 @@ public class MapCtrData : ControllerData {
             Vector2d vector2D = new Vector2d(bussinessStrongholdAttributes[i].strongholdPosition[0],bussinessStrongholdAttributes[i].strongholdPosition[1]);
             bussinessStrongholdAttributes[i].strongholdInMapPosition = AndaMap.Instance.ConvertGeopointToGameworldpoint(vector2D);
         }
+
+        Vector2d locationV2d  = AndaLocaltion.Instance.currentLocation.LatitudeLongitude;
+        curLocationInMapPostion = AndaMap.Instance.ConvertGeopointToGameworldpoint(locationV2d);
     }
 
   
@@ -422,10 +460,7 @@ public class MapCtrData : ControllerData {
    
     public void BuildJIRVISEditor_ChanllengeGameStorngholdInfomationBar(PlayerStrongholdAttribute playerStrongholdAttribute , PlayerMonsterAttribute playerMonster)
     {
-        if(jIRVISContent_ChanllengeGameStronghold == null)jIRVISContent_ChanllengeGameStronghold = AndaDataManager.Instance.InstantiateMenu<JIRVISContent_ChanllengeGameStrongholdInfo>(ONAME.JIRVISEditorBar_ChanllengeGameStrongholdInfo);
-        jIRVISContent_ChanllengeGameStronghold.transform.SetUIInto(JIRVIS.Instance.jIRVISData.getJIRVISBar.EditorboardPoint.transform);
-        jIRVISContent_ChanllengeGameStronghold.SetInfo(playerMonster,playerStrongholdAttribute);
-        jIRVISContent_ChanllengeGameStronghold.FadeIn();
+      
     }
 
     public void RemoveJIRVISEditor_ChanllengeGameStorngholdInfomationBar()

@@ -8,11 +8,12 @@ public class MapUIItem_icon_lvBoard_Name : AndaObjectBasic {
     public Image porImg;
     public Image levelboard;
     public Text shName;
-
+    public Text withDistance;
     public int dataIndex;
     private  int shDataType;
     private StrongholdBaseAttribution strongholdBaseAttribution;
     private System.Action<StrongholdBaseAttribution> clickCallBack;
+
     public void SetInfo(StrongholdBaseAttribution _shAttr)
     {
         strongholdBaseAttribution = _shAttr;
@@ -33,9 +34,10 @@ public class MapUIItem_icon_lvBoard_Name : AndaObjectBasic {
             case 2:
                 break;
         }
-       
 
-        shName.text = _shAttr.strongholdNickName;
+        float d = AndaGameExtension.GetLatlonDistance(_shAttr.strongholdPosition[0], _shAttr.strongholdPosition[1] , AndaLocaltion.Instance.currentLocation.LatitudeLongitude.x, AndaLocaltion.Instance.currentLocation.LatitudeLongitude.y).DoubleToFloat();
+         withDistance.text = "距您" + d.FloatToFloat() + "米";
+         shName.text = _shAttr.strongholdNickName;
     }
 
     public void RegisterClickCallBack(System.Action<StrongholdBaseAttribution> callback)
@@ -54,5 +56,15 @@ public class MapUIItem_icon_lvBoard_Name : AndaObjectBasic {
         {
             clickCallBack(strongholdBaseAttribution);
         }
+    }
+
+    public void UpdatePose(Vector3 v)
+    {
+        transform.position = v;
+    }
+
+    public void UpdateScale(float v)
+    {
+        transform.localScale = Vector3.one*v;
     }
 }
