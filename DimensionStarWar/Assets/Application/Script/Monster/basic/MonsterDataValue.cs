@@ -246,7 +246,7 @@ public class MonsterDataValue {
         monsterName = playerMonsterAttribute.monsterName;
         monsterNickName = playerMonsterAttribute.monsterNickName;
         monsterMaxPower = playerMonsterAttribute.monsterMaxPower;// + mgua.bloodGrowup;
-        monsterCurrentPower = monsterMaxPower;
+        monsterCurrentPower = playerMonsterAttribute.mosterPower ;
         playerSkillAttributeList = playerMonsterAttribute.monsterSkillIDList;
         prop_PowerBlock = AndaDataManager.Instance.GetUserPropPowerBlockList();
         BuildCDBox();
