@@ -74,11 +74,11 @@ Shader "Shader Forge/duojinengliangqiu" {
 ////// Lighting:
 ////// Emissive:
                 float node_1962 = pow(1.0-max(0,dot(normalDirection, viewDirection)),0.2);
-                float4 node_4540 = _Time;
-                float2 node_4080 = (i.uv0+node_4540.g*float2(0.2,0.3));
+                float4 node_3247 = _Time;
+                float2 node_4080 = (i.uv0+node_3247.g*float2(0.2,0.3));
                 float4 _node_6077_var = tex2D(_node_6077,TRANSFORM_TEX(node_4080, _node_6077));
                 float node_2596 = 0.5;
-                float2 node_9647 = (i.uv0+node_4540.g*float2(-0.25,-0.15));
+                float2 node_9647 = (i.uv0+node_3247.g*float2(-0.25,-0.15));
                 float4 _node_5809_var = tex2D(_node_5809,TRANSFORM_TEX(node_9647, _node_5809));
                 float node_6641 = ((1.0 - node_1962)*(pow(_node_6077_var.r,node_2596)+pow(_node_5809_var.r,node_2596)));
                 float3 emissive = ((pow(1.0-max(0,dot(normalDirection, viewDirection)),3.0)*_Fse.rgb*_Fqiang)+(node_6641*_liuwen*_Color.rgb));

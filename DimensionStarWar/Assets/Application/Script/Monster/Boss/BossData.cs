@@ -24,6 +24,9 @@ public class BossData {
     public bool getIsEndOfRealeseMagical {get{return isEndOfRealeaseMagical ;}}
     public Transform getSkillIntanceTra { get {return skillInstancePoint ;}}//技能生成的位置
     public BossSkillBasic getCurSkillObj {get {return curSkillObj ;}}
+    public int getCurrentPower{get{return currentPower ;}}
+    public int getMaxPower { get { return maxPower; } }
+
 
     protected BossBasic bossBasic;
     protected PlayerMonsterAttribute playerMonsterAttribute; 
@@ -43,6 +46,8 @@ public class BossData {
     protected bool isEndOfRealeaseMagical ;
     protected Transform skillInstancePoint;
     protected BossSkillBasic curSkillObj;
+    protected int currentPower;
+    protected int maxPower;
 
     public virtual void CreatData(BossBasic _bossBasic , PlayerMonsterAttribute _playerMonsterAttribute)
     {
@@ -53,6 +58,8 @@ public class BossData {
         BuildBossAnimation();
         BuildBossLogic();
         BuildBossSKillLogic();
+        currentPower = playerMonsterAttribute.mosterPower;
+        maxPower = playerMonsterAttribute.monsterMaxPower;
     }
 
     public virtual void  InitValue()
@@ -143,5 +150,28 @@ public class BossData {
     {
         curSkillObj = _skillObj;
     }
+
+    #endregion
+
+    #region 更新数据
+
+    public int UpdateBlood(int value)
+    {
+        if(currentPower>0)
+        {
+            if (currentPower - value <= 0)
+            {
+                currentPower = 0;
+            }
+            else
+            {
+                currentPower -= value;
+            }
+            return currentPower;
+        }
+
+        return -1;
+    }
+
     #endregion
 }

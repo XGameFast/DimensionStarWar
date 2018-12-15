@@ -359,6 +359,28 @@ public static class ConvertTool{
     }
     #endregion
 
+    #region 输入 宠物ID，输出 构造的 monsterGrowupAttr
+    public static MonsterGrowUpAttribute ConvertMonsterIDToMonsterGrowupAttr(int monsterID)
+    {
+        MonsterGrowUpAttribute monsterGrowUpAttribute = new MonsterGrowUpAttribute();
+        MonsterBaseConfig mbc = MonsterGameData.GetMonsterBaseConfig(monsterID);
+
+        monsterGrowUpAttribute.monsterID = mbc.monsterID;
+        monsterGrowUpAttribute.monsterCurrentPower = mbc.monsterBaseBlood;
+        monsterGrowUpAttribute.monsterMaxPower = mbc.monsterBaseBlood;
+        monsterGrowUpAttribute.monsterSkillIDList = new List<SkillGrowupAttribute>
+        {
+            new SkillGrowupAttribute { skillID = mbc.monsterBaseSkillList[0] , skillNickName = MonsterGameData.GetSkillBaseAttribute(mbc.monsterBaseSkillList[0]).skillName , skillAchievementValue = 0},
+            new SkillGrowupAttribute { skillID = mbc.monsterBaseSkillList[1] , skillNickName = MonsterGameData.GetSkillBaseAttribute(mbc.monsterBaseSkillList[1]).skillName , skillAchievementValue = 0},
+            new SkillGrowupAttribute { skillID = mbc.monsterBaseSkillList[2] , skillNickName = MonsterGameData.GetSkillBaseAttribute(mbc.monsterBaseSkillList[2]).skillName , skillAchievementValue = 0}
+
+        };
+        monsterGrowUpAttribute.monsterNickName = mbc.monsterName;
+        return monsterGrowUpAttribute;
+    }
+
+    #endregion
+
 
     #region 将世界坐标转为屏幕坐标
     public static Vector2 ConvertWorldPositionToUIPosition(Camera targetCamera, Vector3 pose)

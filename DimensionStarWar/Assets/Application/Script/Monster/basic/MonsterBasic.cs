@@ -569,6 +569,11 @@ public class MonsterBasic : AndaObjectBasic
         else enmeyMonster.EndEngine();
     }
 
+    public void ControllerHasbeenHit(int hitPower)
+    {
+
+    }
+
     #region 状态控制
     /// <summary>
     /// 受击

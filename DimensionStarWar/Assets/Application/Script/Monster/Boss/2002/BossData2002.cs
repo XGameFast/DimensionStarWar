@@ -11,7 +11,7 @@ public class BossData2002 : BossData {
   
 
     public float getStartInstanceElgunTime {get {return startInstanceElgunTime ;}}
-    public List<BossSkillBasic> getElgunObjsList {get {return elGunsObjList ;}}
+    public List<BossSkill_2001_Basic> getElgunObjsList {get {return elGunsObjList ;}}
     public List<float>getInstancElgunTimeList {get {return elInstanceTimeList; }}
     public bool getElgunsShotPoseInRight { get {return elShotPoseInRight ;}}
     public PlayerSkillAttribute getBigElgun{get {return bigElgun ;}}
@@ -19,7 +19,7 @@ public class BossData2002 : BossData {
     private float startInstanceElgunTime;
     private PlayerSkillAttribute[] elGuns;
     private PlayerSkillAttribute bigElgun;//大招
-    private List<BossSkillBasic> elGunsObjList;
+    private List<BossSkill_2001_Basic> elGunsObjList;
     private List<float> elInstanceTimeList;
     private bool elShotPoseInRight =false;
     private int lastFreeIndex = -1;
@@ -85,11 +85,11 @@ public class BossData2002 : BossData {
         startInstanceElgunTime = Time.time;
     }
 
-    public void AddElgunObjTolist(BossSkillBasic _bossSkillBasic)
+    public void AddElgunObjTolist(BossSkill_2001_Basic _bossSkillBasic)
     {
         if(elGunsObjList == null)
         {
-            elGunsObjList = new List<BossSkillBasic>();
+            elGunsObjList = new List<BossSkill_2001_Basic>();
             elInstanceTimeList = new List<float>();
         }
 
@@ -115,7 +115,7 @@ public class BossData2002 : BossData {
         }
     }
 
-    public void RemoveElgunObjToList(BossSkillBasic bossSkillBasic)
+    public void RemoveElgunObjToList(BossSkill_2001_Basic bossSkillBasic)
     {
         int index  = elGunsObjList.IndexOf(bossSkillBasic);
         RemovelgunObjTolist(index);

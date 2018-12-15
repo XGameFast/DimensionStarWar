@@ -8,9 +8,23 @@ public class BossLogic2002 : BossLogic {
     private float attackTime;
     private Boss2002 bossBasic;
     private bool isBigElgunTime =false;
+
+   
     public override void BuildBossLogic(BossBasic _bossBasic)
     {
         bossBasic = _bossBasic as Boss2002;
+        bossBasic.BossHasBeenAttack += MonsterHasBeenAttack;
+    }
+
+
+
+    public void MonsterHasBeenAttack(int value,int max)
+    {
+        if(!bossBasic.bossData.getIsFoundEnemy)
+        {
+            Found();
+            bossBasic.BossHasBeenAttack -= MonsterHasBeenAttack;
+        }
     }
 
     protected override void Logic()
@@ -57,10 +71,11 @@ public class BossLogic2002 : BossLogic {
         {
             if(bossBasic.getBossData2002.getElgunObjsList[i]!=null)
             {
+                //拿出第一个，方便与后面的比较，
                 if(t == 0)
                 {
                     t = bossBasic.getBossData2002.getElgunObjsList[i].getSkillID;
-                }else
+                }else //每读一个，就判断是否第一个是否与自己相同，如果相同，不做任何处理，如果，不同就要释放大招
                 {
                     if(bossBasic.getBossData2002.getElgunObjsList[i].getSkillID!=t)
                     {
@@ -93,6 +108,7 @@ public class BossLogic2002 : BossLogic {
 
     private void ControlElgunsToHeadPoint()
     {
+
         bossBasic.StartCoroutine(ExcuteControlElgunsToHeadPoint());
     }
 
@@ -105,6 +121,7 @@ public class BossLogic2002 : BossLogic {
         {
             if(bossBasic.getBossData2002.getElgunObjsList[i]!=null)
             {
+                bossBasic.getBossData2002.getElgunObjsList[i].SetElgunColliderState(false);
                 startPoint.Add(bossBasic.getBossData2002.getElgunObjsList[i].selfPostion);
             }
         }
@@ -150,7 +167,6 @@ public class BossLogic2002 : BossLogic {
         bossBasic.getBossData2002.SetStartElGunTime();
         bossBasic.getBossData2002.getBossAnimation20002.PlayRealeseMgical();
         bossBasic.getBossData2002.SetEndOfRealseMagicalState(false);
-
         CheckDifferrenceElguns();
     }
 
@@ -173,7 +189,6 @@ public class BossLogic2002 : BossLogic {
         {
             if(bossBasic.getBossData2002.getElgunObjsList[i] == null)continue;
             if(bossBasic.getBossData2002.getInstancElgunTimeList[i].Equals(-1f))continue;
-
             float offsetTime = Time.time - bossBasic.getBossData2002.getInstancElgunTimeList[i];
             if(offsetTime> bossBasic.elGun_lifeTime)
             {
@@ -217,7 +232,8 @@ public class BossLogic2002 : BossLogic {
     {
         Vector3 headForwad = bossBasic.headFwdPint.forward;// TransformDirection(bossBasic.head.forward);//(Vector3.forward);
         headForwad.y = 0;
-        Vector3 targetPoint = bossBasic.selfPostion + headForwad.normalized * Random.Range(10f,20f);
+        float dis = Random.Range(10f, 20f);// * ARMonsterSceneDataManager.Instance.getARWorldScale;
+        Vector3 targetPoint = bossBasic.selfPostion + headForwad.normalized * dis;
         bossBasic.bossData.SetCurLookPoint(targetPoint);
         Vector3 targetDir = targetPoint - bossBasic.selfPostion;
         Quaternion quaternion = Quaternion.LookRotation(targetDir);// Quaternion.FromToRotation(bossBasic.transform.forward, targetDir.normalized);
@@ -291,6 +307,9 @@ public class BossLogic2002 : BossLogic {
 
       
     }
+
+
+
     private void Found()
     {
         bossBasic.bossData.SetIsFoundEnemy(true);
@@ -298,6 +317,7 @@ public class BossLogic2002 : BossLogic {
     }
 
     #endregion
+
 
    
 
@@ -322,10 +342,15 @@ public class BossLogic2002 : BossLogic {
                 FindPlayer();
             }else
             {
-                if(bossBasic.bossData.getWithEnemyDistance <= bossBasic.nearDistance)
+                if(bossBasic.bossData.getCurrentEnemy!=null)
                 {
-                    Found();
+                    //正在寻找，用于判断是否发现敌人。
+                    if (bossBasic.bossData.getWithEnemyDistance <= bossBasic.nearDistance)
+                    {
+                        Found();
+                    }
                 }
+               
             }
         }else
         {
@@ -379,16 +404,20 @@ public class BossLogic2002 : BossLogic {
 
         Debug.DrawLine(leftEnd,rightEnd,Color.red);
 
-        Vector3 point = bossBasic.bossData.getCurrentEnemy.transform.position;
-        if(isINRect(point,leftEnd,rightEnd,right,left))
+        if (bossBasic.bossData.getCurrentEnemy!=null)
         {
-            Found();
+            Vector3 point = bossBasic.bossData.getCurrentEnemy.transform.position;
+            if (isINRect(point, leftEnd, rightEnd, right, left))
+            {
+                Found();
 
-        }else 
-        {
-            Debug.Log("cube not in this !!!");
+            }
+            else
+            {
+                Debug.Log("cube not in this !!!");
+            }
+
         }
-
     }
 
     #endregion

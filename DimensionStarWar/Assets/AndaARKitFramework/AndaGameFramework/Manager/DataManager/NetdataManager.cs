@@ -309,9 +309,11 @@ public class NetdataManager : ManagerBase {
 
     private IEnumerator ExcuteGetMonsterList(string _url, WWWForm _wForm, System.Action<List<PlayerMonsterAttribute>> callback)
     {
+        AndaUIManager.Instance.OpenWaitBoard("稍等");
         WWW postData = new WWW(_url, _wForm);
         yield return postData;
-        if(postData.error!=null)
+        AndaUIManager.Instance.CloseWaitBoard();
+        if (postData.error!=null)
         {
             JIRVIS.Instance.PlayTips(postData.error);
         }else

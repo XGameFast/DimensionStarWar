@@ -50,7 +50,7 @@ public class MapController : BaseController {
         {
             JIRVIS.Instance.RemoveCommisionEventForAddStronghold();
         }
-         ARMonsterSceneDataManager.Instance.OpenGameLight(false);
+        ARMonsterSceneDataManager.Instance.OpenGameLight(false);
         data.InitData();
         ARMonsterSceneDataManager.Instance.aRWorld.CloseMapCamera();
         AndaMap.Instance.CloseMap();
@@ -408,7 +408,7 @@ public class MapController : BaseController {
         data.SetCurrentPlayerstrongholdIndex(strongholdIndex);
         PlayerStrongholdAttribute playerStrongholdAttribute = AndaDataManager.Instance.GetPlayerCurrentStrongholdData(strongholdIndex);
         AndaMap.Instance.andaMapData.SetCurrentMapCenterLatlong(playerStrongholdAttribute.strongholdPosition);
-
+        JIRVIS.Instance.SetCurrentDimensionroomIndex(playerStrongholdAttribute.strongholdIndex);
         //切换地图中心坐标，需要重新构建POI数据
         GetPOIData();
     }
@@ -626,25 +626,83 @@ public class MapController : BaseController {
     }
     #endregion
 
-    #region 玩家对保卫的据点的选择，。 保卫或者不保卫
-    private void PlayerChooseToProtectBussinessSH(bool _protect)
+    #region 询问玩家是否 要进行挑战据点
+
+    private void PlayerComfirmGame(bool _comfirm)
     {
-        if(_protect)
+        if(_comfirm)
         {
-            JIRVIS.Instance.PlayTips("当前无法直接前往保卫，侵略者过于强大");
-            BuildJIRVISFunctionBtn();
+            CallBackComfirmGame();
         }
         else
         {
-            BuildJIRVISFunctionBtn();
-            JIRVIS.Instance.PlayTips("放弃保卫据点");
-            data.SetOpenchildBar(false);//对地图的操作允
+            CancelPlayGame();
         }
-     
     }
+
     #endregion
 
-  
+    #region 玩家统一进行游戏，现在进行验证
+
+    //【玩家统一挑战】挑战据点
+    private void CallBackComfirmGame()
+    {
+        JIRVIS.Instance.CloseTips();
+        JIRVIS.Instance.jIRVISData.ClearRewardList();
+        if (TestManager.Instance.isTestLoadinglocalData)
+        {
+            AndaDataManager.Instance.TestCallServerGetBlondStrongholdMonsterListData(
+                JIRVIS.Instance.jIRVISData.currentEnemyStrongholdIndex,
+                CallBackFinishAppleMatch);
+        }
+        else
+        {
+            int gameType = JIRVIS.Instance.jIRVISData.currentPlayGameType;
+            AndaDataManager.Instance.CallServerApplyMatch(gameType.ToString(),
+                                                          JIRVIS.Instance.jIRVISData.currentEnemyStrongholdIndex,
+                                                          JIRVIS.Instance.jIRVISData.getCurMineStrongholdIndex, CallBackFinishAppleMatch);
+        }
+    }
+    //【放弃挑战】
+    private void CancelPlayGame()
+    {
+        JIRVIS.Instance.CloseTips();
+        data.SetOpenchildBar(false);//对地图的操作允许
+        BuildJIRVISFunctionBtn();
+        //data.RemoveJIRVISEditor_ChanllengeGameStorngholdInfomationBar();
+        JIRVIS.Instance.PlayTips("明智的选择");
+    }
+
+    #endregion
+
+    //向服务器申请游戏验证，
+    private void CallBackFinishAppleMatch(bool Success)
+    {
+        if (Success)
+        {
+            JIRVIS.Instance.CloseTips();
+            switch (JIRVIS.Instance.jIRVISData.currentPlayGameType)
+            {
+                case 0://保卫战
+                    callbackFinishController(ONAME.PROTECTGAMECONTROLLER);
+                    break;
+                case 1://挑战
+                    callbackFinishController(ONAME.CHALLENGEGAMECONTROLLER);
+                    break;
+                case 2://捕捉
+
+                    break;
+            }
+            Debug.Log("成功进入游戏");
+            JIRVIS.Instance.PlayTips("成功进入游戏");
+        }
+        else
+        {
+
+            BuildJIRVISFunctionBtn();
+            JIRVIS.Instance.PlayTips("当前不能游戏，请检查网络");
+        }
+    }
 
     #region 服务器回调上传编辑的占星庭数据成功
 
@@ -800,7 +858,44 @@ public class MapController : BaseController {
         JIRVIS.Instance.jIRVISData.SetCurrentChallenggeStronghold((PlayerStrongholdAttribute)_shBase);
         CallSeverGetSelectStrongholdInfomation();
     }
+    #region 向服务器索取要挑战的据点数据
+    private void CallSeverGetSelectStrongholdInfomation()
+    {
+        data.SetWaitState(true);
+        AndaDataManager.Instance.CallServerGetFightMonsterForOtherPlayer(JIRVIS.Instance.jIRVISData.currentEnemyStrongholdIndex, CallBackGetStrongholdEnemyData);
+
+    }
     #endregion
+    #region 成功获取要挑战的据点数据
+
+    private void CallBackGetStrongholdEnemyData(List<PlayerMonsterAttribute> playerMonsters)
+    {
+        if (playerMonsters == null || playerMonsters.Count == 0)
+        {
+            BuildJIRVISFunctionBtn();
+            JIRVIS.Instance.PlayTips("当前据点无守护宠物，不可挑战");
+            data.SetWaitState(false);
+            data.SetOpenchildBar(false);//对地图的操作允许
+        }
+        else
+        {
+
+            data.SetWaitState(false);
+            data.SetOpenchildBar(true);//对地图的操作的禁止
+            RegisterControlCamera(false);
+            RegisterSelectMapItem(false);
+            JIRVIS.Instance.jIRVISData.SetEnemys(playerMonsters);
+            JIRVIS.Instance.BuildOtherPlayerStrongholdInformation((PlayerStrongholdAttribute)JIRVIS.Instance.jIRVISData.getCurChallengeStrongholdAttr,playerMonsters[0]);
+            JIRVIS.Instance.jIRVISData.jIRVISContent_ChanllengeGameStronghold.CallBackResult = PlayerComfirmGame;
+        }
+
+    }
+    #endregion
+
+    #endregion
+
+
+
 
     #region 打开商家据点信息面板
     private void OpenBussinessStrongholdInformation(StrongholdBaseAttribution _shBase)
@@ -809,69 +904,15 @@ public class MapController : BaseController {
         BusinessStrongholdAttribute bsa = (BusinessStrongholdAttribute)_shBase;
         JIRVIS.Instance.jIRVISData.SetCurrentProtectedStronghold(bsa);
         JIRVIS.Instance.BuildBussinessStrongholdInfomationBar(bsa);
-        JIRVIS.Instance.jIRVISData.jIRVISContent_Bussiness.callBackPlayerChoose = PlayerChooseToProtectBussinessSH;
+        JIRVIS.Instance.jIRVISData.jIRVISContent_Bussiness.callBackPlayerChoose = PlayerComfirmGame;
     }
 
     #endregion
+
+
+
+
   
-
-    #region 玩家点击了据点
-    private void CallbackSelectItem(Transform item)
-    {
-
-        /*//先检查一下这个据点有没有宠物
-        List<PlayerMonsterAttribute> tmpMonsterList = AndaDataManager.Instance.GetPlayerMonsterAttributeBelongThisStronghold(JIRVIS.Instance.jIRVISData.getCurMineStrongholdIndex);
-        if (tmpMonsterList == null || tmpMonsterList.Count == 0)
-        {
-            tmpMonsterList = AndaDataManager.Instance.GetUserFreesMonster();
-            if (tmpMonsterList.Count == 0)
-            {
-                JIRVIS.Instance.PlayTipsForchoose("当前没有可以出战的星宿，我发现有一个地方可以捕捉星宿，请随我而来！", OTYPE.TipsType.chooseTips, "那我们走八", "不感兴趣", ToSearchController, CloseJumpToDetectControllerTips);
-                data.SetOpenchildBar(true);//对地图的操作的禁止
-                return;
-            }
-            else
-            {
-                JIRVIS.Instance.BuildMonsterBtnList(tmpMonsterList, SetMonsterToThisStronghold);
-                JIRVIS.Instance.AddFunctionBtn(new JIRVISFuncBtnStruct { btnName = "返回", btnIconKey = ONAME.BackStep, clickCallBack = CloseInsterMonsterTostrongholdEditorBar });
-                JIRVIS.Instance.PlayTips("尊敬的读星者请将该星宿加入占星庭，为了+[" + AndaDataManager.Instance.GetPlayerAllStrongholdAttribute()[0].strongholdNickName + "而战！]");
-                return;
-            }
-
-        }*/
-
-        if (data.getCommissionEventContainsBuildstronghold) return;
-        BuildPlayerTower towerBase = item.GetComponent<BuildPlayerTower>();
-        if (towerBase != null)
-        {
-            if (towerBase.getStronholdType == 1)//商家
-            {
-                JIRVIS.Instance.PlayTips("星域商人正在穿越传送门的途中，即将登陆");
-
-                /* OTYPE.Tipscontent tipscontent = OTYPE.Tipscontent.protectStronghold;
-                string content = "是否立刻对" + towerBase.data.getStrongholdBaseAttribution.strongholdNickName + MonsterGameData.GetTipsContent(tipscontent);
-                JIRVIS.Instance.jIRVISData.SetCurrentProtectedStronghold((BusinessStrongholdAttribute)towerBase.data.getStrongholdBaseAttribution );
-                JIRVIS.Instance.PlayTipsForchoose(content,OTYPE.TipsType.chooseTips, "保卫" ,"瑟瑟发抖" ,CallBackComfirmGame, JIRVIS.Instance.CloseTips);
-               */
-            }
-            else if (towerBase.getStronholdType == 0)//个人
-            {
-                if (towerBase.getHostIndex == AndaDataManager.Instance.userData.userIndex)
-                {
-                    data.SetCurrentPlayerstrongholdIndex(towerBase.getStrongholdIndex);
-                    JIRVISAskForEnterMineStrongholdNow();
-                }
-                else
-                {
-                    JIRVIS.Instance.jIRVISData.SetCurrentChallenggeStronghold((PlayerStrongholdAttribute)towerBase.playerStrongholdAttribute);
-                    CallSeverGetSelectStrongholdInfomation();
-                }
-            }
-        }
-    }
-
-    #endregion
-
     #region BUILD
 
 
@@ -1022,13 +1063,7 @@ public class MapController : BaseController {
          AndaDataManager.Instance.TestInsertStronghold(ad);
     }
 
-    //[向服务器索要点击的据点数据]
-    private void CallSeverGetSelectStrongholdInfomation()
-    {
-        data.SetWaitState(true);
-        AndaDataManager.Instance.CallServerGetFightMonsterForOtherPlayer(JIRVIS.Instance.jIRVISData.currentEnemyStrongholdIndex,CallBackGetStrongholdEnemyData);
-       
-    }
+   
 
 
   
@@ -1108,68 +1143,9 @@ public class MapController : BaseController {
         BuildJIRVISFunctionBtn();
     }
 
-    private void CallBackGetStrongholdEnemyData(List<PlayerMonsterAttribute> playerMonsters)
-    { 
-        if(playerMonsters == null || playerMonsters.Count == 0 )
-        {
-            BuildJIRVISFunctionBtn();
-            JIRVIS.Instance.PlayTips("当前据点无守护宠物，不可挑战");
-            data.SetWaitState(false);
-                data.SetOpenchildBar(false);//对地图的操作允许
-        }
-        else
-        {
-
-            data.SetWaitState(false);
-            data.SetOpenchildBar(true);//对地图的操作的禁止
-            RegisterControlCamera(false);
-            RegisterSelectMapItem(false);
-            #region 向JIRVIS 保存要挑战的角色信息
-            JIRVIS.Instance.jIRVISData.SetEnemys(playerMonsters);
-            #endregion
-           
-            #region JIRVIS 发出提示，是否要挑战该据点
-            OTYPE.Tipscontent tipscontent = OTYPE.Tipscontent.challegeStronghold;
-            string content = "是否立刻对[" + AndaGameExtension.ChangeTextColorToYellow(JIRVIS.Instance.jIRVISData.getCurChallengeStrongholdAttr.strongholdNickName) + "]"+ MonsterGameData.GetTipsContent(tipscontent);
-            JIRVIS.Instance.PlayTipsForchoose(content, OTYPE.TipsType.chooseTips, "挑战", "不挑战", CallBackComfirmGame, CallCancelChanllenge);
-            //[目前就默认挑选第一只]
-            data.BuildJIRVISEditor_ChanllengeGameStorngholdInfomationBar((PlayerStrongholdAttribute)JIRVIS.Instance.jIRVISData.getCurChallengeStrongholdAttr, playerMonsters[0]);
-            //JIRVIS.Instance.RemoveCurrentBtnList();
-            #endregion
-        }
-       
-    }
 
 
-    //【玩家统一挑战】挑战据点
-    private void CallBackComfirmGame()
-    {
-        JIRVIS.Instance.CloseTips();
-        JIRVIS.Instance.jIRVISData.ClearRewardList();
-        if (TestManager.Instance.isTestLoadinglocalData)
-        {
-            AndaDataManager.Instance.TestCallServerGetBlondStrongholdMonsterListData(
-                JIRVIS.Instance.jIRVISData.currentEnemyStrongholdIndex,
-                CallBackFinishAppleMatch);
-        }else
-        {
-            int gameType = JIRVIS.Instance.jIRVISData.currentPlayGameType;
-            AndaDataManager.Instance.CallServerApplyMatch(gameType.ToString(),
-                                                      JIRVIS.Instance.jIRVISData.currentEnemyStrongholdIndex,
-                                                      JIRVIS.Instance.jIRVISData.getCurMineStrongholdIndex,CallBackFinishAppleMatch);
-        }
-    }
-    //【放弃挑战】
-    private void CallCancelChanllenge()
-    {
-        JIRVIS.Instance.CloseTips();
-        data.SetOpenchildBar(false);//对地图的操作允许
-        RegisterControlCamera(true);
-        RegisterSelectMapItem(true);
-        BuildJIRVISFunctionBtn();
 
-        data.RemoveJIRVISEditor_ChanllengeGameStorngholdInfomationBar();
-    }
 
 
     private void CallBackClickProtect()
@@ -1178,32 +1154,7 @@ public class MapController : BaseController {
 
     }
 
-    //向服务器申请游戏验证，
-    private void CallBackFinishAppleMatch(bool Success)
-    {
-        if(Success)
-        {
-            
-            JIRVIS.Instance.CloseTips();
-            switch(JIRVIS.Instance.jIRVISData.currentPlayGameType)
-            {
-                case 0://保卫战
-                    break;
-                case 1://挑战
-                    callbackFinishController(ONAME.CHALLENGEGAMECONTROLLER);
-                    break;
-                case 2://捕捉
-                    break;
-            }
-            Debug.Log("成功进入游戏");
-            JIRVIS.Instance.PlayTips("成功进入游戏");
-        }else
-        {
 
-            BuildJIRVISFunctionBtn();
-            JIRVIS.Instance.PlayTips("当前不能游戏，请检查网络");
-        }
-    }
 
     private void ControlRotateCamera(Vector3 _rotate)
     {

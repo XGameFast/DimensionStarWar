@@ -85,7 +85,7 @@ public class Skill10004 : SkillBallistic
         //设置移动特效起始位置
         SetObjtToTargetPoint(mainObj.gameObject, insPoint);
         //初始化 可击中单位的Layer
-        List<string> hitLayer = new List<string> { host.isPlayer ? "Monster" : "Player", "Objects", "Defense", "Skill" };
+        List<string> hitLayer = new List<string> { host.isPlayer ? "Monster": "Player", "Objects", "Defense", "Skill" };
 
         //注册被击中事件
         dandao.RegisterEvent(Hit, hitLayer, 0);

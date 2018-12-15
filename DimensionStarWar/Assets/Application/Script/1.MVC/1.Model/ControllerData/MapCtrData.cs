@@ -152,7 +152,7 @@ public class MapCtrData : ControllerData {
         currentShowItemType = -1;
 
 
-      
+        RemoveMenu();
 
         RemoveAllMineStronghold();
         if(selfPlayerStrongholdAttributes!=null)selfPlayerStrongholdAttributes.Clear();
@@ -165,11 +165,16 @@ public class MapCtrData : ControllerData {
         RemoveAllBussinessStronghold();
         if(bussinessStrongholdAttributes!=null)bussinessStrongholdAttributes.Clear();
         if(bussinessStrongholdIndexList!=null)bussinessStrongholdIndexList.Clear();
-       
+
         RemoveJIRVISEditorbarForStrongholdInfo();
-        RemoveJIRVISEditor_ChanllengeGameStorngholdInfomationBar();
 
         RemoveCurrentLocationPointItem();
+    }
+
+    public override void RemoveMenu()
+    {
+        base.RemoveMenu();
+        mapMenu = null;
     }
 
     public void RemoveCurrentLocationPointItem()
@@ -455,10 +460,7 @@ public class MapCtrData : ControllerData {
    
     public void BuildJIRVISEditor_ChanllengeGameStorngholdInfomationBar(PlayerStrongholdAttribute playerStrongholdAttribute , PlayerMonsterAttribute playerMonster)
     {
-        if(jIRVISContent_ChanllengeGameStronghold == null)jIRVISContent_ChanllengeGameStronghold = AndaDataManager.Instance.InstantiateMenu<JIRVISContent_ChanllengeGameStrongholdInfo>(ONAME.JIRVISEditorBar_ChanllengeGameStrongholdInfo);
-        jIRVISContent_ChanllengeGameStronghold.transform.SetUIInto(JIRVIS.Instance.jIRVISData.getJIRVISBar.EditorboardPoint.transform);
-        jIRVISContent_ChanllengeGameStronghold.SetInfo(playerMonster,playerStrongholdAttribute);
-        jIRVISContent_ChanllengeGameStronghold.FadeIn();
+      
     }
 
     public void RemoveJIRVISEditor_ChanllengeGameStorngholdInfomationBar()

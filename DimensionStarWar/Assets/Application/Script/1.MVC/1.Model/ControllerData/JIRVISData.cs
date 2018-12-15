@@ -93,6 +93,8 @@ public class JIRVISData {
 
     public JIRVISContent_BussinessStrongholdInfo jIRVISContent_Bussiness;
 
+    public JIRVISContent_ChanllengeGameStrongholdInfo jIRVISContent_ChanllengeGameStronghold;
+
     public bool lastChanllengeGameIsWin =false;
     // 代办事项， 0 = 建立据点
     private List<int> WaitForExcuteEvent;
@@ -100,6 +102,8 @@ public class JIRVISData {
     public bool IsAutoEnterAstroloy = false;
 
     public int isAutoEnterTargetScene = -1;
+
+    public PlayerMonsterAttribute curBossAttr;
 
     public void BuildData()
     {
@@ -158,6 +162,7 @@ public class JIRVISData {
     {
         currentProtectedStronghold = businessStrongholdAttribute;
         currentEnemyStrongholdIndex = businessStrongholdAttribute.strongholdIndex;
+      //  curBossAttr = ConvertTool.ConvertToPlayerMonsterAttribute(ConvertTool.ConvertMonsterIDToMonsterGrowupAttr(businessStrongholdAttribute.statueID)); 
         currentPlayGameType = 0;
     }
 
@@ -234,6 +239,14 @@ public class JIRVISData {
         jIRVISContent_Bussiness = AndaDataManager.Instance.InstantiateMenu<JIRVISContent_BussinessStrongholdInfo>(ONAME.JIRVISContent_BussinessStrongholdInfo);
         jIRVISContent_Bussiness.transform.SetUIInto(jIRVISBar.EditorboardPoint.transform);
         jIRVISContent_Bussiness.FadeIn();
+    }
+
+    public void BuildChallengeGameStrongholdBar()
+    {
+        if (jIRVISContent_ChanllengeGameStronghold == null) AndaDataManager.Instance.RecieveItem(jIRVISContent_ChanllengeGameStronghold);
+        jIRVISContent_ChanllengeGameStronghold = AndaDataManager.Instance.InstantiateMenu<JIRVISContent_ChanllengeGameStrongholdInfo>(ONAME.JIRVISEditorBar_ChanllengeGameStrongholdInfo);
+        jIRVISContent_ChanllengeGameStronghold.transform.SetUIInto(JIRVIS.Instance.jIRVISData.getJIRVISBar.EditorboardPoint.transform);
+        jIRVISContent_ChanllengeGameStronghold.FadeIn();
     }
 
     public void RemoveMonsterChangeInformaitonBar()

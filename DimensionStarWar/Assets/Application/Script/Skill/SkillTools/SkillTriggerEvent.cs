@@ -14,6 +14,10 @@ public class SkillTriggerEvent : MonoBehaviour {
     {
         isTag =false;
         hitLyaer = _tag;
+        if (hitLyaer.Contains("Monster"))
+        {
+            hitLyaer.Add("Boss");
+        }
         HitTarget = callBack ;
         if(boxCollider!=null) boxCollider.enabled = true;
     }

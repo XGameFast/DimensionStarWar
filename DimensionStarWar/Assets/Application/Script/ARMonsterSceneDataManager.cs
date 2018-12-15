@@ -348,7 +348,7 @@ public class ARMonsterSceneDataManager
     //战斗时 调用的hit
     public Vector3 FightRayHit()
     {
-        if (Physics.Raycast(mainCamera.transform.position, mainCamera.transform.forward, out hit, 500, 1 << LayerMask.NameToLayer("Monster") | 1 << LayerMask.NameToLayer("Wall")| 1 << LayerMask.NameToLayer("Objects")| 1 << LayerMask.NameToLayer("Skill")))
+        if (Physics.Raycast(mainCamera.transform.position, mainCamera.transform.forward, out hit, 500, 1 << LayerMask.NameToLayer("Monster") | 1 << LayerMask.NameToLayer("Wall")| 1 << LayerMask.NameToLayer("Objects")| 1 << LayerMask.NameToLayer("Skill")| 1 << LayerMask.NameToLayer("Boss")))
         {
             return hit.point;;
         }

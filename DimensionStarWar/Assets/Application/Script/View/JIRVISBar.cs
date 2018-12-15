@@ -217,7 +217,7 @@ public class JIRVISBar : UIBasic2 {
         }
        
         tipsLabel.text = tmpContent;
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(5f);
         tipsLabel.text = "";
         mask.gameObject.SetTargetActiveOnce(false);
         tipsSlider.value = 0;

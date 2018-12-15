@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BossSkill_10010 : BossSkillBasic {
+public class BossSkill_10010 : BossSkill_2001_Basic {
 
     public GameObject elPower;
 
@@ -16,9 +16,6 @@ public class BossSkill_10010 : BossSkillBasic {
 
         elPower.gameObject.SetTargetActiveOnce(false);
         elPower.SetInto(transform);
-
-
-
         base.OnDispawn();
 
     }
@@ -54,7 +51,10 @@ public class BossSkill_10010 : BossSkillBasic {
         elPower.SetInto(transform);
         if(Physics.Raycast(mainObj.transform.position , mainObj.transform.forward , out hit, 10))
         {
-
+            if (hit.transform.tag == "Monster")
+            {
+                hit.transform.GetComponent<MonsterBasic>().ControllerHasbeenHit(null, bossSkillData.playerSkillAttribute.skillPower);
+            }
             float distance = Vector3.Distance(hit.point , transform.position);
             float scale = (distance/2.632178f)/4f;
             powerLine.transform.localScale = new Vector3 (1,1,scale);
@@ -66,4 +66,6 @@ public class BossSkill_10010 : BossSkillBasic {
         }
         //base.SetMainObjPose(transform);
     }
+
+   
 }

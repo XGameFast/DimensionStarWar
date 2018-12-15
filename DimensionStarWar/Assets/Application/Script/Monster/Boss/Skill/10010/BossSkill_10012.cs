@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BossSkill_10012 : BossSkillBasic {
+public class BossSkill_10012 : BossSkill_2001_Basic {
 
     public Magical elGunsBall;
     private Boss2002 boss2002 {get{return bossBasic as Boss2002;}}
@@ -11,6 +11,7 @@ public class BossSkill_10012 : BossSkillBasic {
     {
         base.OnSpawn();
         elGunsBall.gameObject.SetTargetActiveOnce(true);
+        SetElgunColliderState(true);
     }
 
     public override void OnDispawn()
@@ -52,17 +53,19 @@ public class BossSkill_10012 : BossSkillBasic {
         mainObj.SetTargetActiveOnce(true);
         if(Physics.Raycast(mainObj.transform.position , mainObj.transform.forward , out hit))
         {
-
+            if(hit.transform.tag == "Monster")
+            {
+                hit.transform.GetComponent<MonsterBasic>().ControllerHasbeenHit(null, bossSkillData.playerSkillAttribute.skillPower);
+            }
             float distance = Vector3.Distance(hit.point , transform.position);
             float scale = (distance/2.632178f)/5f;
             shotLine.transform.localScale = new Vector3 (1,1,scale);
-            Debug.Log("击中");
             exploreObj.transform.parent = null;
             exploreObj.transform.position = hit.point;
             exploreObj.gameObject.SetTargetActiveOnce(true);
             ResetDestory(2f);
         }
-       // base.SetMainObjPose(transform);
+       //base.SetMainObjPose(transform);
     }
 
     public override void HasBeenDestroy()
@@ -70,5 +73,10 @@ public class BossSkill_10012 : BossSkillBasic {
         base.HasBeenDestroy();
         boss2002.getBossData2002.RemoveElgunObjToList(this);//(i);
         AndaDataManager.Instance.RecieveItem(this);
+    }
+
+    public override void SetElgunColliderState(bool open)
+    {
+        elGunsBall.GetComponent<BoxCollider>().enabled = open;
     }
 }
