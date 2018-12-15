@@ -9,8 +9,12 @@ public class TestToolDownloadConfigEditor : Editor {
     //在这里方法中就可以绘制面板。
     public override void OnInspectorGUI() 
     {
+
+
         //得到Test对象
         TestToolDownloadConfig test = (TestToolDownloadConfig) target;
+
+        test.Account = EditorGUILayout.TextField("账号", test.Account);
 
         test.isAutoExcute = EditorGUILayout.Toggle("自动执行脚本",
                                                       test.isAutoExcute);

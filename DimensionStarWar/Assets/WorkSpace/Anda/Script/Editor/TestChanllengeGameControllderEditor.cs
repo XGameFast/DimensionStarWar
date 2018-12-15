@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using UnityEditor;
+
 
 [CustomEditor(typeof(TestChallengeGameController))] 
 public class TestChanllengeGameControllderEditor : Editor {
@@ -13,17 +15,29 @@ public class TestChanllengeGameControllderEditor : Editor {
 
         TestChallengeGameController test = (TestChallengeGameController) target;
 
+        test.enemyPower = EditorGUILayout.ObjectField("敌人血条UI", test.enemyPower, typeof(Text), true) as Text;
+
+        test.minePower = EditorGUILayout.ObjectField("我方血条UI", test.minePower, typeof(Text), true) as Text;
+
+        test.enemyMakePower = EditorGUILayout.ObjectField("敌人造成的伤害UI", test.enemyMakePower, typeof(Text), true) as Text;
+
+        test.mineMakePower = EditorGUILayout.ObjectField("我放造成伤害的UI", test.mineMakePower, typeof(Text), true) as Text;
+
         test.GameCamera = EditorGUILayout.ObjectField("游戏相机",test.GameCamera,typeof(Camera),true) as Camera ;
 
         test.UICamera = EditorGUILayout.ObjectField("UI相机",test.UICamera,typeof(Camera),true) as Camera ;
 
         test.ARWorldTrans = EditorGUILayout.ObjectField("ARWolrd",test.ARWorldTrans,typeof(Transform),true) as Transform ;
 
-        test.enemyPoint = EditorGUILayout.ObjectField("EnemySetPoint", test.enemyPoint, typeof(Transform), true) as Transform;
+        test.enemyPoint = EditorGUILayout.ObjectField("敌方宠物位置", test.enemyPoint, typeof(Transform), true) as Transform;
 
 
         EditorGUILayout.LabelField("------- 配置敌方宠物 ]",EditorStyles.largeLabel);
-       
+
+
+        test.minePiont = EditorGUILayout.ObjectField("我放宠物位置", test.minePiont, typeof(Transform), true) as Transform;
+
+
         test._selectEnemyID = (TestChallengeGameController.SelectMonsterID)EditorGUILayout.EnumPopup("选择敌方上场宠物",test._selectEnemyID,GUILayout.ExpandWidth(true));
 
         test.enmeyMaxPower = EditorGUILayout.IntField("输入宠物的最大意志力",test.enmeyMaxPower);
@@ -46,6 +60,9 @@ public class TestChanllengeGameControllderEditor : Editor {
         EditorGUILayout.LabelField("------- 选择玩家的宠物------- ]",EditorStyles.largeLabel);
 
         test.playerStrongholdIndex = EditorGUILayout.IntField("选择玩家的据点游标",test.playerStrongholdIndex);
+
+        test.tmpMonsterPower = EditorGUILayout.IntSlider("为我方宠物添加血量", test.tmpMonsterPower, 0, 9600);
+
 
         test._selectMonsterID = (TestChallengeGameController.SelectMonsterID)EditorGUILayout.EnumPopup("选择我放上场宠物",test._selectMonsterID,GUILayout.ExpandWidth(true));
 

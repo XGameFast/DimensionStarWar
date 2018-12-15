@@ -138,7 +138,7 @@ public class MonsterBasic : AndaObjectBasic
     public System.Action OverAttackEvent;//结束释放技能的动画事件
     public System.Action UsingSkillEvent;//发射了技能的事件
     public System.Action<int, int> UsingPropPowerblockEvent; // int = itemIndex， int = lessCount
-
+    public System.Action<int> UsedSkillAttackedTarget;//告诉监听者，这次击中造成的伤害
     public System.Action MonsterOnDispawnEvent;
     #endregion;
     public enum PointType
@@ -430,6 +430,11 @@ public class MonsterBasic : AndaObjectBasic
             GetComponent<Collider>().enabled = false;
             if (isPlayer) playerMonster.EndEngine();
             else enmeyMonster.EndEngine();
+        }
+
+        if(MonsterHaeBeenHit!=null)
+        {
+            MonsterHaeBeenHit(monsterDataValue.monsterCurrentPower,monsterDataValue.monsterMaxPower);
         }
     }
     /// <summary>
@@ -1078,8 +1083,12 @@ public class MonsterBasic : AndaObjectBasic
         // }
     }
 
-    public void UpdateSKillUseData(int value, int skillType, int skilllID, int skillIndex)
+    public void UpdateSKillUseData(int makePower,int value, int skillType, int skilllID, int skillIndex)
     {
+        if(UsedSkillAttackedTarget!=null)
+        {
+            UsedSkillAttackedTarget(makePower);
+        }
         monsterDataValue.UpdateUseSkillData(value, skillType, skilllID, skillIndex);
     }
 
