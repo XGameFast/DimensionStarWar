@@ -155,8 +155,8 @@ public class TestGameBaseController : MonoBehaviour {
         curMineMonster.SetInto(ARMonsterSceneDataManager.Instance.aRWorld.transform);
         curMineMonster.SetScalePercent(1f);
         curMineMonster.SetInto(minePiont);
-        curMineMonster.transform.position = ARMonsterSceneDataManager.Instance.GetCameraForwardFixPoint(4f);
-        curMineMonster.transform.forward =  -ARMonsterSceneDataManager.Instance.GetMainCameraForwardYZero();
+       //curMineMonster.transform.position = ARMonsterSceneDataManager.Instance.GetCameraForwardFixPoint(4f);
+        curMineMonster.transform.forward =   ARMonsterSceneDataManager.Instance.GetMainCameraForwardYZero();
         curMineMonster.isPlayer=true;
         curMineMonster.UsedSkillAttackedTarget += ListerEnmeyUseSkillPower;
         curMineMonster.MonsterHaeBeenHit += UpdateMineMonsterPower;
