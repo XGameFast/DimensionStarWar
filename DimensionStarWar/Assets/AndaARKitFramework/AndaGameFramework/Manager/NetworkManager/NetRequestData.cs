@@ -138,6 +138,15 @@ public class ResRegion
     public List<Exchange> ExchangeList { get; set; }
 }
 
+public class ExchangeRequest : Result
+{
+    public Exchange exchangeInfo { get; set; }
+}
+public class ExchangeObjectRequest : Result
+{
+    public ExchangeObject exchangeObjectInfo { get; set; }
+}
+
 public class Exchange
 {
     public int exchangeIndex { get; set; }
