@@ -270,7 +270,7 @@ public class NetdataManager : ManagerBase {
 
             List<PlayerStrongholdAttribute> playerStrongholds = new List<PlayerStrongholdAttribute>();
             List<BusinessStrongholdAttribute> businessStrongholds = new List<BusinessStrongholdAttribute>();
-
+             
             foreach(var go in tmpPlayerStronghold)
             {
                 PlayerStrongholdAttribute psa = ConvertTool.ConvertToPlayerStrongholdAttribute(go);
