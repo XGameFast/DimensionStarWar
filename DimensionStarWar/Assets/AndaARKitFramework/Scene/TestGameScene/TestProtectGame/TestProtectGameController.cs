@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class TestProtectGameController : MonoBehaviour {
 
@@ -43,7 +44,7 @@ public class TestProtectGameController : MonoBehaviour {
 
     public void BuildMineMonster()
     {
-        PlayerMonsterAttribute pma = AndaDataManager.Instance.GetUserPlayerMonstesrList()[0];
+        PlayerMonsterAttribute pma = AndaDataManager.Instance.GetUserPlayerMonstesrList().FirstOrDefault(s=>s.monsterID == 1007);
         mineMonster = AndaDataManager.Instance.InstantiateMonster<MonsterBasic>(pma.monsterID.ToString());
         mineMonster.isPlayer = true;
         mineMonster.DownloadMonsterValue(pma, OTYPE.MonsterStateType.fight);

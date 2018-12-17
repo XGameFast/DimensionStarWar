@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class TestCameraLookAtEnemy : MonoBehaviour {
-
+    public bool willLookAtEnemy =false;
 	// Use this for initialization
 	void Start () {
 		
@@ -13,8 +13,10 @@ public class TestCameraLookAtEnemy : MonoBehaviour {
 	void Update () {
         if(ARMonsterSceneDataManager.Instance.currentEnemy!=null)
         {
-            transform.LookAt(ARMonsterSceneDataManager.Instance.currentEnemy.center);
-
+            if(willLookAtEnemy)
+            {
+                transform.LookAt(ARMonsterSceneDataManager.Instance.currentEnemy.center);
+            }
         }
  
 	}

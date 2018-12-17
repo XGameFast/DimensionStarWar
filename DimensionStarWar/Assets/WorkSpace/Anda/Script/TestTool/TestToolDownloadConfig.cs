@@ -4,11 +4,15 @@ using UnityEngine;
 
 
 public class TestToolDownloadConfig : MonoBehaviour {
-    
-   /* #if UNITY_EDITOR
-    [SerializeField][("技能名称")]
-    #endif
-*/
+    [HideInInspector] [SerializeField] string _Account;
+    public string Account { get { return _Account; } set { _Account = value; } }
+
+
+    /* #if UNITY_EDITOR
+     [SerializeField][("技能名称")]
+     #endif
+ */
+
 
 
     [HideInInspector][SerializeField] bool _isAutoExcute ;
@@ -75,13 +79,13 @@ public class TestToolDownloadConfig : MonoBehaviour {
     {
         if(isNeedGetUserData)
         {
-            AndaDataManager.Instance.TestLogin(CallBackUserData,"18668437531","000000");
+            AndaDataManager.Instance.TestLogin(CallBackUserData, Account  ,"000000");
            
         }else
         {
             if(string.IsNullOrEmpty(PlayerPrefs.GetString("TestToolUserData")))
             {
-                AndaDataManager.Instance.TestLogin(CallBackUserData, "18668437531", "000000");
+                AndaDataManager.Instance.TestLogin(CallBackUserData, Account, "000000");
             }else
             {
                 PlayerData playerData = LitJson.JsonMapper.ToObject<PlayerData>(PlayerPrefs.GetString("TestToolUserData"));
