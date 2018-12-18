@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: nengliangqiu
+  m_Shader: {fileID: 4800000, guid: 123425ec296514247804d4d3ef16720a, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _node_9384:
+        m_Texture: {fileID: 2800000, guid: dbe7741aaadea684abc54d114f25a1fb, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _Cutoff: 0.5
+    - _node_1665: 0.1410256
+    m_Colors:
+    - _node_1720: {r: 0.4411766, g: 3.1135893, b: 5, a: 1}
+    - _node_3285: {r: 0.08012541, g: 0.24220419, b: 0.83823526, a: 1}
