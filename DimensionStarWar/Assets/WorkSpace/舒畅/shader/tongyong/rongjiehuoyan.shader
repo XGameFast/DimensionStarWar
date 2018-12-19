@@ -61,10 +61,10 @@ Shader "Shader Forge/rongjiehuoyan" {
                 float isFrontFace = ( facing >= 0 ? 1 : 0 );
                 float faceSign = ( facing >= 0 ? 1 : -1 );
 ////// Lighting:
-                float4 node_9942 = _Time;
-                float2 node_7739 = (i.uv0+node_9942.g*float2(-0.7,-0.3));
+                float4 node_5758 = _Time;
+                float2 node_7739 = (i.uv0+node_5758.g*float2(-0.7,-0.3));
                 float4 node_6016 = tex2D(_MainTex,TRANSFORM_TEX(node_7739, _MainTex));
-                float2 node_5587 = (i.uv0+node_9942.g*float2(-1,0.5));
+                float2 node_5587 = (i.uv0+node_5758.g*float2(-1,0.5));
                 float4 node_6628 = tex2D(_MainTex,TRANSFORM_TEX(node_5587, _MainTex));
                 float4 _mask_var = tex2D(_mask,TRANSFORM_TEX(i.uv0, _mask));
                 float node_4181 = saturate((step(node_6016.r,node_6628.r)*_mask_var.r*(node_6628.r/(node_6016.r+0.02))));
