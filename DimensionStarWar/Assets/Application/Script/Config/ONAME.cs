@@ -114,7 +114,7 @@ public static class ONAME
     public static string JIRVISContent_EditorMonsterInformation = "JIRVISContent_EditorMonsterInformation";
     public static string JIRVISContent_RewardBarForNormalReward = "JIRVISContent_RewardBarForNormalReward";
     public static string JIRVISContent_BussinessStrongholdInfo = "JIRVISContent_BussinessStrongholdInfo";
-
+    public static string jIRVISContent_ExchangeStrongholdEditorBar = "jIRVISContent_ExchangeStrongholdEditorBar";
     public static string MallBar = "MallBar";
     public static string ConsumableBar = "ConsumableBar";
     public static string SkillBar = "SkillBar";
@@ -144,6 +144,9 @@ public static class ONAME
 
     public static string PlayerPowerShotBar = "PlayerPowerShotBar";
 
+
+    public static string ExchangeMenu ="ExchangeMenu";
+
     #endregion
 
     #region UI物件
@@ -156,7 +159,14 @@ public static class ONAME
     public static string MapUIItemShboard_BussinesssSH = "MapUIItemShboard_BussinesssSH";
     public static string MapUIItemShboard_BossSh = "MapUIItemShboard_BossSh";
     public static string MapUIItemShboard_exchangeSH = "MapUIItemShboard_exchangeSH";
+    public static string MapUIItemShboard_Exchange_Tmp = "MapUIItemShboard_Exchange_Tmp";
     public static string TipsItemPoint = "TipsItemPoint";
+    /// <summary>
+    /// 在交易所 列出的用于购买的item
+    /// </summary>
+    public static string ExchangeMenuItem_BuyItem = "ExchangeMenuItem_BuyItem";
+
+    public static string ExchangeMenuItem_SellItem = "ExchangeMenuItem_SellItem";
 
     #endregion
     #region 消耗品
@@ -227,6 +237,9 @@ public static class ONAME
     public static string freeMonsters = "51023";
     public static string mapAngle3D = "51024";
     public static string mapAngle2D = "51025";
+    public static string addExchange = "51026";
+    public static string consignForsale = "51027";
+    public static string cardTicket = "51028";
 
     public static string shootingTrainingIcon = "shootingTrainingIcon";
 

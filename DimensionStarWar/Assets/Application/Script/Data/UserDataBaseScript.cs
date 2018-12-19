@@ -9,6 +9,7 @@ public class UserDataBaseScript{
     public int userType;
     public List<PlayerMonsterAttribute> userMonsterList;
     public List<StrongholdBaseAttribution> userStrongholdList;
+    public List<Exchange> userExchangeSHList;
     public List<PlayerSkillAttribute> playerSkillAttributes;
     public UserBaseData userData;
     public Dictionary<int, List<UserObjsBox> > userObjs = new Dictionary<int, List<UserObjsBox>>();

@@ -13,6 +13,16 @@ public class MapUIItem_icon_lvBoard_Name : AndaObjectBasic {
     private  int shDataType;
     private StrongholdBaseAttribution strongholdBaseAttribution;
     private System.Action<StrongholdBaseAttribution> clickCallBack;
+    private System.Action<Exchange> clickExchage;
+    private Exchange exchange;
+
+    public void SetInfo(Exchange _exchange)
+    {
+        exchange = _exchange;
+        shName.text = _exchange.ExchangeName;
+        AndaDataManager.Instance.GetOtherPlayerPorImg(_exchange.userIndex,_exchange.headImg, UpdatePorImage );
+
+    }
 
     public void SetInfo(StrongholdBaseAttribution _shAttr)
     {
@@ -28,21 +38,29 @@ public class MapUIItem_icon_lvBoard_Name : AndaObjectBasic {
                 levelboard.sprite = levelBoard;
                 break;
             case 1:
-               // Sprite imgPor = AndaDataManager.Instance AndaDataManager.Instance.GetStrongholdPorSprite(p.statueID.ToString());
-               levelboard.sprite = AndaDataManager.Instance.GetBussinessLevelBoardSprite(_shAttr.strongholdLevel); ;
+               //Sprite imgPor = AndaDataManager.Instance AndaDataManager.Instance.GetStrongholdPorSprite(p.statueID.ToString());
+               levelboard.sprite = AndaDataManager.Instance.GetBussinessLevelBoardSprite(_shAttr.strongholdLevel);
                 break;
             case 2:
+
                 break;
         }
 
         float d = AndaGameExtension.GetLatlonDistance(_shAttr.strongholdPosition[0], _shAttr.strongholdPosition[1] , AndaLocaltion.Instance.currentLocation.LatitudeLongitude.x, AndaLocaltion.Instance.currentLocation.LatitudeLongitude.y).DoubleToFloat();
-         withDistance.text = "距您" + d.FloatToFloat() + "米";
-         shName.text = _shAttr.strongholdNickName;
+         
+        withDistance.text = "距您" + d.FloatToFloat() + "米";
+
+        shName.text = _shAttr.strongholdNickName;
     }
 
     public void RegisterClickCallBack(System.Action<StrongholdBaseAttribution> callback)
     {
         clickCallBack = callback;
+    }
+
+    public void RegisterClickCallBack(System.Action<Exchange> callback)
+    {
+        clickExchage = callback;
     }
 
     public void UpdatePorImage(Sprite sp)
@@ -55,6 +73,11 @@ public class MapUIItem_icon_lvBoard_Name : AndaObjectBasic {
         if(clickCallBack!=null)
         {
             clickCallBack(strongholdBaseAttribution);
+        }
+
+        if(clickExchage!=null)
+        {
+            clickExchage(exchange);
         }
     }
 

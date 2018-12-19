@@ -359,6 +359,44 @@ public static class ConvertTool{
     }
     #endregion
 
+    #region ExchangeObj 包含的宠物信息转换成  ExchangeObj
+
+    public static ExchangeObject ConvertMonsterInfoToExchangeObj(ExchangeObject exchangeObject)
+    {
+        ExchangeObject eo = new ExchangeObject();
+        MonsterBaseConfig mbc = MonsterGameData.GetMonsterBaseConfig(exchangeObject.objectID);
+        eo = new ExchangeObject();
+        eo = exchangeObject;
+        eo.objName = mbc.monsterName;
+        eo.objDescription = mbc.monsterDescription;
+        return eo;
+    }
+
+
+    #endregion
+
+    #region ExchangeObj 包含的消耗品信息转换成  ExchangeObj
+    public static ExchangeObject ConverterConsumableInfoToExchangeObj(ExchangeObject exchangeObject)
+    {
+        ExchangeObject eo = new ExchangeObject();
+        CD_ObjAttr cD_ObjAttr = MonsterGameData.GetCD_ObjAttr(exchangeObject.objectID);
+        eo = new ExchangeObject();
+        eo = exchangeObject;
+        int idType = AndaDataManager.Instance.GetObjTypeID(exchangeObject.objectID);
+        int smallID = exchangeObject.objectID - idType;
+        eo.objName = cD_ObjAttr.objectName[smallID];
+        eo.objDescription = cD_ObjAttr.objectDescription[smallID];
+        return eo;
+    }
+
+
+    #endregion
+
+    #region 将 商品优化券 转换成 ExchangeObj
+
+    #endregion
+
+
     #region 输入 宠物ID，输出 构造的 monsterGrowupAttr
     public static MonsterGrowUpAttribute ConvertMonsterIDToMonsterGrowupAttr(int monsterID)
     {

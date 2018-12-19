@@ -366,11 +366,19 @@ public class ARMonsterSceneDataManager
         }
     }
 
+    public Vector3 GetMapCameraHitPoint()
+    {
+        if (Physics.Raycast(MapCamera.transform.position, MapCamera.transform.forward, out hit, 5000))
+        {
+            return hit.point;
 
+        }
+        return Vector3.zero;
+    }
 
     public Transform MapSceneRayHitItem()
     {
-        if (Physics.Raycast(MapCamera.transform.position, MapCamera.transform.forward, out hit, 500))
+        if (Physics.Raycast(MapCamera.transform.position, MapCamera.transform.forward, out hit, 2000))
         {
             if(hit.transform.tag == ONAME.TowerTag)
             {

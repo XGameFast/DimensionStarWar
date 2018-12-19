@@ -129,8 +129,9 @@ public class NetdataManager : ManagerBase {
         }
         else
         {
+#if UNITY_EDITOR
             var data = JsonMapper.ToObject<PlayerLogin>(postData.text);
-            Debug.Log(postData.text);
+#endif
             if (data.code == "200")
             {
                 AndaDataManager.Instance.SetUserData(data.PlayerData);
@@ -240,7 +241,7 @@ public class NetdataManager : ManagerBase {
 
     #region 通过经纬度查询范围内的所有据点数据
 
-    public void GetCurrentLocationRangeOtherData(List<double> location,System.Action<List<PlayerStrongholdAttribute>,List<BusinessStrongholdAttribute>> callback)
+    public void GetCurrentLocationRangeOtherData(List<double> location,System.Action<List<PlayerStrongholdAttribute>,List<BusinessStrongholdAttribute>, List<Exchange>> callback)
     {
         var _wForm = new WWWForm();
 
@@ -250,7 +251,7 @@ public class NetdataManager : ManagerBase {
         StartCoroutine(GetCurrentLocationRangeOtherData("http://106.14.16.150:8085/api/Region/GetRegion", _wForm, callback));
     }
 
-    private IEnumerator GetCurrentLocationRangeOtherData(string _url, WWWForm _wForm ,System.Action<List<PlayerStrongholdAttribute>,List<BusinessStrongholdAttribute>> callback)
+    private IEnumerator GetCurrentLocationRangeOtherData(string _url, WWWForm _wForm ,System.Action<List<PlayerStrongholdAttribute>,List<BusinessStrongholdAttribute>, List<Exchange>> callback)
     {
         WWW postData = new WWW(_url, _wForm);
         yield return postData;
@@ -269,6 +270,7 @@ public class NetdataManager : ManagerBase {
             List<BusinessStrongholdGrowUpAttribute> tmpBusinessStronghold = data.resRegion.BusinessStrongHoldlist;
 
             List<PlayerStrongholdAttribute> playerStrongholds = new List<PlayerStrongholdAttribute>();
+
             List<BusinessStrongholdAttribute> businessStrongholds = new List<BusinessStrongholdAttribute>();
              
             foreach(var go in tmpPlayerStronghold)
@@ -286,7 +288,16 @@ public class NetdataManager : ManagerBase {
                 bsa.strongholdID = 30005;
                 businessStrongholds.Add(bsa);
             }
-            callback(playerStrongholds,businessStrongholds);
+
+            foreach(var go in data.resRegion.ExchangeList)
+            {
+                double x = go.exchangePositionx;
+                go.exchangePositionx = go.exchangePositiony;
+                go.exchangePositiony = x;
+            }
+             
+
+            callback(playerStrongholds,businessStrongholds, data.resRegion.ExchangeList);
            
         }
     }
@@ -842,9 +853,147 @@ public class NetdataManager : ManagerBase {
     #endregion
 
     #region 上传
+    /// <summary>
+    /// 上传奖励券到交易所
+    /// </summary>
+    /// <param name="ecbc">Exchange object.</param>
+    /// <param name="callback">Callback.</param>
+    public void CallServerUploadExBSCouponToExchange(ExchangeBusinessCoupon ecbc, System.Action<ExchangeBusinessCoupon> callback)
+    {
+        WWWForm wWWForm = new WWWForm();
+        wWWForm.AddField("token", AndaDataManager.Instance.userData.token);
+        wWWForm.AddField("exchangeIndex", ecbc.exchangeIndex);
+        wWWForm.AddField("playerCouponIndex", ecbc.playerCouponIndex);
+        wWWForm.AddField("count", ecbc.couponCount);
+        string json = JsonMapper.ToJson(ecbc.couponPrice);
+        wWWForm.AddField("price", json);
+        json = JsonMapper.ToJson(ecbc.buyType);
+        wWWForm.AddField("typeList", json);
+        string path = networkAdress2 + "Exchange/InsertExchangeCoupon";
+        StartCoroutine(ExcuteCallServerUploadExBSCouponToExchange(path, wWWForm, callback));
+    }
+
+    private IEnumerator ExcuteCallServerUploadExBSCouponToExchange(string _url, WWWForm wWWForm, System.Action<ExchangeBusinessCoupon> callback)
+    {
+        AndaUIManager.Instance.OpenWaitBoard("请稍等");
+        WWW postData = new WWW(_url, wWWForm);
+        yield return postData;
+        AndaUIManager.Instance.CloseWaitBoard();
+        if (postData.error != null)
+        {
+            callback(null);
+        }
+        else
+        {
+#if UNITY_EDITOR
+            Debug.Log(postData.text);
+#endif
+            ExchangeCouponRequest result = JsonMapper.ToObject<ExchangeCouponRequest>(postData.text);
+            if (result.code == "200")
+            {
+                ExchangeBusinessCoupon exchangeObject = result.exchangeCouponInfo;
+                AndaDataManager.Instance.userData.ReduceBussinesCoupon(exchangeObject.playerCouponIndex);
+                callback(exchangeObject);
+            }
+            else
+            {
+                callback(null);
+            }
+        }
+    }
 
 
 
+
+    public void CallServerUploadExchangeObjectToExchange(ExchangeObject exchangeObject , System.Action<ExchangeObject> callback)
+    {
+        WWWForm wWWForm = new WWWForm();
+        wWWForm.AddField("token", AndaDataManager.Instance.userData.token);
+        wWWForm.AddField("exchangeIndex", exchangeObject.exchangeIndex);
+        wWWForm.AddField("objectIndex", exchangeObject.objectIndex);
+        wWWForm.AddField("count", exchangeObject.objectCount);
+        string json = JsonMapper.ToJson(exchangeObject.objectPrice);
+        wWWForm.AddField("price", json);
+        json = JsonMapper.ToJson(exchangeObject.buyType);
+        wWWForm.AddField("typeList", json);
+        string path = networkAdress2 + "Exchange/InsertExchangeObject";
+        StartCoroutine(ExcuteCallServerUploadExchangeObjectToExchange(path, wWWForm, callback));
+    }
+
+    private IEnumerator ExcuteCallServerUploadExchangeObjectToExchange(string _url, WWWForm wWWForm, System.Action<ExchangeObject> callback)
+    {
+        AndaUIManager.Instance.OpenWaitBoard("请稍等");
+        WWW postData = new WWW(_url, wWWForm);
+        yield return postData;
+        AndaUIManager.Instance.CloseWaitBoard();
+        if (postData.error != null)
+        {
+            callback(null);
+        }
+        else
+        {
+#if UNITY_EDITOR
+            Debug.Log(postData.text);
+#endif
+            ExchangeObjectRequest result = JsonMapper.ToObject<ExchangeObjectRequest>(postData.text);
+            if (result.code == "200")
+            {
+                ExchangeObject exchangeObject = result.exchangeObjectInfo;
+                AndaDataManager.Instance.userData.ReduceConsumableItem(exchangeObject.objectIndex, exchangeObject.objectID,exchangeObject.objectCount);
+                callback(exchangeObject);
+            }
+            else
+            {
+                callback(null);
+            }
+        }
+    }
+
+
+    public void CallServerUploadExchangeStronghold(double x, double y, string description, string exName,int rate,System.Action<Exchange> callback)
+    {
+        WWWForm wWWForm = new WWWForm();
+        wWWForm.AddField("token", AndaDataManager.Instance.userData.token);
+        wWWForm.AddField("positionx", x.ToString());
+        wWWForm.AddField("positiony", y.ToString());
+        wWWForm.AddField("note", description);
+        wWWForm.AddField("payRate", rate);
+        wWWForm.AddField("exchangeName", exName);
+        string path = networkAdress2 + "Exchange/InsertExchangeInfo";
+        StartCoroutine(ExcuteCallServerUploadExchangeStronghold(path , wWWForm, callback));
+    }
+
+    private IEnumerator ExcuteCallServerUploadExchangeStronghold(string _url, WWWForm wWWForm, System.Action<Exchange> callback)
+    {
+        AndaUIManager.Instance.OpenWaitBoard("请稍等");
+        WWW postData = new WWW(_url, wWWForm);
+        yield return postData;
+        AndaUIManager.Instance.CloseWaitBoard();
+        if (postData.error != null)
+        {
+            callback(null);
+        }
+        else
+        {
+            #if UNITY_EDITOR
+            Debug.Log(postData.text);
+            #endif
+            ExchangeRequest result = JsonMapper.ToObject<ExchangeRequest>(postData.text);
+            if (result.code == "200")
+            {
+                AndaDataManager.Instance.userData.UpdateExchangeStrongholdList(result.exchangeInfo);
+                double tmp = result.exchangeInfo.exchangePositionx;
+                result.exchangeInfo.exchangePositionx = result.exchangeInfo.exchangePositiony;
+                result.exchangeInfo.exchangePositiony = tmp;
+                callback(result.exchangeInfo);
+            }
+            else
+            {
+                callback(null);
+            }
+        }
+
+    }
 
 
 
@@ -1027,6 +1176,111 @@ public class NetdataManager : ManagerBase {
     #endregion
 
 
+
+    #endregion
+
+    #region 从交易所购买
+
+    public void CallServerBuyExbsCouponFromExchange(int itemIndex, int payType, System.Action<ExchangeBusinessCoupon> action)
+    {
+        var _wForm = new WWWForm();
+        _wForm.AddField("token ", AndaDataManager.Instance.userData.token);
+        _wForm.AddField("buyType ", payType);
+        _wForm.AddField("exchangeCouponIndex, ", itemIndex);
+        string path = networkAdress2 + "Exchange/BuyExchangeCoupon";
+        StartCoroutine(ExcuteCallServerBuyExbsCouponFromExchange(path, _wForm, itemIndex, action));
+    }
+
+    private IEnumerator ExcuteCallServerBuyExbsCouponFromExchange(string _url, WWWForm _wForm, int itemIndex, System.Action<ExchangeBusinessCoupon> action)
+    {
+        AndaUIManager.Instance.OpenWaitBoard("请稍等");
+        WWW postData = new WWW(_url, _wForm);
+        yield return postData;
+        AndaUIManager.Instance.CloseWaitBoard();
+        if (postData.error != null)
+        {
+            Debug.Log(postData.error);
+        }
+        else
+        {
+            Debug.Log(postData.text);
+            ExchangeCouponRequest data = JsonMapper.ToObject<ExchangeCouponRequest>(postData.text);
+            if (data.code == "200")
+            {
+
+                PlayerCoupon playerCoupon = new PlayerCoupon()
+                {
+                    playerIndex = data.exchangeCouponInfo.userIndex,
+                    playerCouponIndex = data.exchangeCouponInfo.playerCouponIndex,
+                    businessCouponIndex = data.exchangeCouponInfo.businessIndex,
+                    count = data.exchangeCouponInfo.couponCount,
+                    status = data.exchangeCouponInfo.coupon.status,
+                    expirationDate = data.exchangeCouponInfo.coupon.endtime,
+                    createTime = data.exchangeCouponInfo.coupon.createTime,//createTime,
+                    coupon = data.exchangeCouponInfo.coupon
+                };
+                AndaDataManager.Instance.userData.AddPlayerCoupon(playerCoupon);
+                action(data.exchangeCouponInfo);
+            }
+            else
+            {
+                action(null);
+            }
+        }
+    }
+
+
+    public void CallServerBuyItemFromExchange(int itemIndex, int payType, System.Action<ExchangeObject> action)
+    {
+        var _wForm = new WWWForm();
+        _wForm.AddField("token ", AndaDataManager.Instance.userData.token);
+        _wForm.AddField("buyType ", payType);
+        _wForm.AddField("exchangeObjectIndex ", itemIndex);
+        string path = networkAdress2 + "Exchange/BuyExchangeObject";
+        StartCoroutine(ExcuteCallServerBuyItemFromExchange(path, _wForm, itemIndex,action));
+    }
+
+    private IEnumerator ExcuteCallServerBuyItemFromExchange(string _url, WWWForm _wForm, int itemIndex, System.Action<ExchangeObject> action)
+    {
+        AndaUIManager.Instance.OpenWaitBoard("请稍等");
+        WWW postData = new WWW(_url, _wForm);
+        yield return postData;
+        AndaUIManager.Instance.CloseWaitBoard();
+        if (postData.error != null)
+        {
+            Debug.Log(postData.error);
+        }
+        else
+        {
+            Debug.Log(postData.text);
+            var data = JsonMapper.ToObject<ExchangeObjectRequest>(postData.text);
+            if (data.code == "200")
+            {
+                int GroupID =  AndaDataManager.Instance.GetObjectGroupID(data.exchangeObjectInfo.objectID);
+                switch(GroupID)
+                {
+                    case 1000:
+                     //  AndaDataManager.Instance.userData.AddMonster();
+                        break;
+                    case 40000:
+                        SD_Pag4U sD_Pag4U = new SD_Pag4U()
+                        {
+                            hostIndex = data.exchangeObjectInfo.userIndex,
+                            objectIndex = data.exchangeObjectInfo.objectIndex,
+                            objectID = data.exchangeObjectInfo.objectID,
+                            objectCount= data.exchangeObjectInfo.objectCount,
+                            objectValue = data.exchangeObjectInfo.objectValue
+                        };
+                        AndaDataManager.Instance.userData.AddConsuambleItem(sD_Pag4U);
+                        break;
+                }
+                action(data.exchangeObjectInfo);
+            }else
+            {
+                action(null);
+            }
+        }
+    }
 
     #endregion
 

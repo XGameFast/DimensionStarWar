@@ -51,13 +51,20 @@ public class BusinessCoupon
 }
 public class PlayerCoupon
 {
+    public int playerIndex{get;set;}
+    //在玩家数据库中的与玩家挂钩的主键
     public int playerCouponIndex { get; set; }
+    //这张优惠券来自哪个商家挂钩的优惠券主键
     public int businessCouponIndex { get; set; }
+    //玩家同种优化券有多少张
     public int count { get; set; }
     //优惠卷状态（0上架1下架2作废）
     public int status { get; set; }
+    //过期时间
     public int expirationDate { get; set; }
+    //建立时间
     public int createTime { get; set; }
+    //优惠券详情
     public BusinessCoupon coupon { get; set; }
 }
 
@@ -151,6 +158,8 @@ public class StrongholdGrowUpAttribute
     public string autograph { get; set; }
 
     public List<int> coupons { get; set; }
+
+    public List<BusinessActivity> activitys { get; set; }
 }
 
 public class PlayerStrongHoldGrowUpAttribute: StrongholdGrowUpAttribute
@@ -168,12 +177,14 @@ public class PlayerStrongHoldGrowUpAttribute: StrongholdGrowUpAttribute
     public List<GameRequest.Medal> storngholdMedals { get; set; }
     //--
     public int currentExp { get; set; }
+   
 }
 
 public class BusinessStrongholdGrowUpAttribute : StrongholdGrowUpAttribute
 { 
     public BusinessData BusinessData{get;set;}
     public List<BusinessCoupon> businessCoupons { get; set; }
+    public List<BusinessActivity> businessActivity {get;set;}
 }
 
 

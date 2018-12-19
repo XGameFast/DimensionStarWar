@@ -63,6 +63,8 @@ public class JIRVISData {
 
     public JIRVISContent_EditorMonsterInformation getJIRVISContent_EditorMonsterInformation { get {return jIRVISContent_EditorMonsterInformation ;}}
 
+    public JIRVISContent_ExchangeStrongholdEditorBar getjIRVISContent_ExchangeStrongholdEditorBar { get {return jIRVISContent_ExchangeStrongholdEditorBar;} }
+
     public bool isSupportAR =false;
     //当前的游戏模式 1 = 挑战模式， 0= 保卫模式 
     public int currentPlayGameType;
@@ -94,6 +96,8 @@ public class JIRVISData {
     public JIRVISContent_BussinessStrongholdInfo jIRVISContent_Bussiness;
 
     public JIRVISContent_ChanllengeGameStrongholdInfo jIRVISContent_ChanllengeGameStronghold;
+
+    public JIRVISContent_ExchangeStrongholdEditorBar jIRVISContent_ExchangeStrongholdEditorBar;
 
     public bool lastChanllengeGameIsWin =false;
     // 代办事项， 0 = 建立据点
@@ -243,10 +247,28 @@ public class JIRVISData {
 
     public void BuildChallengeGameStrongholdBar()
     {
-        if (jIRVISContent_ChanllengeGameStronghold == null) AndaDataManager.Instance.RecieveItem(jIRVISContent_ChanllengeGameStronghold);
+        if (jIRVISContent_ChanllengeGameStronghold != null) AndaDataManager.Instance.RecieveItem(jIRVISContent_ChanllengeGameStronghold);
         jIRVISContent_ChanllengeGameStronghold = AndaDataManager.Instance.InstantiateMenu<JIRVISContent_ChanllengeGameStrongholdInfo>(ONAME.JIRVISEditorBar_ChanllengeGameStrongholdInfo);
         jIRVISContent_ChanllengeGameStronghold.transform.SetUIInto(JIRVIS.Instance.jIRVISData.getJIRVISBar.EditorboardPoint.transform);
         jIRVISContent_ChanllengeGameStronghold.FadeIn();
+    }
+
+
+    public void BuildExchangeStrongholdEditorBar()
+    {
+        if(jIRVISContent_ExchangeStrongholdEditorBar == null)AndaDataManager.Instance.RecieveItem(jIRVISContent_ExchangeStrongholdEditorBar);
+        jIRVISContent_ExchangeStrongholdEditorBar = AndaDataManager.Instance.InstantiateMenu<JIRVISContent_ExchangeStrongholdEditorBar>(ONAME.jIRVISContent_ExchangeStrongholdEditorBar);
+        jIRVISContent_ExchangeStrongholdEditorBar.transform.SetUIInto(JIRVIS.Instance.jIRVISData.getJIRVISBar.EditorboardPoint.transform);
+        jIRVISContent_ExchangeStrongholdEditorBar.FadeIn();
+    }
+
+    public void RemoveExchangeStrongholdBar()
+    {
+        if (jIRVISContent_ExchangeStrongholdEditorBar != null)
+        {
+            AndaDataManager.Instance.RecieveItem(jIRVISContent_ExchangeStrongholdEditorBar);
+            jIRVISContent_ExchangeStrongholdEditorBar = null;
+        }
     }
 
     public void RemoveMonsterChangeInformaitonBar()

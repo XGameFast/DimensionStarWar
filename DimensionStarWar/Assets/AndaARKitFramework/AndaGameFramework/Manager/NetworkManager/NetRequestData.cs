@@ -147,6 +147,11 @@ public class ExchangeObjectRequest : Result
     public ExchangeObject exchangeObjectInfo { get; set; }
 }
 
+public class ExchangeCouponRequest:Result
+{
+    public ExchangeBusinessCoupon exchangeCouponInfo{get;set;}
+}
+
 public class Exchange
 {
     public int exchangeIndex { get; set; }
@@ -160,7 +165,10 @@ public class Exchange
     public int objectCount { get; set; }
     public string userName { get; set; }
     public string headImg { get; set; }
+    public string gameWorldPosition { get; set; }
+    public int payRate{get;set;}
     public List<ExchangeObject> exchangeObjects { get; set; }
+    public List<ExchangeBusinessCoupon> exchangeCoupons{get;set;}
 }
 
 public class ExchangeObject
@@ -171,12 +179,74 @@ public class ExchangeObject
     public int objectID { get; set; }
     public int objectCount { get; set; }
     public int objectValue { get; set; }
-    public int objectPrice { get; set; }
+    public List<int> objectPrice { get; set; }
+    public List<int> buyType { get; set; }
+    public string objName{get;set;}
+    public string objDescription{get;set;}
     public int objectIndex { get; set; }
+    public int buyUserIndex { get; set; }
+    public int exchangeStatus { get; set;}
+    public int exchangeTime { get; set; }
+    public int createTime { get; set; }
+    public int royalty { get; set; }
+    /// <summary>
+    /// 提成方式（也就是结算方式）
+    /// </summary>
+    public int royaltyType { get; set; }
+
+
+}
+
+public class ExchangeBusinessCoupon
+{
+    //
+    public int exchangeCouponIndex { get; set; }
+    /// <summary>
+    /// 上架优惠卷的玩家Indexs
+    /// </summary>
+    public int userIndex { get; set; }
+    /// <summary>
+    /// 上架优惠卷所在的交易所Index
+    /// </summary>
+    public int exchangeIndex { get; set; }
+    /// <summary>
+    /// Gets or sets the coupon count.
+    /// </summary>
+    /// <value>The coupon count.</value>
+    public int couponCount { get; set; }
+    public List<int> couponPrice { get; set; }
+    /// <summary>
+    /// 优惠卷商家Index
+    /// </summary>
+    public int businessIndex { get; set; }
+    /// <summary>
+    /// 商家优惠卷主键Index
+    /// </summary>
+    public int couponBusinessIndex { get; set; }
+
+    /// <summary>
+    /// 玩家优惠卷主键Index
+    /// </summary>
+    public int playerCouponIndex { get; set; }
+    public List<int> buyType { get; set; }
+    /// <summary>
+    /// 购买玩家Index
+    /// </summary>
     public int buyUserIndex { get; set; }
     public int exchangeStatus { get; set; }
     public int exchangeTime { get; set; }
+    //创建时间
     public int createTime { get; set; }
+    //提成
+    public int royalty { get; set; }
+    /// <summary>
+    /// 优惠卷相关信息
+    /// </summary>
+    public BusinessCoupon coupon { get; set; }
+    /// <summary>
+    /// 提成方式（也就是结算方式）
+    /// </summary>
+    public int royaltyType { get; set; }
 }
 
 #region Battle
