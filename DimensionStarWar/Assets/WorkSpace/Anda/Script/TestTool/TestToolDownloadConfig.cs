@@ -62,10 +62,19 @@ public class TestToolDownloadConfig : MonoBehaviour {
 
     public void Awake()
     {
-        if(isAutoExcute)
+
+        ReadCurrentFiledData();
+
+        if (isAutoExcute)
         {
             ClickExcuteDownLoad();
         }
+    }
+
+    private void ReadCurrentFiledData()
+    {
+        string json = PlayerPrefs.GetString(ONAME.MonsterConfigFileName);
+        Debug.Log("monstterConfig" + json);
     }
 
     //点击执行瞎子
