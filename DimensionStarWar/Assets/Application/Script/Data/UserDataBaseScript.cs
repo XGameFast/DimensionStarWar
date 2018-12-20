@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using GameRequest;
 public class UserDataBaseScript{
     public int userIndex;
     public string userName;
@@ -125,17 +126,17 @@ public class UserDataBaseScript{
     public void UpdateMineDataOfChanllengeGame(GameRequest.FinishBattel finishBattel)
     {
         int rewardType = finishBattel.type;
-        if(rewardType == 0)//Pve商家据点BOSS战
+        switch(rewardType)
         {
-            SetFightReward(finishBattel);
-        }
-        else if(rewardType == 1)//战斗奖励PVP玩家据点挑战
-        {
-            SetFightReward(finishBattel);
-        }
-        else if(rewardType == 2)//搜索奖励
-        {
-            SetSearchReward(finishBattel);
+            case 0://Pve商家据点BOSS战
+                SetFightReward(finishBattel);
+                break;
+            case 1://战斗奖励PVP玩家据点挑战
+                SetFightReward(finishBattel);
+                break;
+            case 2://搜索奖励
+                SetSearchReward(finishBattel);
+                break;
         }
     }
 
@@ -184,12 +185,80 @@ public class UserDataBaseScript{
     /// 分配战斗的奖励
     /// </summary>
     /// <param name="finishBattel">Finish battel.</param>
-    public void SetFightReward(GameRequest.FinishBattel finishBattel)
+    public void SetFightReward(FinishBattel finishBattel)
     {
-        int monsterCount = finishBattel.monsterList.Count;
+
+        //更新宠物技能
+        UpdataMonsterSkillAttr(finishBattel.monsterList);
+
+        int rewardsCount = finishBattel.objectList.Count;
+
+        if(finishBattel.couponList!=null && finishBattel.couponList.Count!=0)
+        {
+            List<RewardData> rwdData = new List<RewardData>();
+            int count = finishBattel.couponList.Count;
+            for(int i = 0 ; i <  count; i++)
+            {
+                rwdData.Add(ConvertTool.ConverterBattleCouponToRewardData(finishBattel.couponList[i]));
+                AndaDataManager.Instance.userData.AddPlayerCoupon(ConvertTool.ConverterBattleCouponToPlayerCoupon(finishBattel.couponList[i]));
+            }
+            //检查一下有没有普通的奖励
+            if(finishBattel.objectList!=null && finishBattel.objectList.Count!=0)
+            {
+                count = finishBattel.objectList.Count;
+                for(int i = 0; i < count; i++)
+                {
+                    rwdData.Add(ConvertTool.ConverterBattleObjectToRewardData(finishBattel.objectList[i]));
+                    int idGroup = AndaDataManager.Instance.GetObjectGroupID(finishBattel.objectList[i].objectId);
+                    switch(idGroup)
+                    {
+                        case 1000:
+
+                            break;
+                        case 40000:
+                            AndaDataManager.Instance.userData.AddConsuambleItem(ConvertTool.ConverterBattleObjectToSD_Pag4U(finishBattel.objectList[i]));
+                            break;
+                    }
+                }
+               
+            }
+
+
+
+        }else
+        {
+            //设置奖励挑战据点的奖励
+            JIRVIS.Instance.jIRVISData.SetRewardsList(finishBattel.objectList);
+            for (int i = 0; i < rewardsCount; i++)
+            {
+                int idType = AndaDataManager.Instance.GetObjectGroupID(finishBattel.objectList[i].objectId);
+                if (idType == 1000)
+                {
+                    MonsterGrowUpAttribute monsterGrowUpAttribute = BuildMonsterGrowUpAttribute(finishBattel.objectList[i].objectId, finishBattel.objectList[i].objectIndex);
+                    UpdateMonsterList(monsterGrowUpAttribute);
+                }
+                else if (idType == 40000)
+                {
+                    UpdateConsumableList(finishBattel.objectList[i].objectId, finishBattel.objectList[i].addCount, finishBattel.objectList[i].objectIndex);
+                }
+            }
+            if (finishBattel.medalInfo != null)
+            {
+                JIRVIS.Instance.jIRVISData.SetMedalReward(finishBattel.medalInfo);
+            }
+            else JIRVIS.Instance.jIRVISData.SetMedalReward(null);
+        }
+    }
+    /// <summary>
+    /// 更新宠物技能
+    /// </summary>
+    /// <param name="_value">Value.</param>
+    private void UpdataMonsterSkillAttr(List<BattelMonster> _value)
+    {
+        int monsterCount = _value.Count;
         for (int i = 0; i < monsterCount; i++)
         {
-            GameRequest.BattelMonster battelMonster = finishBattel.monsterList[i];
+            BattelMonster battelMonster = _value[i];
             PlayerMonsterAttribute playerMonsterAttribute = userMonsterList.FirstOrDefault(s => s.monsterIndex == battelMonster.monsterIndex);
             playerMonsterAttribute.mosterPower = battelMonster.monsterCurrentPower;
             playerMonsterAttribute.monsterMaxPower = battelMonster.monsterMaxPower;
@@ -204,29 +273,9 @@ public class UserDataBaseScript{
                 playerSkillAttribute.skillAchievement = battelSkill.skillAChievementValue;
             }
         }
-        int rewardsCount = finishBattel.objectList.Count;
-
-        //设置奖励挑战据点的奖励
-        JIRVIS.Instance.jIRVISData.SetRewardsList(finishBattel.objectList);
-        for (int i = 0; i < rewardsCount; i++)
-        {
-            int idType = AndaDataManager.Instance.GetObjectGroupID(finishBattel.objectList[i].objectId);
-            if (idType == 1000)
-            {
-                MonsterGrowUpAttribute monsterGrowUpAttribute =  BuildMonsterGrowUpAttribute(finishBattel.objectList[i].objectId , finishBattel.objectList[i].objectIndex);
-                UpdateMonsterList(monsterGrowUpAttribute);
-            }
-            else if (idType == 40000)
-            {
-                UpdateConsumableList(finishBattel.objectList[i].objectId, finishBattel.objectList[i].addCount, finishBattel.objectList[i].objectIndex);
-            }
-        }
-        if (finishBattel.medalInfo != null)
-        {
-            JIRVIS.Instance.jIRVISData.SetMedalReward(finishBattel.medalInfo);
-        }
-        else JIRVIS.Instance.jIRVISData.SetMedalReward(null);
     }
+
+
 
     public virtual void UpdateConsumableList(int objectID, int objectCount,int objectIndex)
     {

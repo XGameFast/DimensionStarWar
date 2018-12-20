@@ -102,6 +102,8 @@ public static class ONAME
     public static string PackageMenu = "PackageMenu";
     public static string MallMenu = "MallMenu";
     public static string MallDetail = "MallDetail";
+    public static string SingleRewardBar = "SingleRewardBar";
+
 
     public static string DimensionMonsterInfomaitonHologarmBar = "DimensionMonsterInfomaitonHologarmBar";
     public static string BuildDimensionMenu_RoomInfoBar = "BuildDimensionMenu_RoomInfoBar";

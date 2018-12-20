@@ -23,6 +23,7 @@ public class ProtectGameCtr_2001 : ProtectGameCtr_Basic {
     {
         data.Clear();
         AndaARManager.Instance.SetNeedFixedScale(false);
+        AndaARManager.Instance.StopAR();
         base.EndCtr();
     }
 

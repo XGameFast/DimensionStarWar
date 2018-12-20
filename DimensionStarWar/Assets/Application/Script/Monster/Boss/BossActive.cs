@@ -132,7 +132,7 @@ public class BossActive  {
 
     private IEnumerator ExcutePlayRotate()
     {
-        while(rotateProgress < 1f  && !isStopActive && isRatate)
+        while(rotateProgress < 1f  && !isStopActive && isRatate && bossBasic.bossData.getBossIsActive)
         {
             rotateTime += Time.deltaTime;
             rotateProgress = rotateTime / rotatePercent;
@@ -167,7 +167,7 @@ public class BossActive  {
 
     private IEnumerator ExcutePlayMove()
     {
-        while(moveProgress < 1f && !isStopActive && isMove)
+        while(moveProgress < 1f && !isStopActive && isMove && bossBasic.bossData.getBossIsActive)
         {
             distance = Vector3.Distance(bossBasic.selfPostion , targetPoint);
             //Debug.Log("distance"+distance);

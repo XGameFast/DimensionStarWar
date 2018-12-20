@@ -483,7 +483,11 @@ public class MapController : BaseController {
     #region JIRVIS 构建按钮 我的据点列表按钮
     private void JIRVISBuildMinestrongholdListBtn()
     {
-        JIRVIS.Instance.BuildDimensionRoomBtnList(AndaDataManager.Instance.GetPlayerAllStrongholdAttribute(), CallBackClickJIRVISStorngholdBtn);
+        JIRVIS.Instance.BuildDimensionRoomBtnList(AndaDataManager.Instance.GetPlayerAllStrongholdAttribute(), CallBackClickJIRVISStorngholdBtn, FinishBuildJIRVISBuildMinestrongholdListBtn);
+
+    }
+    private void FinishBuildJIRVISBuildMinestrongholdListBtn()
+    {
         List<JIRVISFuncBtnStruct> jIRVISFuncBtnStructs = new List<JIRVISFuncBtnStruct>
         {
             new JIRVISFuncBtnStruct { btnName = "当前位置", btnIconKey = ONAME.MapIcon , clickCallBack =  CallBackClickJIRVISBtnBacktoCurrentLocaiton},

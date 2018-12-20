@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-
+using GameRequest;
 public static class ConvertTool{
 
     #region 转换怪兽数据
@@ -419,6 +419,76 @@ public static class ConvertTool{
     }
 
     #endregion
+
+
+    #region 将服务器给的battleobj 专程P_g4u
+    public static SD_Pag4U ConverterBattleObjectToSD_Pag4U(BattelObject bo)
+    {
+        SD_Pag4U sD_Pag4U =new SD_Pag4U
+        {
+            objectCount = bo.addCount,
+            objectIndex = bo.objectIndex,
+            objectID = bo.objectId,
+
+        };
+        return sD_Pag4U;
+    }
+    #endregion
+
+    #region 将服务给的物品转成 rewardata
+
+    public static RewardData ConverterBattleObjectToRewardData(BattelObject ob)
+    {
+        RewardData rd = new  RewardData
+        {
+            rewardID = ob.objectId,
+            rewardCount = ob.addCount,
+        };
+        return rd;
+    }
+
+    #endregion
+
+
+    #region 将服务器给的优惠券数据转换成 RewardData
+
+    public static RewardData ConverterBattleCouponToRewardData(BattelCoupon bc)
+    {
+        RewardData rd = new RewardData
+        {
+            rewardCoupon = new RewardCoupon
+            {
+                headImg = bc.coupon.image,
+                bussiIndex = bc.coupon.strongholdIndex,
+                couponName = bc.coupon.title,
+                couponDes = bc.coupon.description,
+                count = bc.addCount
+            }
+        };
+        return rd;
+    }
+
+    #endregion
+
+    #region 将服务器的优惠券转换成PlayerConpon
+    public static PlayerCoupon ConverterBattleCouponToPlayerCoupon(BattelCoupon bc)
+    {
+        PlayerCoupon pc = new PlayerCoupon()
+        {
+            playerCouponIndex = bc.PlayerCouponIndex,
+            businessCouponIndex = bc.coupon.businesscouponIndex,
+            count = bc.addCount,
+            status = bc.coupon.status,
+            expirationDate = bc.coupon.endtime,
+            createTime = bc.coupon.createTime,
+            coupon = bc.coupon
+        };
+        return pc;
+    }
+
+
+    #endregion
+
 
 
     #region 将世界坐标转为屏幕坐标

@@ -161,6 +161,7 @@ public class MapCtrData : ControllerData {
     {
         base.BuildMenu(menuname);
         mapMenu = m_Menu as MapMenu;
+        mapMenu.FadeIn();
     }
     public void InitData()
     {

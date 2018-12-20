@@ -99,12 +99,39 @@ public class UserDataScirpt:UserDataBaseScript {
         userExchangeSHList.Add(exchange);
     }
 
-
-    public virtual void AddPlayerCoupon(PlayerCoupon playerCoupon)
+    /// <summary>
+    /// 添加玩家的优惠券
+    /// </summary>
+    /// <param name="value">Player coupon.</param>
+    public virtual void AddPlayerCoupon(PlayerCoupon value)
     {
         if(playerdata.playerCoupons == null) playerdata.playerCoupons = new List<PlayerCoupon>();
-        playerdata.playerCoupons.Add(playerCoupon);
+        int count = playerdata.playerCoupons.Count;
+        if(count > 0)
+        {
+
+            for(int  i =0 ; i < count; i++)
+            {
+                if(playerdata.playerCoupons[i].playerCouponIndex == value.playerCouponIndex)
+                {
+                    playerdata.playerCoupons[i].count += value.count;
+                    return;
+                }
+            }
+
+            playerdata.playerCoupons.Add(value);
+
+        }
+        else
+        {
+            playerdata.playerCoupons.Add(value);
+        }
+     
     }
+
+
+
+
     //[添加物品]
     /// <summary>
     /// 物件盒子，如果givevalue == 0， 那么他们会堆叠，只在count 上做变化，，如果不为0 ，会添加在同种列列表里增加物件，并且物件数量也会增加。
