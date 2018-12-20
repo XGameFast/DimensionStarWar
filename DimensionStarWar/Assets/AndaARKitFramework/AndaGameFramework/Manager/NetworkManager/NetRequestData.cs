@@ -344,8 +344,18 @@ namespace GameRequest
         public List<BattelMonster> monsterList { get; set; }
         //最终结果
         public List<BattelObject> objectList { get; set; }
+        //优惠券
+        public List<BattelCoupon> couponList { get; set; }
 
     }
+
+    public class BattelCoupon
+    {
+        public int PlayerCouponIndex { get; set; }
+        public BusinessCoupon coupon { get; set; }
+        public int addCount { get; set; }
+    }
+
     public class BattelMonster
     {
         public int monsterIndex { get; set; }

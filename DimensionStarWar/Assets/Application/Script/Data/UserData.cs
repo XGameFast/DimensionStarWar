@@ -228,6 +228,19 @@ public class UserDataScirpt:UserDataBaseScript {
         }
     }
 
+    public virtual void ReduceCoin(int itemCount)
+    {
+        userObjs[42030].FirstOrDefault(s=>s.id == 42030).count-=itemCount;
+    }
+    public virtual void ReduceDimond(int itemCount)
+    {
+        userObjs[42030].FirstOrDefault(s => s.id == 42031).count -= itemCount;
+    }
+    public virtual void ReduceRedCoin(int itemCount)
+    {
+        userObjs[42030].FirstOrDefault(s => s.id == 42032).count -= itemCount;
+    }
+
 
     public virtual void ReduceConsumableItem(int itemIndex ,int itemID , int itemCount)
     {

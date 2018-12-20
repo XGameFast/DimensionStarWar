@@ -367,6 +367,7 @@ public static class ConvertTool{
         MonsterBaseConfig mbc = MonsterGameData.GetMonsterBaseConfig(exchangeObject.objectID);
         eo = new ExchangeObject();
         eo = exchangeObject;
+         
         eo.objName = mbc.monsterName;
         eo.objDescription = mbc.monsterDescription;
         return eo;

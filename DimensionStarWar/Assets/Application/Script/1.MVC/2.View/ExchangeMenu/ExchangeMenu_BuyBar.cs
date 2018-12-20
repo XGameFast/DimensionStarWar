@@ -38,7 +38,8 @@ public class ExchangeMenu_BuyBar : UIBasic2 {
 
     private GameObject lastBtn;
 
-   
+    private int coinPrice;
+    private int dimondPrice;
 
     public void SetInfo(ref ExchangeObject _value)
     {
@@ -87,13 +88,15 @@ public class ExchangeMenu_BuyBar : UIBasic2 {
                     onlyCoinBtn.gameObject.SetTargetActiveOnce(true);
                     lastBtn = onlyCoinBtn.gameObject;
                     coinCountLabelForOnly.text = payPrice[0].ToString();
+                    coinPrice = payPrice[0];
                     dimondCountLabelForOnly.text = "";
                     break;
                 case 1:
                     onlyDimondBtn.gameObject.SetTargetActiveOnce(true);
                     lastBtn = onlyDimondBtn.gameObject;
-                    coinCountLabelForOnly.text = "";
+                    coinCountLabelForOnly.text = ""; 
                     dimondCountLabelForOnly.text = payPrice[0].ToString();
+                    dimondPrice = payPrice[0];
                     break;
             }
         }else if(payTypes.Count == 2)
@@ -102,6 +105,8 @@ public class ExchangeMenu_BuyBar : UIBasic2 {
             lastBtn = bothBtn.gameObject;
             coinCountLabelForBoth.text = payPrice[0].ToString();
             dimondCountLabelForBoth.text = payPrice[1].ToString();
+            coinPrice = payPrice[0];
+            dimondPrice = payPrice[1];
         }
        
     }
@@ -193,11 +198,14 @@ public class ExchangeMenu_BuyBar : UIBasic2 {
     {
         if(exchangeObject!=null)
         {
-            AndaDataManager.Instance.CallServerBuyObjectFromExchange(exchangeObject.exchangeObjectIndex, 0, PayResultForExchangeObj);
+            //int price = exchangeBusinessCoupon.couponPrice[0];
+
+            AndaDataManager.Instance.CallServerBuyObjectFromExchange(exchangeObject.exchangeObjectIndex, 0, coinPrice, PayResultForExchangeObj);
         }
         else
         {
-            AndaDataManager.Instance.CallServerBuyExBSCouponFromExchange(exchangeBusinessCoupon.exchangeCouponIndex,0, PayResultForExbscoupon);
+           // int price = exchangeBusinessCoupon.couponPrice[0];
+            AndaDataManager.Instance.CallServerBuyExBSCouponFromExchange(exchangeBusinessCoupon.exchangeCouponIndex,0, coinPrice, PayResultForExbscoupon);
         }
     }
 
@@ -209,11 +217,11 @@ public class ExchangeMenu_BuyBar : UIBasic2 {
     {
         if(exchangeObject != null)
         {
-            AndaDataManager.Instance.CallServerBuyObjectFromExchange(exchangeObject.exchangeObjectIndex, 1, PayResultForExchangeObj);
+            AndaDataManager.Instance.CallServerBuyObjectFromExchange(exchangeObject.exchangeObjectIndex, 1,dimondPrice, PayResultForExchangeObj);
 
         }else
         {
-            AndaDataManager.Instance.CallServerBuyExBSCouponFromExchange(exchangeBusinessCoupon.exchangeCouponIndex, 1, PayResultForExbscoupon);
+            AndaDataManager.Instance.CallServerBuyExBSCouponFromExchange(exchangeBusinessCoupon.exchangeCouponIndex, 1, dimondPrice, PayResultForExbscoupon);
         }
     }
 
