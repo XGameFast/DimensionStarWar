@@ -48,6 +48,9 @@ public class BusinessCoupon
     public int rewardDropCount { get; set; }
     //奖励构成，由哪几个奖励合成
     public List<BusinessCoupon> rewardcomposeID { get; set; }
+
+    //总数
+    public int totalCount { get; set; }
 }
 public class PlayerCoupon
 {
@@ -66,6 +69,7 @@ public class PlayerCoupon
     public int createTime { get; set; }
     //优惠券详情
     public BusinessCoupon coupon { get; set; }
+ 
 }
 
 public class StrongholdBaseConfigAttribute

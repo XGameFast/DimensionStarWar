@@ -149,6 +149,7 @@ public class MapCtrData : ControllerData {
     public bool isCheckReward;
     public int shDisplayType = 4;
     public ExchangeUIItem_TmpSet tmpExchangeItem;
+    public bool setMapType = true;//true = vv  false = ar
 
     public override void BuildData(BaseController _baseController)
     {
@@ -328,7 +329,7 @@ public class MapCtrData : ControllerData {
         exchangeMenu = AndaDataManager.Instance.InstantiateMenu<ExchangeMenu>(ONAME.ExchangeMenu);
         exchangeMenu.SetInto(getm_Menu.transform);
         exchangeMenu.FadeIn();
-        exchangeMenu.CallBackClose = RemoveExchangeMenu;
+        exchangeMenu.CallBackClose = mapController.CloseExchangeStrongholdInfomation;
     }
 
 

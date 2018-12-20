@@ -327,6 +327,7 @@ public static class ONAME
     public static string commonDefenseEffectName = "commonDefenseEffectName";
     public static string MonsterFadeInEffectName = "MonsterFadeInEffectName";
     public static string ARSetPointEffect = "ARSetPointEffect";
+    public static string RewardFadeInEffect = "RewardFadeInEffect";
     #endregion
 
     #region 配置文件的名字

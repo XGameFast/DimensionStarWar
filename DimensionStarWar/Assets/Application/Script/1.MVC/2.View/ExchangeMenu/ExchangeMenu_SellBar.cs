@@ -27,6 +27,8 @@ public class ExchangeMenu_SellBar : UIBasic2 {
     public System.Action<ExchangeObject, ExchangeObject> CallBackUploadSellingItem;
     // 【0】 老的 data ， [1] 服务器给的data
     public System.Action<ExchangeBusinessCoupon, ExchangeBusinessCoupon> CallBackUploadSellingItemForExchangeBussinessCoupon;
+   
+    public System.Action ClickCloseBar;
     private List<int> payPrice;
     private List<int> payType;
     private int lastItemIndex;
@@ -218,13 +220,17 @@ public class ExchangeMenu_SellBar : UIBasic2 {
                 CallBackUploadSellingItemForExchangeBussinessCoupon(businessCoupon,_value);
             }
 
-            gameObject.SetTargetActiveOnce(false);
+            ClickCancelUpload();
         }
     }
 
     public void ClickCancelUpload()
     {
         gameObject.SetTargetActiveOnce(false);
+        if (ClickCloseBar!=null)
+        {
+            ClickCloseBar();
+        }
     }
      
      

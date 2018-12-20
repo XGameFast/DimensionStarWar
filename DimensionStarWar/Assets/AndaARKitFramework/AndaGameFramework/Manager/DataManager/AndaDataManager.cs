@@ -548,6 +548,11 @@ public class AndaDataManager {
     #region 与服务器通信
 
 
+    public void CallServerGetExchangeInfo(int exchangeIndex, System.Action<Exchange> callback)
+    {
+        naetdataManager.CallServerGetExchangeInfo(exchangeIndex,callback);
+    }
+
     public  void CallServerUploadExBSCouponToExchagne(ExchangeBusinessCoupon businessCoupon ,System.Action<ExchangeBusinessCoupon> callback)
     {
         naetdataManager.CallServerUploadExBSCouponToExchange(businessCoupon,callback);
@@ -559,9 +564,9 @@ public class AndaDataManager {
     }
 
 
-    public void CallServerBuyObjectFromExchange(int itemIndex, int payType, System.Action<ExchangeObject> callback)
+    public void CallServerBuyObjectFromExchange(int itemIndex, int payType, int payPrice, System.Action<ExchangeObject> callback)
     {
-        naetdataManager.CallServerBuyItemFromExchange(itemIndex, payType, callback);
+        naetdataManager.CallServerBuyItemFromExchange(itemIndex, payType, payPrice, callback);
     }
     /// <summary>
     /// 购买交易所中的 奖励券
@@ -569,9 +574,9 @@ public class AndaDataManager {
     /// <param name="itemIndex">Item index.</param>
     /// <param name="payType">Pay type.</param>
     /// <param name="callback">Callback.</param>
-    public void CallServerBuyExBSCouponFromExchange(int itemIndex, int payType, System.Action<ExchangeBusinessCoupon> callback)
+    public void CallServerBuyExBSCouponFromExchange(int itemIndex, int payType, int payPrice, System.Action<ExchangeBusinessCoupon> callback)
     {
-        naetdataManager.CallServerBuyExbsCouponFromExchange(itemIndex, payType, callback);
+        naetdataManager.CallServerBuyExbsCouponFromExchange(itemIndex, payType, payPrice, callback);
     }
 
     public virtual void CallServerInsertExchangeStronghold(double x ,double y , string des, int rate,string exName,System.Action<Exchange> action)

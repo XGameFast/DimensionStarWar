@@ -44,6 +44,8 @@ public class JIRVISBar : UIBasic2 {
     public CanvasGroup canvasGroups;
     public ScrollRect btnScrollView;
 
+    private float btnFadeIntime = 0.15f;
+
     //tipsTYpe =0.是普通的文字提示， =1，告知提示（只有一个确认按钮） ，=2 有选择的提示（附带一个同意 和不同意 按钮），3 = 带编辑窗体的提示 ， 
     private OTYPE.TipsType currentTipsType = OTYPE.TipsType.none;
 
@@ -406,20 +408,26 @@ public class JIRVISBar : UIBasic2 {
 
         JIRVIS.Instance.jIRVISData.InitBtnList();
         SetBtnBarState(true);
-        foreach(var go in _data)
-        {
-            
-            JIRVIS_FUNCBtn _jirvisFunBtn =  AndaDataManager.Instance.InstantiateMenu<JIRVIS_FUNCBtn>(ONAME.JIRVISButtonItem_FunBtnItem);
-            _jirvisFunBtn.gameObject.SetTargetActiveOnce(true);
-            _jirvisFunBtn.transform.SetUIInto(btnGrid.transform);
-            _jirvisFunBtn.SetInfo(go.btnName, go.btnIconKey, go.clickCallBack);
-            JIRVIS.Instance.jIRVISData.AddItem(_jirvisFunBtn);
-        }
-        ReUIScrollViewPose();
-        if(finishload_callback!=null)finishload_callback();
+        StartCoroutine(ExcuteBuildFunBtn(_data, finishload_callback));
+
     }
 
-
+    private IEnumerator ExcuteBuildFunBtn(List<JIRVISFuncBtnStruct> _data, System.Action finishload_callback)
+    {
+        int count = _data.Count;
+        for(int i = 0; i < count; i++)
+        {
+            JIRVIS_FUNCBtn _jirvisFunBtn = AndaDataManager.Instance.InstantiateMenu<JIRVIS_FUNCBtn>(ONAME.JIRVISButtonItem_FunBtnItem);
+            _jirvisFunBtn.gameObject.SetTargetActiveOnce(true);
+            _jirvisFunBtn.transform.SetUIInto(btnGrid.transform);
+            _jirvisFunBtn.SetInfo(_data[i].btnName, _data[i].btnIconKey, _data[i].clickCallBack);
+            JIRVIS.Instance.jIRVISData.AddItem(_jirvisFunBtn);
+            SetBtnEffectPosition(_jirvisFunBtn.transform.position);
+            yield return new WaitForSeconds(btnFadeIntime);
+        }
+        ReUIScrollViewPose();
+        if (finishload_callback != null) finishload_callback();
+    }
 
     #endregion
 
@@ -434,6 +442,7 @@ public class JIRVISBar : UIBasic2 {
             _jirvisFunBtn.transform.SetUIInto(btnGrid.transform);
             _jirvisFunBtn.SetInfo(go.btnName, go.btnIconKey, go.clickCallBack);
             JIRVIS.Instance.jIRVISData.AddItem(_jirvisFunBtn);
+            SetBtnEffectPosition(_jirvisFunBtn.transform.position);
         }
 
         ReUIScrollViewPose();
@@ -447,6 +456,7 @@ public class JIRVISBar : UIBasic2 {
         _jirvisFunBtn.transform.SetUIInto(btnGrid.transform);
         _jirvisFunBtn.SetInfo(data.btnName, data.btnIconKey, data.clickCallBack);
         JIRVIS.Instance.jIRVISData.AddItem(_jirvisFunBtn);
+        SetBtnEffectPosition(_jirvisFunBtn.transform.position);
         ReUIScrollViewPose();
         if(callback!=null)callback();
     }
@@ -460,6 +470,7 @@ public class JIRVISBar : UIBasic2 {
     {
         JIRVIS_FUNCBtn btnStruct = JIRVIS.Instance.jIRVISData.getItemList.FirstOrDefault(s=>s.transform.name == key) as JIRVIS_FUNCBtn;
         btnStruct.SetInfo(_btnStruct.btnName,_btnStruct.btnIconKey,_btnStruct.clickCallBack);
+        SetBtnEffectPosition(btnStruct.transform.position);
     }
 
     public void ChangeFuncbtns(List<string> keys,List<JIRVISFuncBtnStruct> _btnStrucks )
@@ -471,14 +482,26 @@ public class JIRVISBar : UIBasic2 {
         }
     }
 
+    private IEnumerator ExcuteChangesFunBtn(List<string> keys, List<JIRVISFuncBtnStruct> _btnStrucks)
+    {
+        int count = keys.Count;
+        for (int i = 0; i < count; i++)
+        {
+            JIRVIS_FUNCBtn btnStruct = JIRVIS.Instance.jIRVISData.getItemList.FirstOrDefault(s => s.transform.name == keys[i]) as JIRVIS_FUNCBtn;
+            btnStruct.SetInfo(_btnStrucks[i].btnName, _btnStrucks[i].btnIconKey, _btnStrucks[i].clickCallBack);
+            SetBtnEffectPosition(btnStruct.transform.position);
+            yield return new WaitForSeconds(btnFadeIntime);
+        }
+    }
+
     #region 构建怪兽按钮
     public void BuildMonsterListBtn(List<PlayerMonsterAttribute> list,System.Action<PlayerMonsterAttribute>click_callBack,System.Action finishload_callback)
     {
         //开始构建
-        ExcuteBuildMonsterListBtn(list, click_callBack,finishload_callback);
+        StartCoroutine(ExcuteBuildMonsterListBtn(list, click_callBack,finishload_callback));
         SetBtnBarState(true);
     }
-    private void ExcuteBuildMonsterListBtn(List<PlayerMonsterAttribute> list, System.Action<PlayerMonsterAttribute> click_callBack, System.Action finishload_callback)
+    private IEnumerator ExcuteBuildMonsterListBtn(List<PlayerMonsterAttribute> list, System.Action<PlayerMonsterAttribute> click_callBack, System.Action finishload_callback)
     {
         JIRVIS.Instance.jIRVISData.InitBtnList();
 
@@ -488,6 +511,8 @@ public class JIRVISBar : UIBasic2 {
             item.transform.SetUIInto(btnGrid.transform);
             item.BuildItem(go, click_callBack);
             JIRVIS.Instance.jIRVISData.AddItem(item);
+            SetBtnEffectPosition(item.transform.position);
+            yield return new WaitForSeconds(btnFadeIntime);
         }
         ReUIScrollViewPose();
         if(finishload_callback!=null)finishload_callback();
@@ -500,11 +525,11 @@ public class JIRVISBar : UIBasic2 {
     {
        
         //建立按钮
-        ExcuteBuildDimensionRoomListBtn(list,click_callback);
+        StartCoroutine(ExcuteBuildDimensionRoomListBtn(list,click_callback));
         SetBtnBarState(true);
     }
 
-    private void ExcuteBuildDimensionRoomListBtn(List<PlayerStrongholdAttribute> list, System.Action<int> click_callback)
+    private IEnumerator ExcuteBuildDimensionRoomListBtn(List<PlayerStrongholdAttribute> list, System.Action<int> click_callback)
     {
         JIRVIS.Instance.jIRVISData.InitBtnList();
         foreach (var go in list)
@@ -513,6 +538,8 @@ public class JIRVISBar : UIBasic2 {
             item.transform.SetUIInto(btnGrid.transform);
             item.BuildItem(go, click_callback);
             JIRVIS.Instance.jIRVISData.AddItem(item);
+            SetBtnEffectPosition(item.transform.position);
+            yield return new WaitForSeconds(btnFadeIntime);
         }
         ReUIScrollViewPose();
 
@@ -528,11 +555,11 @@ public class JIRVISBar : UIBasic2 {
     public void BuildConsumableListBtn(List<LD_Objs> list, System.Action<int> click_callback)
     {
         //建立按钮
-        ExcuteBuildComsumableListBtn(list,click_callback);
+        StartCoroutine(ExcuteBuildComsumableListBtn(list,click_callback));
         SetBtnBarState(true);
     }
 
-    public void ExcuteBuildComsumableListBtn(List<LD_Objs> list, System.Action<int> click_callback)
+    public IEnumerator ExcuteBuildComsumableListBtn(List<LD_Objs> list, System.Action<int> click_callback)
     {
         JIRVIS.Instance.jIRVISData.InitBtnList();
         foreach (var go in list)
@@ -541,12 +568,20 @@ public class JIRVISBar : UIBasic2 {
             item.transform.SetUIInto(btnGrid.transform);
             item.SetInfo(go, click_callback);
             JIRVIS.Instance.jIRVISData.AddItem(item);
+            ReUIScrollViewPose();
+            SetBtnEffectPosition(item.transform.position);
+            yield return new WaitForSeconds(btnFadeIntime);
         }
     }
 
-
     #endregion
 
+    private void SetBtnEffectPosition(Vector3 pose)
+    {
+       /* AndaObjectBasic aob = AndaDataManager.Instance.InstantiateOtherObj<AndaObjectBasic>(ONAME.RewardFadeInEffect);
+        aob.SetInto(AndaUIManager.Instance.jirvisRoot);
+        aob.transform.position = pose;*/
+    }
 
     public void RemoveCurrentBtnList()
     {

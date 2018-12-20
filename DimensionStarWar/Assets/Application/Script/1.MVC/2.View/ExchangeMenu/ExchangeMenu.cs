@@ -11,6 +11,7 @@ public class ExchangeMenu : UIBasic2 {
     public Transform grid;
     public ExchangeMenu_BuyBar exchangeMenu_BuyBar;
     public ExchangeMenu_SellBar exchangeMenu_SellBar;
+    public Text title;
     private List<ExchangeUIItem_BuyItem> exchangeUIItem_BuyItems ;
     private List<ExchangeUIItem_SellItem> exchangeUIItem_SellItems;
     private Exchange exchangeInfo;
@@ -37,7 +38,7 @@ public class ExchangeMenu : UIBasic2 {
         exchangeMenu_BuyBar.ClickCloseCallBack += CallBackCloseBuyBar;
         exchangeMenu_SellBar.CallBackUploadSellingItem += FinishUploadSellingItem;
         exchangeMenu_SellBar.CallBackUploadSellingItemForExchangeBussinessCoupon+=FinishUploadSellingItemForBSCoupon;
-      
+        exchangeMenu_SellBar.ClickCloseBar += CallBackCloseBuyBar;
     }
 
     public override void OnDispawn()
@@ -60,7 +61,7 @@ public class ExchangeMenu : UIBasic2 {
         exchangeMenu_BuyBar.ClickCloseCallBack -= CallBackCloseBuyBar;
         exchangeMenu_SellBar.CallBackUploadSellingItem -= FinishUploadSellingItem;
         exchangeMenu_SellBar.CallBackUploadSellingItemForExchangeBussinessCoupon -= FinishUploadSellingItemForBSCoupon;
-
+        exchangeMenu_SellBar.ClickCloseBar -= CallBackCloseBuyBar;
         base.OnDispawn();
     }
 
@@ -238,7 +239,7 @@ public class ExchangeMenu : UIBasic2 {
                     exchangeObject.userIndex = AndaDataManager.Instance.userData.userIndex;
                     exchangeObject.exchangeIndex = exchangeInfo.exchangeIndex;
                     exchangeObject.objectID = userObjsBox.id;
-                   
+
                     exchangeObject.objectCount = userObjsBox.lD_Objs[m].lessCount;
                     exchangeObject.objectValue = userObjsBox.lD_Objs[m].giveValue;
                     exchangeObject.objName = userObjsBox.lD_Objs[m].objName;
@@ -322,11 +323,14 @@ public class ExchangeMenu : UIBasic2 {
         int count = _data.Count;
         for (int i = 0; i < count; i++)
         {
-            if (exchangeUIItem_BuyItems == null) exchangeUIItem_BuyItems = new List<ExchangeUIItem_BuyItem>();
-            ExchangeUIItem_BuyItem _buyItem = AndaDataManager.Instance.InstantiateMenu<ExchangeUIItem_BuyItem>(ONAME.ExchangeMenuItem_BuyItem);
-            _buyItem.SetInto(grid);
-            _buyItem.SetInfo(_data[i], ClickBuyItem);
-            exchangeUIItem_BuyItems.Add(_buyItem);
+            if(_data[i].exchangeStatus == 0)
+            {
+                if (exchangeUIItem_BuyItems == null) exchangeUIItem_BuyItems = new List<ExchangeUIItem_BuyItem>();
+                ExchangeUIItem_BuyItem _buyItem = AndaDataManager.Instance.InstantiateMenu<ExchangeUIItem_BuyItem>(ONAME.ExchangeMenuItem_BuyItem);
+                _buyItem.SetInto(grid);
+                _buyItem.SetInfo(_data[i], ClickBuyItem);
+                exchangeUIItem_BuyItems.Add(_buyItem);
+            }
         }
     }
 
@@ -340,11 +344,14 @@ public class ExchangeMenu : UIBasic2 {
         int count = _data.Count;
         for (int i = 0; i < count; i++)
         {
-            if (exchangeUIItem_BuyItems == null) exchangeUIItem_BuyItems = new List<ExchangeUIItem_BuyItem>();
-            ExchangeUIItem_BuyItem _buyItem = AndaDataManager.Instance.InstantiateMenu<ExchangeUIItem_BuyItem>(ONAME.ExchangeMenuItem_BuyItem);
-            _buyItem.SetInto(grid);
-            _buyItem.SetInfo(_data[i], ClickBuyItem);
-            exchangeUIItem_BuyItems.Add(_buyItem);
+            if(_data[i].exchangeStatus == 0)
+            {
+                if (exchangeUIItem_BuyItems == null) exchangeUIItem_BuyItems = new List<ExchangeUIItem_BuyItem>();
+                ExchangeUIItem_BuyItem _buyItem = AndaDataManager.Instance.InstantiateMenu<ExchangeUIItem_BuyItem>(ONAME.ExchangeMenuItem_BuyItem);
+                _buyItem.SetInto(grid);
+                _buyItem.SetInfo(_data[i], ClickBuyItem);
+                exchangeUIItem_BuyItems.Add(_buyItem);
+            }
         }
     }
 
@@ -545,17 +552,20 @@ public class ExchangeMenu : UIBasic2 {
     {
         detialType = 0;
         ClickWantoSell();
+       
     }
     private void ClickToSellWithMonster()
     {
         detialType =1;
         ClickWantoSell();
+       
     }
 
     private void ClickToSellWithBussinessCoupon()
     {
         detialType = 2;
         ClickWantoSell();
+     
     }
     /// <summary>
     /// 想要寄售
@@ -598,7 +608,7 @@ public class ExchangeMenu : UIBasic2 {
             {
                 detialType = 0;
                 if (lastBuyDetailType == detialType) return;
-
+                SetTitle();
                 lastBuyDetailType = detialType;
                 BuildItem(exDataList_BuyConsumable);
             }
@@ -617,6 +627,7 @@ public class ExchangeMenu : UIBasic2 {
             {
                 detialType = 0;
                 if (lastSellingDetailType == detialType) return;
+                SetTitle();
                 lastSellingDetailType = detialType;
                 BuildSellingItem(exDataList_SelingConsumable);
             }
@@ -640,7 +651,7 @@ public class ExchangeMenu : UIBasic2 {
             {
                 detialType = 1;
                 if (lastBuyDetailType == detialType) return;
-
+                SetTitle();
                 lastBuyDetailType = detialType;
                 BuildItem(exDataList_BuyMonster);
             }
@@ -656,9 +667,9 @@ public class ExchangeMenu : UIBasic2 {
             else
             {
                 detialType = 1;
-                if (lastSellingDetailType == detialType)
-
-                    lastSellingDetailType = detialType;
+                if (lastSellingDetailType == detialType) return;
+                SetTitle();
+                lastSellingDetailType = detialType;
                 BuildSellingItem(exDataList_SellingFreeMonster);
             }
         }
@@ -686,6 +697,7 @@ public class ExchangeMenu : UIBasic2 {
                 detialType = 2;
                 if (lastBuyDetailType == detialType) return;
                 lastBuyDetailType = detialType;
+                SetTitle();
                 BuildBuytItemWithCoupon(exDataLIst_BuyBSCoupon);
             }
 
@@ -701,6 +713,7 @@ public class ExchangeMenu : UIBasic2 {
                 detialType = 2;
                 if (lastSellingDetailType == detialType) return;
                 lastSellingDetailType = detialType;
+                SetTitle();
                 BuildSellingItem(exDataList_SellingBSCoupon);
             }
         }
@@ -726,6 +739,7 @@ public class ExchangeMenu : UIBasic2 {
     /// </summary>
     private void ClickBuyItem(int _itemIndex)
     {
+        JIRVIS.Instance.RemoveCurrentBtnList();
         switch (detialType)
         {
             case 0:
@@ -765,6 +779,7 @@ public class ExchangeMenu : UIBasic2 {
     /// </summary>
     private void OpenSellBar(ExchangeObject exchangeObject , ExchangeBusinessCoupon exchangeBusinessCoupon)
     {
+        JIRVIS.Instance.RemoveCurrentBtnList();
         exchangeMenu_SellBar.gameObject.SetTargetActiveOnce(true);
         switch (detialType)
         {
@@ -785,26 +800,34 @@ public class ExchangeMenu : UIBasic2 {
     /// </summary>
     private void CallBackBuyItem(ExchangeObject oldData ,ExchangeObject newData)
     {
+        oldData.exchangeStatus = 1;
         int idGroup = AndaDataManager.Instance.GetObjectGroupID(oldData.objectID);
         switch(idGroup)
         {
             case 1000:
                 break;
             case 40000:
-                exDataList_BuyConsumable.Remove(oldData);
+                //exDataList_BuyConsumable.Remove(oldData);
                 ExchangeObject eo = ConvertTool.ConverterConsumableInfoToExchangeObj(newData);
                 if(exDataList_SelingConsumable == null) exDataList_SelingConsumable = new List<ExchangeObject>();
                 exDataList_SelingConsumable.Add(eo);
 
                 break;
         }
+        lastBuyDetailType = -1;//这里是未来更新之后允许再次加载
+        JumpToTargetDetailClass();
+        JIRVIS.Instance.PlayTips("购买成功");
     }
 
     private void CallBackBuyItemForExbsCoupon(ExchangeBusinessCoupon oldData, ExchangeBusinessCoupon newData)
     {
-        exDataLIst_BuyBSCoupon.Remove(oldData);
+        oldData.exchangeStatus = 1;
+        //exDataLIst_BuyBSCoupon.Remove(oldData);
         if(exDataList_SellingBSCoupon == null) exDataList_SellingBSCoupon = new List<ExchangeBusinessCoupon>();
         exDataList_SellingBSCoupon.Add(newData);
+        lastBuyDetailType = -1;//这里是未来更新之后允许再次加载
+        JumpToTargetDetailClass();
+        JIRVIS.Instance.PlayTips("购买成功");
     }
 
     private void CallBackCloseBuyBar()
@@ -817,6 +840,7 @@ public class ExchangeMenu : UIBasic2 {
     /// </summary>
     private void FinishUploadSellingItem(ExchangeObject oldData , ExchangeObject newData)
     {
+      
         ExchangeObject eo = null;
         int idGroup = AndaDataManager.Instance.GetObjectGroupID(oldData.objectID);
         switch (idGroup)
@@ -897,6 +921,39 @@ public class ExchangeMenu : UIBasic2 {
             case 2:
                 ClickActivityCard();
                 break;
+        }
+    }
+
+    public void SetTitle()
+    {
+        if(wantTo == 0)
+        {
+            switch(detialType)
+            {
+                case 0:
+                    title.text = "待交易的消耗品";
+                    break;
+                case 1:
+                    title.text = "待交易的自由星宿";
+                    break;
+                case 2:
+                    title.text = "待交易的奖励券";
+                    break;
+            }
+        }else 
+        {
+            switch (detialType)
+            {
+                case 0:
+                    title.text = "我的消耗品";
+                    break;
+                case 1:
+                    title.text = "我的自由星宿";
+                    break;
+                case 2:
+                    title.text = "我的奖励券";
+                    break;
+            }
         }
     }
 }

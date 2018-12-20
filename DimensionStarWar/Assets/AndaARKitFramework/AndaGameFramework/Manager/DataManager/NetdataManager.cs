@@ -86,9 +86,57 @@ public class NetdataManager : ManagerBase {
 
     #endregion
 
+
+
+    #region 从服务器上获取想要的交易所的数据
+
+    public void CallServerGetExchangeInfo(int exchangeIndex,System.Action<Exchange> callback)
+    {
+        var _wForm = new WWWForm();
+        _wForm.AddField("token", AndaDataManager.Instance.userData.token);
+        _wForm.AddField("exchangeIndex", exchangeIndex);
+        string path = networkAdress2 + "Exchange/GetExchangeInfo";
+        StartCoroutine(ExcuteCallServerGetExchangeInfo(path, _wForm, callback));
+    }
+
+    private IEnumerator ExcuteCallServerGetExchangeInfo(string path,WWWForm _wForm ,System.Action<Exchange> callback)
+    {
+        AndaUIManager.Instance.OpenWaitBoard("稍等");
+        WWW postData = new WWW(path, _wForm);
+        yield return postData;
+        AndaUIManager.Instance.CloseWaitBoard();
+        if (postData.error != null)
+        {
+            Debug.Log(postData.error);
+        }
+        else
+        {
+
+#if UNITY_EDITOR
+            Debug.Log("data" + postData.text);
+#endif
+            ExchangeRequest data = JsonMapper.ToObject<ExchangeRequest>(postData.text);
+            if (data.code == "200")
+            {
+                callback(data.exchangeInfo);
+            }
+            else
+            {
+                callback(null);
+            }
+           
+        }
+       
+    }
+
+
+
+    #endregion
+
+
     #region 从服务器上获取 点击的商家据点的活动信息
 
-   // public void CallServerGetBSHActiveInfomation()
+    // public void CallServerGetBSHActiveInfomation()
 
 
     #endregion
@@ -130,8 +178,9 @@ public class NetdataManager : ManagerBase {
         else
         {
 #if UNITY_EDITOR
-            var data = JsonMapper.ToObject<PlayerLogin>(postData.text);
+            Debug.Log("Login" + postData.text);
 #endif
+            var data = JsonMapper.ToObject<PlayerLogin>(postData.text);
             if (data.code == "200")
             {
                 AndaDataManager.Instance.SetUserData(data.PlayerData);
@@ -1181,17 +1230,18 @@ public class NetdataManager : ManagerBase {
 
     #region 从交易所购买
 
-    public void CallServerBuyExbsCouponFromExchange(int itemIndex, int payType, System.Action<ExchangeBusinessCoupon> action)
+    public void CallServerBuyExbsCouponFromExchange(int itemIndex, int payType, int payPrice,System.Action<ExchangeBusinessCoupon> action)
     {
         var _wForm = new WWWForm();
         _wForm.AddField("token ", AndaDataManager.Instance.userData.token);
         _wForm.AddField("buyType ", payType);
         _wForm.AddField("exchangeCouponIndex, ", itemIndex);
         string path = networkAdress2 + "Exchange/BuyExchangeCoupon";
-        StartCoroutine(ExcuteCallServerBuyExbsCouponFromExchange(path, _wForm, itemIndex, action));
+
+        StartCoroutine(ExcuteCallServerBuyExbsCouponFromExchange(payType, payPrice, path, _wForm, itemIndex, action));
     }
 
-    private IEnumerator ExcuteCallServerBuyExbsCouponFromExchange(string _url, WWWForm _wForm, int itemIndex, System.Action<ExchangeBusinessCoupon> action)
+    private IEnumerator ExcuteCallServerBuyExbsCouponFromExchange(int type, int price ,string _url, WWWForm _wForm, int itemIndex, System.Action<ExchangeBusinessCoupon> action)
     {
         AndaUIManager.Instance.OpenWaitBoard("请稍等");
         WWW postData = new WWW(_url, _wForm);
@@ -1203,6 +1253,7 @@ public class NetdataManager : ManagerBase {
         }
         else
         {
+
             Debug.Log(postData.text);
             ExchangeCouponRequest data = JsonMapper.ToObject<ExchangeCouponRequest>(postData.text);
             if (data.code == "200")
@@ -1220,6 +1271,19 @@ public class NetdataManager : ManagerBase {
                     coupon = data.exchangeCouponInfo.coupon
                 };
                 AndaDataManager.Instance.userData.AddPlayerCoupon(playerCoupon);
+                if(type == 0)
+                {
+                    AndaDataManager.Instance.userData.ReduceCoin(price);
+                }else if(type == 1)
+                {
+                    AndaDataManager.Instance.userData.ReduceDimond(price);
+                }else if(type ==2)
+                {
+
+                }
+
+
+              
                 action(data.exchangeCouponInfo);
             }
             else
@@ -1230,17 +1294,17 @@ public class NetdataManager : ManagerBase {
     }
 
 
-    public void CallServerBuyItemFromExchange(int itemIndex, int payType, System.Action<ExchangeObject> action)
+    public void CallServerBuyItemFromExchange(int itemIndex, int payType, int payPrice,System.Action<ExchangeObject> action)
     {
         var _wForm = new WWWForm();
-        _wForm.AddField("token ", AndaDataManager.Instance.userData.token);
-        _wForm.AddField("buyType ", payType);
-        _wForm.AddField("exchangeObjectIndex ", itemIndex);
+        _wForm.AddField("token", AndaDataManager.Instance.userData.token);
+        _wForm.AddField("buyType", payType);
+        _wForm.AddField("exchangeObjectIndex", itemIndex);
         string path = networkAdress2 + "Exchange/BuyExchangeObject";
-        StartCoroutine(ExcuteCallServerBuyItemFromExchange(path, _wForm, itemIndex,action));
+        StartCoroutine(ExcuteCallServerBuyItemFromExchange(payType,payPrice,path, _wForm, itemIndex,action));
     }
 
-    private IEnumerator ExcuteCallServerBuyItemFromExchange(string _url, WWWForm _wForm, int itemIndex, System.Action<ExchangeObject> action)
+    private IEnumerator ExcuteCallServerBuyItemFromExchange(int payType, int payPrice, string _url, WWWForm _wForm, int itemIndex, System.Action<ExchangeObject> action)
     {
         AndaUIManager.Instance.OpenWaitBoard("请稍等");
         WWW postData = new WWW(_url, _wForm);
@@ -1274,6 +1338,21 @@ public class NetdataManager : ManagerBase {
                         AndaDataManager.Instance.userData.AddConsuambleItem(sD_Pag4U);
                         break;
                 }
+
+                if (payType == 0)
+                {
+                    AndaDataManager.Instance.userData.ReduceCoin(payPrice);
+                }
+                else if (payType == 1)
+                {
+                    AndaDataManager.Instance.userData.ReduceDimond(payPrice);
+                }
+                else if (payType == 2)
+                {
+
+                }
+
+
                 action(data.exchangeObjectInfo);
             }else
             {

@@ -980,6 +980,8 @@ public class BuildDimensionRoomController : BaseController {
             JIRVIS.Instance.PlayTips("次元技术局正在抓紧修复并打通星域传送，推荐暂时先使用探测器");
             return;
         }
+
+        JIRVIS.Instance.RemoveCurrentBtnList();
         if (AndaDataManager.Instance.userData.userStrongholdList.Count != 0)
         {
             data.getDimensionMenu.PlayCurrentItemEnterStarmap(data.getCurSelectItemIndex);

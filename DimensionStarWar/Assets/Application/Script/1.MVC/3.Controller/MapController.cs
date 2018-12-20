@@ -203,11 +203,12 @@ public class MapController : BaseController {
     /// </summary>
     private void SwitchVVMap()
     {
-        AndaARManager.Instance.StopAR(FinishBuildARMode);
+        if(!data.setMapType) AndaARManager.Instance.StopAR(FinishBuildARMode);
         ARMonsterSceneDataManager.Instance.aRWorld.CloseBlur();
         ARMonsterSceneDataManager.Instance.aRWorld.ClosebackgroundVV();
         ARMonsterSceneDataManager.Instance.aRWorld.OpenMapCamera();
         AndaMap.Instance.SetTileState(true);
+        data.setMapType =true;
     }
 
     private void SwitchARMap()
@@ -216,6 +217,7 @@ public class MapController : BaseController {
         //隐藏map tiles
         AndaMap.Instance.SetTileState(false);
         ARMonsterSceneDataManager.Instance.MapCamera.gameObject.SetActive(false);
+        data.setMapType = false;
     }
 
 
@@ -924,10 +926,30 @@ public class MapController : BaseController {
     public void OpenExchangeStrongholdInformation(Exchange _exchange)
     {
         JIRVIS.Instance.RemoveCurrentBtnList();
-        data.SetOpenchildBar(true);//不允许地图操作
-        data.BuildExchangeInfoMenu();
-        data.getExchangeMenu.SetInfo(_exchange);
-        //
+        AndaDataManager.Instance.CallServerGetExchangeInfo(_exchange.exchangeIndex, WaitForGetExchangeInfo);
+    }
+
+    private void WaitForGetExchangeInfo(Exchange _value)
+    {
+       
+        if(_value == null)
+        {
+            BuildJIRVISFunctionBtn();
+            JIRVIS.Instance.PlayTips("请检查网络");
+        }else
+        {
+            data.SetOpenchildBar(true);//不允许地图操作
+            data.BuildExchangeInfoMenu();
+            data.getExchangeMenu.SetInfo(_value);
+        }
+    }
+
+
+    public void CloseExchangeStrongholdInfomation()
+    {
+        data.SetOpenchildBar(false);//不允许地图操作
+        data.RemoveExchangeMenu();
+        BuildJIRVISFunctionBtn();
     }
 
     #endregion
@@ -941,11 +963,12 @@ public class MapController : BaseController {
         JIRVIS.Instance.PlayTips("请选择一个位置，放置交易所");
         data.BuildTmpExchange();
         data.tmpExchangeItem.PlayUp();
-        data.SetOpenchildBar(true);//不允许地图操作
+        //data.SetOpenchildBar(true);//不允许地图操作
       }
 
     public void ComfirmSetExchangeHere()
     {
+        data.SetOpenchildBar(true);//不允许地图操作
         data.tmpExchangeItem.PlayDown();
         Invoke("InvockOpenExchangeInfoEditorBar",0.5f);
     }
@@ -976,6 +999,7 @@ public class MapController : BaseController {
 
     public void CancelUploadExchangeItem()
     {
+        data.SetOpenchildBar(false);//允许地图操作
         BuildExchangeTampleStronghold();
     }
 
