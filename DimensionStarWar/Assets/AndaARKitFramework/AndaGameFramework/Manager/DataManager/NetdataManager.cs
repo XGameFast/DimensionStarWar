@@ -9,9 +9,9 @@ using GameRequest;
 public class NetdataManager : ManagerBase {
 
 
-    public string networkAdress2 = "http://106.14.16.150:8085/api/";
-    public string networkAdress3 = "http://106.14.16.150:8085/ConfigTxt/";
-    public string networkAdress4 = "http://106.14.16.150:8085/";
+    public string networkAdress2 = "http://47.99.45.109:8081/api/";
+    public string networkAdress3 = "http://47.99.45.109:8081/ConfigTxt/";
+    public string networkAdress4 = "http://47.99.45.109:8081/";
     public string networkAdress = "http://www.x-game.xyz:9090/api/user/";
     private const string loginAPI = "login";
     private const string registerAPI = "register";
@@ -99,7 +99,7 @@ public class NetdataManager : ManagerBase {
         var _wForm = new WWWForm();
         _wForm.AddField("acc", name);
         _wForm.AddField("pwd", "000000");
-        string path = "http://106.14.16.150:8085/api/Login/login";
+        string path = networkAdress2+ "Login/login";
         //string path = "http://localhost:57789/api/Login/Login";
         StartCoroutine(SendLoginPost(path, _wForm, callback));
     }
@@ -113,7 +113,7 @@ public class NetdataManager : ManagerBase {
         var _wForm = new WWWForm();
         _wForm.AddField("acc", name);
         _wForm.AddField("pwd", password);
-        string path = "http://106.14.16.150:8085/api/Login/login";
+        string path = networkAdress2 + "Login/login";
         //string path = "http://localhost:57789/api/Login/Login";
         StartCoroutine(SendLoginPost(path, _wForm, callBack));
     }
@@ -148,13 +148,13 @@ public class NetdataManager : ManagerBase {
         _wForm.AddField("phone", phone);
         _wForm.AddField("code", code);
 
-        StartCoroutine(SendLoginPost("http://106.14.16.150:8085/api/Login/PhoneRegister", _wForm, callBack));
+        StartCoroutine(SendLoginPost(networkAdress2+"Login/PhoneRegister", _wForm, callBack));
     }
     public void SendSmsCode(System.Action<bool> callBack, string phone)
     {
         var _wForm = new WWWForm();
         _wForm.AddField("phone", phone);
-        StartCoroutine(SendSmsCodePost("http://106.14.16.150:8085/api/Login/SendCodeSms", _wForm, callBack));
+        StartCoroutine(SendSmsCodePost(networkAdress2+"Login/SendCodeSms", _wForm, callBack));
     }
 
     private IEnumerator SendSmsCodePost(string _url, WWWForm _wForm, System.Action<bool> callBack)
@@ -248,7 +248,7 @@ public class NetdataManager : ManagerBase {
         _wForm.AddField("positionx", location[1].ToString());
         _wForm.AddField("positiony", location[0].ToString());
       
-        StartCoroutine(GetCurrentLocationRangeOtherData("http://106.14.16.150:8085/api/Region/GetRegion", _wForm, callback));
+        StartCoroutine(GetCurrentLocationRangeOtherData(networkAdress2+"Region/GetRegion", _wForm, callback));
     }
 
     private IEnumerator GetCurrentLocationRangeOtherData(string _url, WWWForm _wForm ,System.Action<List<PlayerStrongholdAttribute>,List<BusinessStrongholdAttribute>, List<Exchange>> callback)
