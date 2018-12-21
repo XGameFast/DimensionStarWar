@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: xiaotubiao 2
+  m_Shader: {fileID: 4800000, guid: 7e7f7eb386842ff48b46233a11f48503, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _node_2963:
+        m_Texture: {fileID: 2800000, guid: fb1157b277e3f9b4092bfb20083b039e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _node_6468:
+        m_Texture: {fileID: 2800000, guid: fb1157b277e3f9b4092bfb20083b039e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _node_6606:
+        m_Texture: {fileID: 2800000, guid: c601fb6ef0c67114b9a837e90c8a6d50, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _Cutoff: 0.5
+    m_Colors:
+    - _node_8991: {r: 0.051470578, g: 0.3327586, b: 1, a: 1}
