@@ -2230,7 +2230,11 @@ public static class MonsterGameData
         int baseId = (int)OTYPE.ObjectsIDType.consumable + (int)OTYPE.ConsumableForIDType.currency;
         return GetObjectsAttribute<CD_ObjAttr>(baseId);
     }
-
+    /// <summary>
+    /// Real
+    /// </summary>
+    /// <returns>The cd object attr.</returns>
+    /// <param name="ID">Identifier.</param>
     public static CD_ObjAttr GetCD_ObjAttr(int ID)
     {
         int baseID = OTYPE.GetObjectsBaseID(ID);

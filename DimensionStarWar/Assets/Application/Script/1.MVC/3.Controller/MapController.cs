@@ -483,7 +483,11 @@ public class MapController : BaseController {
     #region JIRVIS 构建按钮 我的据点列表按钮
     private void JIRVISBuildMinestrongholdListBtn()
     {
-        JIRVIS.Instance.BuildDimensionRoomBtnList(AndaDataManager.Instance.GetPlayerAllStrongholdAttribute(), CallBackClickJIRVISStorngholdBtn);
+        JIRVIS.Instance.BuildDimensionRoomBtnList(AndaDataManager.Instance.GetPlayerAllStrongholdAttribute(), CallBackClickJIRVISStorngholdBtn, FinishBuildJIRVISBuildMinestrongholdListBtn);
+
+    }
+    private void FinishBuildJIRVISBuildMinestrongholdListBtn()
+    {
         List<JIRVISFuncBtnStruct> jIRVISFuncBtnStructs = new List<JIRVISFuncBtnStruct>
         {
             new JIRVISFuncBtnStruct { btnName = "当前位置", btnIconKey = ONAME.MapIcon , clickCallBack =  CallBackClickJIRVISBtnBacktoCurrentLocaiton},
@@ -1615,7 +1619,6 @@ public class MapController : BaseController {
         }
 
 
-
 #else
 
         if (Input.touchCount == 2)
@@ -1634,13 +1637,41 @@ public class MapController : BaseController {
             {
                 Vector2 curVec = touch2.position - touch1.position;
                 Vector2 oldVec = oldTouch2.position - oldTouch1.position;
+
+               
+
+
                 float angle = Vector2.Angle(oldVec, curVec);
                 angle *= Mathf.Sign(Vector3.Cross(oldVec, curVec).z);
                 ControlRotateCamera(new Vector3(0, angle, 0));
+
+                //计算老的两点距离和新的两点间距离，变大要放大模型，变小要缩放模型
+                float oldDistance = Vector2.Distance(oldTouch1.position, oldTouch2.position);
+                float newDistance = Vector2.Distance(touch1.position, touch2.position);
+                //两个距离之差，为正表示放大手势， 为负表示缩小手势
+                float offset = newDistance - oldDistance;
+                //放大因子， 一个像素按 0.01倍来算(100可调整)
+                float scaleFactor = offset / 100f;
+                Vector3 localScale = Vector3.zero;
+                Vector3 scale = new Vector3(localScale.x + scaleFactor,
+                                        localScale.y + scaleFactor,
+                                        localScale.z + scaleFactor);
+                //最小缩放到 0.3 倍
+                if (Mathf.Abs(scale.x) > 0.1f && Mathf.Abs(scale.y) > 0.1f && Mathf.Abs(scale.z) > 0.1f)
+                {
+                    Vector3 v3 = ARMonsterSceneDataManager.Instance.MapCamera.transform.position;
+                    v3.y -= scale.y * 10;
+                    v3.y = Mathf.Clamp(v3.y, 500f, 2500f);
+                    ARMonsterSceneDataManager.Instance.MapCamera.transform.position = v3;
+                }
+
+
                 oldTouch1 = touch1;
                 oldTouch2 = touch2;
             }
+
         }
+
 
 
 #endif

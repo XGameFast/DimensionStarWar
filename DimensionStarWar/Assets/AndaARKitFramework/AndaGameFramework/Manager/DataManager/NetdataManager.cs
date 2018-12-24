@@ -725,8 +725,69 @@ public class NetdataManager : ManagerBase {
     }
 
 
+    #region 上传保卫模式的数据
+    public void UploadProtectGameResult(BattelFinish battelResult, System.Action<List<RewardData>> callback)
+    {
+        var _wForm = new WWWForm();
+        string json = JsonMapper.ToJson(battelResult);
+        #if UNITY_EDITOR
+        Debug.Log("FightLog:" + json);
+        #endif
+        _wForm.AddField("token", json);
+        string path = networkAdress2 + "Battel/Finish";
+        //string path = "http://localhost:57789/api/" + "Battel/Finish";
+        StartCoroutine(ExcuteUploadProtectGameResult(path, _wForm, callback));
+    }
 
 
+    private IEnumerator ExcuteUploadProtectGameResult(string _url, WWWForm _wForm, System.Action<List<RewardData>> callback)
+    {
+        AndaUIManager.Instance.OpenWaitBoard("请稍等");
+        WWW postData = new WWW(_url, _wForm);
+        yield return postData;
+        AndaUIManager.Instance.CloseWaitBoard();
+        if(string.IsNullOrEmpty(postData.error))
+        {
+#if UNITY_EDITOR
+            Debug.Log("postData.text" + postData.text);
+#endif
+            FinishBattel finishBattel = JsonMapper.ToObject<FinishBattel>(postData.text);
+            if (finishBattel.code == "200")
+            {
+                List<RewardData> rewardDatas = new List<RewardData>();
+                //先检查优惠券
+                if(finishBattel.couponList!=null && finishBattel.couponList.Count!=0)
+                {
+                    int count = finishBattel.couponList.Count;
+                    for(int i = 0 ; i < count ; i++)
+                    {
+                        AndaDataManager.Instance.userData.AddPlayerCoupon(ConvertTool.ConverterBattleCouponToPlayerCoupon(finishBattel.couponList[i]));
+                        rewardDatas.Add(ConvertTool.ConverterBattleCouponToRewardData(finishBattel.couponList[i]));
+                    }
+                }
+                if(finishBattel.objectList!=null && finishBattel.objectList.Count!=0)
+                {
+                    int count = finishBattel.objectList.Count;
+                    for (int i = 0; i < count; i++)
+                    {
+                        AndaDataManager.Instance.userData.AddConsuambleItem(ConvertTool.ConverterBattleObjectToSD_Pag4U(finishBattel.objectList[i]));
+                        rewardDatas.Add(ConvertTool.ConverterBattleObjectToRewardData(finishBattel.objectList[i]));
+                    }
+                }
+                callback(rewardDatas);
+            }
+            else
+            {
+                callback(null);
+            }
+        }
+        else
+        {
+            callback(null);
+        }
+    }
+
+    #endregion
 
 
 
@@ -745,21 +806,24 @@ public class NetdataManager : ManagerBase {
 
     private IEnumerator ExcuteUploadGameresutl(string _url, WWWForm _wForm ,System.Action<bool> callback)
     {
+        AndaUIManager.Instance.OpenWaitBoard("请稍等");
         WWW postData = new WWW(_url, _wForm);
         yield return postData;
+        AndaUIManager.Instance.CloseWaitBoard();
+
         if (postData.error != null)
         {
             Debug.Log(postData.error);
             //callback(false);
         }else
         {
+            #if UNITY_EDITOR
             Debug.Log("postData.text" + postData.text);
-            string s = postData.text;
+            #endif
             FinishBattel finishBattel = JsonMapper.ToObject<FinishBattel>(postData.text);
             if(finishBattel.code == "200")
             {
                AndaDataManager.Instance.UpdateMineDataOfChanllengeGame(finishBattel);
-              
             }
             callback(finishBattel.code == "200");
         }

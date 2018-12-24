@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using GameRequest;
 public class MonsterGameConfig {
 
 	
@@ -31,6 +31,18 @@ public class RewardData
 {
     public int rewardID { get; set; }
     public int rewardCount { get; set; }
+    public RewardCoupon rewardCoupon{get;set; }//优惠券用
+}
+/// <summary>
+/// 优惠券
+/// </summary>
+public class RewardCoupon
+{
+    public string headImg{get;set;}
+    public int bussiIndex{get;set;}//商家的index
+    public string couponName{get;set;}
+    public string couponDes{get;set;}
+    public int count{get;set;}
 }
 
 #region 玩家数据 从服务器上来

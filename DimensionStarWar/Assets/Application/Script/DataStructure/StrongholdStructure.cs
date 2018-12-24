@@ -54,6 +54,7 @@ public class BusinessCoupon
 }
 public class PlayerCoupon
 {
+    //后段需要，前段不需要管：）
     public int playerIndex{get;set;}
     //在玩家数据库中的与玩家挂钩的主键
     public int playerCouponIndex { get; set; }
@@ -69,6 +70,8 @@ public class PlayerCoupon
     public int createTime { get; set; }
     //优惠券详情
     public BusinessCoupon coupon { get; set; }
+
+    public int businessIndex{get;set;}
  
 }
 

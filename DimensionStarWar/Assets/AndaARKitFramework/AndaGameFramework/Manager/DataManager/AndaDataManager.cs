@@ -750,10 +750,33 @@ public class AndaDataManager {
             res = battelResults,
             token = userData.token,
         };
-
-        Debug.Log("BattleFinish" + JsonMapper.ToJson(battelFinish));
+        #if UNITY_EDITOR
+        Debug.Log("ChanllengeBattleFinish" + JsonMapper.ToJson(battelFinish));
+        #endif
         naetdataManager.UploadGameResult(battelFinish,callback);
     }
+
+    public void CallServerUploadProtectGameResult(int gameType, int _stuts, List<BattelResult> battelResults, System.Action<List<RewardData>> callback)
+    {
+        string json = JsonMapper.ToJson(battelResults);
+        var objetList = new List<SearchObject>();
+        string objstr = JsonMapper.ToJson(objetList);
+        string md5 = LockMD5(_stuts, gameType, json, objstr);
+        BattelFinish battelFinish = new BattelFinish()
+        {
+            guid = currentGuid,
+            type = gameType,
+            status = _stuts,
+            md5Text = md5,
+            res = battelResults,
+            token = userData.token,
+        };
+#if UNITY_EDITOR
+        Debug.Log("ProtectBattleFinish" + JsonMapper.ToJson(battelFinish));
+#endif
+        naetdataManager.UploadProtectGameResult(battelFinish, callback);
+    }
+
 
     public void CallServerUploadGameWithObjectResult(int gameType, int _stuts, List<BattelResult> battelResults,List<SearchObject> searchObjects, System.Action<bool> callback)
     {
@@ -771,9 +794,16 @@ public class AndaDataManager {
             searchObject = searchObjects
         };
 
+        #if UNITY_EDITOR
         Debug.Log("BattleFinish" + JsonMapper.ToJson(battelFinish));
+        #endif
         naetdataManager.UploadGameResult(battelFinish, callback);
     }
+
+
+
+
+
     public void CallServerUpRecovery(int monsterIndex, int objectIndex,int count, System.Action<bool> callback)
     {
         naetdataManager.UpRecovery(monsterIndex, objectIndex, count, callback);
@@ -1152,6 +1182,7 @@ public class AndaDataManager {
         string localData = JsonMapper.ToJson(userData.userStrongholdList);
         PlayerPrefs.SetString("PlayerStrongholdListLocal", localData);
     }
+
 
 
     #region 计算相关

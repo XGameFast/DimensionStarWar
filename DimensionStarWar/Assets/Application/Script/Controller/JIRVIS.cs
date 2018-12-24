@@ -95,9 +95,9 @@ public class JIRVIS {
     {
         jIRVISData.getJIRVISBar.BuildMonsterListBtn(pmaList, click_callback,finishload_callback);
     }
-    public void BuildDimensionRoomBtnList(List<PlayerStrongholdAttribute> list, System.Action<int> click_callback)
+    public void BuildDimensionRoomBtnList(List<PlayerStrongholdAttribute> list, System.Action<int> click_callback ,System.Action finish = null)
     {
-        jIRVISData.getJIRVISBar.BuildDimensionRoomListBtn(list, click_callback);
+        jIRVISData.getJIRVISBar.BuildDimensionRoomListBtn(list, click_callback, finish);
     }
    
     public void BuildConsumableBtnList(List<LD_Objs> lD_Objs ,System.Action<int>callback)
