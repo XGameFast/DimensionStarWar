@@ -10,6 +10,8 @@ public class NetdataManager : ManagerBase {
 
 
     public string networkAdress2 = "http://47.99.45.109:8081/api/";
+    //public string networkAdress2 = "http://localhost:57789/api/";
+
     public string networkAdress3 = "http://47.99.45.109:8081/ConfigTxt/";
     public string networkAdress4 = "http://47.99.45.109:8081/";
     public string networkAdress = "http://www.x-game.xyz:9090/api/user/";

@@ -4845,52 +4845,6 @@ Transform:
   m_Father: {fileID: 284664807}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &329014289
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 4190769324171456, guid: bb325fefa1b674160b7bf699c7a7d473, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4190769324171456, guid: bb325fefa1b674160b7bf699c7a7d473, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4190769324171456, guid: bb325fefa1b674160b7bf699c7a7d473, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4190769324171456, guid: bb325fefa1b674160b7bf699c7a7d473, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4190769324171456, guid: bb325fefa1b674160b7bf699c7a7d473, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4190769324171456, guid: bb325fefa1b674160b7bf699c7a7d473, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4190769324171456, guid: bb325fefa1b674160b7bf699c7a7d473, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4190769324171456, guid: bb325fefa1b674160b7bf699c7a7d473, type: 2}
-      propertyPath: m_RootOrder
-      value: 11
-      objectReference: {fileID: 0}
-    - target: {fileID: 1214287372609036, guid: bb325fefa1b674160b7bf699c7a7d473, type: 2}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: bb325fefa1b674160b7bf699c7a7d473, type: 2}
-  m_IsPrefabParent: 0
 --- !u!4 &357722237
 Transform:
   m_ObjectHideFlags: 0
@@ -9329,21 +9283,6 @@ Prefab:
       propertyPath: TempBox
       value: 
       objectReference: {fileID: 1541196518}
-    - target: {fileID: 114795912449486026, guid: b657acdf1f9214268ae30bcc27bfeca5,
-        type: 2}
-      propertyPath: networkAdress2
-      value: http://47.99.45.109:8081/api/
-      objectReference: {fileID: 0}
-    - target: {fileID: 114795912449486026, guid: b657acdf1f9214268ae30bcc27bfeca5,
-        type: 2}
-      propertyPath: networkAdress3
-      value: http://47.99.45.109:8081/ConfigTxt/
-      objectReference: {fileID: 0}
-    - target: {fileID: 114795912449486026, guid: b657acdf1f9214268ae30bcc27bfeca5,
-        type: 2}
-      propertyPath: networkAdress4
-      value: http://47.99.45.109:8081/
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b657acdf1f9214268ae30bcc27bfeca5, type: 2}
   m_IsPrefabParent: 0
