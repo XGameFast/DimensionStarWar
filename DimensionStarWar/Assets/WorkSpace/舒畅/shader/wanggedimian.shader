@@ -69,10 +69,10 @@ Shader "Shader Forge/wanggedimian" {
                 float faceSign = ( facing >= 0 ? 1 : -1 );
 ////// Lighting:
                 float4 _node_726_var = tex2D(_node_726,TRANSFORM_TEX(i.uv0, _node_726));
-                float4 node_4636 = _Time;
-                float2 node_4127 = (i.uv0+node_4636.g*float2(0.05,0.05));
+                float4 node_1916 = _Time;
+                float2 node_4127 = (i.uv0+node_1916.g*float2(0.05,0.05));
                 float4 node_3897 = tex2D(_liuwenTEX,TRANSFORM_TEX(node_4127, _liuwenTEX));
-                float2 node_9597 = (i.uv0+node_4636.g*float2(-0.03,-0.05));
+                float2 node_9597 = (i.uv0+node_1916.g*float2(-0.03,-0.05));
                 float4 node_1839 = tex2D(_liuwenTEX,TRANSFORM_TEX(node_9597, _liuwenTEX));
                 float2 node_1611 = ((node_1839.r*node_3897.r*0.2)+i.uv0);
                 float4 _node_7780_var = tex2D(_node_7780,TRANSFORM_TEX(node_1611, _node_7780));
