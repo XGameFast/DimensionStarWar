@@ -101,25 +101,24 @@ public class ProtectGameController : BaseController {
         //Debug.Log("json:" + json);
 
 
-        AndaDataManager.Instance.CallServerUploadGameResult(JIRVIS.Instance.jIRVISData.currentPlayGameType, data.isWin ? 1 : 2, battelResults, CallbackFinishUploadGameresult);
+        AndaDataManager.Instance.CallServerUploadProtectGameResult(JIRVIS.Instance.jIRVISData.currentPlayGameType, data.isWin ? 1 : 2, battelResults, CallbackFinishUploadGameresult);
 
     }
 
 
     #endregion
 
-    private void CallbackFinishUploadGameresult(bool isSuccess)
+    private void CallbackFinishUploadGameresult(List<RewardData> rewardDatas)
     {
-        if (isSuccess)
+        if (rewardDatas!=null)
         {
-            Invoke("InvockReadReward", 3f);
+            StartCoroutine(InvockReadReward(rewardDatas));
         }
         else
         {
 
-            JIRVIS.Instance.PlayTips("尊敬的读星者，如果您看到这条提示，奖励物品被中途截断，下次要小心哦");
-            InvovkOutGame();
-            //UploadSkillData();
+            JIRVIS.Instance.PlayTips("遭遇星域盗贼，您的奖励被中途劫断，下次要小心哦");
+            Invoke("InvovkOutGame" ,2f);
         }
     }
 
@@ -128,15 +127,26 @@ public class ProtectGameController : BaseController {
         callbackFinishController(ONAME.MAPCONCTROLLER);
     }
 
-    private void InvockReadReward()
+
+    private SingleRewardBar singleRewardBar;
+
+    private IEnumerator InvockReadReward(List<RewardData> rewardDatas)
     {
-        JIRVISListenerEvent.JIRVISEvent_CloseSecondBar += CloseRewardBar;
-        JIRVIS.Instance.CheckReward();
+        yield return new WaitForSeconds(3f);
+        if(singleRewardBar!=null)
+        {
+           AndaDataManager.Instance.RecieveItem(singleRewardBar);
+        }
+    
+        singleRewardBar = AndaDataManager.Instance.InstantiateMenu<SingleRewardBar>(ONAME.SingleRewardBar);
+        singleRewardBar.SetInto(AndaUIManager.Instance.canvasRoot);
+        singleRewardBar.ClickCloseBar = CloseRewardBar;
+        singleRewardBar.SetInfo(rewardDatas);
     }
 
     private void CloseRewardBar()
     {
-        JIRVISListenerEvent.JIRVISEvent_CloseSecondBar -= CloseRewardBar;
+        singleRewardBar = null;
         InvovkOutGame();
     }
 

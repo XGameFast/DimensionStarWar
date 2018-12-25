@@ -342,10 +342,44 @@ public class AndaDataManager {
         }
     }
 
+    public void GetOtherPlayerPorImg(int hostIndex,string path ,System.Action<Sprite> callback)
+    {
+        if (string.IsNullOrEmpty(path))
+        {
+            callback(GetUISprite("AnotherNoPerson"));
+        }
+        else
+        {
+            string s = PlayerPrefs.GetString("UserPorImg" + hostIndex);
+            if (s == "")
+            {
+                naetdataManager.StartCoroutine(naetdataManager.GetUserPorImg(path, callback));
+            }
+            else
+            {
+                //与老的头像进行匹配，是否一致，不一致的话要进重新拉取
+                string oldPath = PlayerPrefs.GetString("UserPorPath" + hostIndex);
+                if (oldPath == path)
+                {
+                    byte[] v = ConvertTool.StringToBytes(s);
+                    Texture2D texture = new Texture2D(128, 128);
+                    texture.LoadImage(v);
+                    texture = ConvertTool.ConvertToTexture2d(texture);
+                    Sprite sp = ConvertTool.ConvertToSpriteWithTexture2d(texture);
+                    callback(sp);
+                }
+                else
+                {
+                    naetdataManager.StartCoroutine(naetdataManager.GetUserPorImg(path, callback));
+                }
+            }
+        }
+    }
+
     public void GetPlayerPorImg(System.Action<Sprite> callback)
     {
         string path = userData.playerdata.headImg;
-        if (path == null || path == "")
+        if (string.IsNullOrEmpty(path))
         {
             callback(GetUISprite("NoPerson"));
 
@@ -468,10 +502,13 @@ public class AndaDataManager {
     {
         userData.AddConsuambleItem(odb);
     }
-    //【减少物件，即使用了某个物件  使用的是物件的ID】
-    public void ReducePlayerConsumableList(int itemID)
+    //【减少物件，即使用了某个物件  使用的是物件的ID】。这个接口模式是使用一个的。并且是默认从后往前使用
+    public void ReducePlayerConsumableList(int itemID , int itemCount = 1)
     {
-        userData.ReduceConsumableItem(itemID);
+        int typeID = GetObjTypeID(itemID);
+        List<LD_Objs> lD_s = userData.userObjs[typeID].FirstOrDefault(s => s.id == itemID).lD_Objs;
+        int _itemIndex = lD_s[lD_s.Count-1].objIndex;
+        userData.ReduceConsumableItem(_itemIndex,itemID, itemCount);
     }
 
     public void UpdateMonsterStrengthValue(int monsterIndex, int playerIndex, int playerType, int value)
@@ -509,6 +546,44 @@ public class AndaDataManager {
     #endregion
 
     #region 与服务器通信
+
+
+    public void CallServerGetExchangeInfo(int exchangeIndex, System.Action<Exchange> callback)
+    {
+        naetdataManager.CallServerGetExchangeInfo(exchangeIndex,callback);
+    }
+
+    public  void CallServerUploadExBSCouponToExchagne(ExchangeBusinessCoupon businessCoupon ,System.Action<ExchangeBusinessCoupon> callback)
+    {
+        naetdataManager.CallServerUploadExBSCouponToExchange(businessCoupon,callback);
+    }
+
+    public void CallServerUploadExchangeObjectToExchange(ExchangeObject exchangeObject,System.Action<ExchangeObject> callback)
+    {
+        naetdataManager.CallServerUploadExchangeObjectToExchange(exchangeObject,callback);
+    }
+
+
+    public void CallServerBuyObjectFromExchange(int itemIndex, int payType, int payPrice, System.Action<ExchangeObject> callback)
+    {
+        naetdataManager.CallServerBuyItemFromExchange(itemIndex, payType, payPrice, callback);
+    }
+    /// <summary>
+    /// 购买交易所中的 奖励券
+    /// </summary>
+    /// <param name="itemIndex">Item index.</param>
+    /// <param name="payType">Pay type.</param>
+    /// <param name="callback">Callback.</param>
+    public void CallServerBuyExBSCouponFromExchange(int itemIndex, int payType, int payPrice, System.Action<ExchangeBusinessCoupon> callback)
+    {
+        naetdataManager.CallServerBuyExbsCouponFromExchange(itemIndex, payType, payPrice, callback);
+    }
+
+    public virtual void CallServerInsertExchangeStronghold(double x ,double y , string des, int rate,string exName,System.Action<Exchange> action)
+    {
+        naetdataManager.CallServerUploadExchangeStronghold(x,y, des ,exName, rate, action);
+    }
+
 
     public void CallServerInsertMonsterToStronghold(int monsterIndex, int strongholdIndex,string nickName, System.Action<bool> callback)
     {
@@ -573,15 +648,11 @@ public class AndaDataManager {
     {
         naetdataManager.TestGetBelondThisstrongholdFightEnemgyData(strongholdIndex,callback);
     }
-    public void CallServerGetCurrentLocaitonRangeOfOtherData(List<double> location ,System.Action<List<PlayerStrongholdAttribute>,List<BusinessStrongholdAttribute>> callback)
+    public void CallServerGetCurrentLocaitonRangeOfOtherData(List<double> location ,System.Action<List<PlayerStrongholdAttribute>,List<BusinessStrongholdAttribute>,List<Exchange>> callback)
     {
         naetdataManager.GetCurrentLocationRangeOtherData(location,callback);
         return;
-        //[测试获取临近据点]
-        if(TestManager.Instance.isTestLoadinglocalData)
-            naetdataManager.GetOtherPlayerAndBusinessStrongholdDataWithCurrentStorngholdlocation(location,callback);
-        else 
-            naetdataManager.GetCurrentLocationRangeOtherData(location,callback);
+
     }
 
     public void CallServerGetFightMonsterForOtherPlayer(int strongholdIndex, System.Action<List<PlayerMonsterAttribute>> callback)
@@ -679,10 +750,33 @@ public class AndaDataManager {
             res = battelResults,
             token = userData.token,
         };
-
-        Debug.Log("BattleFinish" + JsonMapper.ToJson(battelFinish));
+        #if UNITY_EDITOR
+        Debug.Log("ChanllengeBattleFinish" + JsonMapper.ToJson(battelFinish));
+        #endif
         naetdataManager.UploadGameResult(battelFinish,callback);
     }
+
+    public void CallServerUploadProtectGameResult(int gameType, int _stuts, List<BattelResult> battelResults, System.Action<List<RewardData>> callback)
+    {
+        string json = JsonMapper.ToJson(battelResults);
+        var objetList = new List<SearchObject>();
+        string objstr = JsonMapper.ToJson(objetList);
+        string md5 = LockMD5(_stuts, gameType, json, objstr);
+        BattelFinish battelFinish = new BattelFinish()
+        {
+            guid = currentGuid,
+            type = gameType,
+            status = _stuts,
+            md5Text = md5,
+            res = battelResults,
+            token = userData.token,
+        };
+#if UNITY_EDITOR
+        Debug.Log("ProtectBattleFinish" + JsonMapper.ToJson(battelFinish));
+#endif
+        naetdataManager.UploadProtectGameResult(battelFinish, callback);
+    }
+
 
     public void CallServerUploadGameWithObjectResult(int gameType, int _stuts, List<BattelResult> battelResults,List<SearchObject> searchObjects, System.Action<bool> callback)
     {
@@ -700,9 +794,16 @@ public class AndaDataManager {
             searchObject = searchObjects
         };
 
+        #if UNITY_EDITOR
         Debug.Log("BattleFinish" + JsonMapper.ToJson(battelFinish));
+        #endif
         naetdataManager.UploadGameResult(battelFinish, callback);
     }
+
+
+
+
+
     public void CallServerUpRecovery(int monsterIndex, int objectIndex,int count, System.Action<bool> callback)
     {
         naetdataManager.UpRecovery(monsterIndex, objectIndex, count, callback);
@@ -1050,7 +1151,7 @@ public class AndaDataManager {
     {
         return userData.localData_objs.FirstOrDefault(s => s.objID == objID);
     }
-    public List<LD_Objs> GetPlayerPackageConsumableList()
+    public List<UserObjsBox> GetPlayerPackageConsumableList()
     {
         return userData.GetConsumableList();
     }
@@ -1081,6 +1182,7 @@ public class AndaDataManager {
         string localData = JsonMapper.ToJson(userData.userStrongholdList);
         PlayerPrefs.SetString("PlayerStrongholdListLocal", localData);
     }
+
 
 
     #region 计算相关

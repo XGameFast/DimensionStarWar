@@ -95,9 +95,9 @@ public class JIRVIS {
     {
         jIRVISData.getJIRVISBar.BuildMonsterListBtn(pmaList, click_callback,finishload_callback);
     }
-    public void BuildDimensionRoomBtnList(List<PlayerStrongholdAttribute> list, System.Action<int> click_callback)
+    public void BuildDimensionRoomBtnList(List<PlayerStrongholdAttribute> list, System.Action<int> click_callback ,System.Action finish = null)
     {
-        jIRVISData.getJIRVISBar.BuildDimensionRoomListBtn(list, click_callback);
+        jIRVISData.getJIRVISBar.BuildDimensionRoomListBtn(list, click_callback, finish);
     }
    
     public void BuildConsumableBtnList(List<LD_Objs> lD_Objs ,System.Action<int>callback)
@@ -215,6 +215,8 @@ public class JIRVIS {
         PlayTipsForchoose(OTYPE.Tipscontent.changeStrongholdStatu , OTYPE.TipsType.chooseTips ,"确定", "取消" ,callbackComfirm,callbackCancel);
     }
 
+
+
     #region 打开AR演示提示视频
     public void OpenJIRVISARTipsEditorBar()
     {
@@ -275,6 +277,14 @@ public class JIRVIS {
     }
 
 
+    #endregion
+
+    #region 打开交易所编辑面板
+    public void OpenExchangeEditorBar(System.Action<string ,string ,int > comfirm, System.Action cancel)
+    {
+        jIRVISData.BuildExchangeStrongholdEditorBar();
+        jIRVISData.getjIRVISContent_ExchangeStrongholdEditorBar.SetInfo(comfirm,cancel);
+    }
     #endregion
 
     #region 检查奖励

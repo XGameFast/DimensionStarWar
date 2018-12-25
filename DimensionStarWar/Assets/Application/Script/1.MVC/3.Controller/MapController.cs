@@ -203,11 +203,12 @@ public class MapController : BaseController {
     /// </summary>
     private void SwitchVVMap()
     {
-        AndaARManager.Instance.StopAR(FinishBuildARMode);
+        if(!data.setMapType) AndaARManager.Instance.StopAR(FinishBuildARMode);
         ARMonsterSceneDataManager.Instance.aRWorld.CloseBlur();
         ARMonsterSceneDataManager.Instance.aRWorld.ClosebackgroundVV();
         ARMonsterSceneDataManager.Instance.aRWorld.OpenMapCamera();
         AndaMap.Instance.SetTileState(true);
+        data.setMapType =true;
     }
 
     private void SwitchARMap()
@@ -216,6 +217,7 @@ public class MapController : BaseController {
         //隐藏map tiles
         AndaMap.Instance.SetTileState(false);
         ARMonsterSceneDataManager.Instance.MapCamera.gameObject.SetActive(false);
+        data.setMapType = false;
     }
 
 
@@ -296,13 +298,13 @@ public class MapController : BaseController {
     #region 成功获取周围玩家的POI数据，并且data构建数据 , 构建地图
 
     // psalist wiht mine and another stronghold , 
-    private void FinishGetPOIData(List<PlayerStrongholdAttribute> psalist, List<BusinessStrongholdAttribute> bsalist)
+    private void FinishGetPOIData(List<PlayerStrongholdAttribute> psalist, List<BusinessStrongholdAttribute> bsalist,List<Exchange> excList)
     {
         //开始构建地图
         AndaMap.Instance.BuildMap(null);
 
         //构建周围的据点数据
-        data.SetLocaitonRangeUserData(psalist, bsalist);
+        data.SetLocaitonRangeUserData(psalist, bsalist,excList);
 
         BuildMapItem();
 
@@ -354,6 +356,16 @@ public class MapController : BaseController {
         if(data.getBussinessStrongholdAttribute !=null  )
         {
             data.BuildAllRangeBussinessStrongholdItems();
+        }
+
+        if(data.getMineExchangeAttr!=null)
+        {
+            data.BuildMineExchangeSHUI();
+        }
+
+        if(data.getOtherExchangeAttr!=null)
+        {
+            data.BuildOtherExchangeUI();
         }
 
         if (data.getCommissionEventContainsBuildstronghold)
@@ -446,6 +458,7 @@ public class MapController : BaseController {
                 new JIRVISFuncBtnStruct { btnName = "AR" , btnIconKey = ONAME.ARIcon ,clickCallBack = JIRVISClick_ChangeToARMode },
                 new JIRVISFuncBtnStruct { btnName = "我的据点" , btnIconKey = ONAME.mineStrongholIcon ,clickCallBack = JIRVISBuildMinestrongholdListBtn },
                 new JIRVISFuncBtnStruct { btnName = data.getIsMap2D?"3D地图":"2D地图" , btnIconKey = data.getIsMap2D? ONAME.mapAngle3D:ONAME.mapAngle2D ,clickCallBack = ChangeMapAngle },
+                new JIRVISFuncBtnStruct { btnName = "交易所" , btnIconKey = ONAME.addExchange ,clickCallBack = BuildExchangeTampleStronghold },
                 new JIRVISFuncBtnStruct { btnName = "回退" , btnIconKey = ONAME.BackStep ,clickCallBack = BackToBuildDimensionRoomController }
             };
 
@@ -470,7 +483,11 @@ public class MapController : BaseController {
     #region JIRVIS 构建按钮 我的据点列表按钮
     private void JIRVISBuildMinestrongholdListBtn()
     {
-        JIRVIS.Instance.BuildDimensionRoomBtnList(AndaDataManager.Instance.GetPlayerAllStrongholdAttribute(), CallBackClickJIRVISStorngholdBtn);
+        JIRVIS.Instance.BuildDimensionRoomBtnList(AndaDataManager.Instance.GetPlayerAllStrongholdAttribute(), CallBackClickJIRVISStorngholdBtn, FinishBuildJIRVISBuildMinestrongholdListBtn);
+
+    }
+    private void FinishBuildJIRVISBuildMinestrongholdListBtn()
+    {
         List<JIRVISFuncBtnStruct> jIRVISFuncBtnStructs = new List<JIRVISFuncBtnStruct>
         {
             new JIRVISFuncBtnStruct { btnName = "当前位置", btnIconKey = ONAME.MapIcon , clickCallBack =  CallBackClickJIRVISBtnBacktoCurrentLocaiton},
@@ -909,10 +926,106 @@ public class MapController : BaseController {
 
     #endregion
 
+    #region 打开交易所信息面板
+    public void OpenExchangeStrongholdInformation(Exchange _exchange)
+    {
+        JIRVIS.Instance.RemoveCurrentBtnList();
+        AndaDataManager.Instance.CallServerGetExchangeInfo(_exchange.exchangeIndex, WaitForGetExchangeInfo);
+    }
+
+    private void WaitForGetExchangeInfo(Exchange _value)
+    {
+       
+        if(_value == null)
+        {
+            BuildJIRVISFunctionBtn();
+            JIRVIS.Instance.PlayTips("请检查网络");
+        }else
+        {
+            data.SetOpenchildBar(true);//不允许地图操作
+            data.BuildExchangeInfoMenu();
+            data.getExchangeMenu.SetInfo(_value);
+        }
+    }
 
 
+    public void CloseExchangeStrongholdInfomation()
+    {
+        data.SetOpenchildBar(false);//不允许地图操作
+        data.RemoveExchangeMenu();
+        BuildJIRVISFunctionBtn();
+    }
 
-  
+    #endregion
+
+
+    #region 准备插入交易所据点
+
+    private void BuildExchangeTampleStronghold()
+    {
+        JIRVIS.Instance.RemoveCurrentBtnList();
+        JIRVIS.Instance.PlayTips("请选择一个位置，放置交易所");
+        data.BuildTmpExchange();
+        data.tmpExchangeItem.PlayUp();
+        //data.SetOpenchildBar(true);//不允许地图操作
+      }
+
+    public void ComfirmSetExchangeHere()
+    {
+        data.SetOpenchildBar(true);//不允许地图操作
+        data.tmpExchangeItem.PlayDown();
+        Invoke("InvockOpenExchangeInfoEditorBar",0.5f);
+    }
+
+    private void InvockOpenExchangeInfoEditorBar()
+    {
+        JIRVIS.Instance.OpenExchangeEditorBar(ComfirUploadInformation, CancelUploadExchangeItem);
+    }
+
+    public void CancelSetExchangeHere()
+    {
+        BuildJIRVISFunctionBtn();
+        data.RemoveExchangeTmpItem();
+        data.SetOpenchildBar(false);//允许地图操作
+    }
+
+    public void ComfirUploadInformation(string shName,string shNote,int rate)
+    {
+        Vector3 vector3 = ARMonsterSceneDataManager.Instance.GetMapCameraHitPoint();
+        if(vector3.Equals(Vector3.zero))
+        {
+            JIRVIS.Instance.PlayTips("请重新选择位置");
+            return;
+        }
+        Vector2d vector2D = AndaMap.Instance.ConverGameworldPointToGeopoint(vector3);
+        AndaDataManager.Instance.CallServerInsertExchangeStronghold(vector2D.y, vector2D.x, shNote, rate , shName, UploadSuccess);
+    }
+
+    public void CancelUploadExchangeItem()
+    {
+        data.SetOpenchildBar(false);//允许地图操作
+        BuildExchangeTampleStronghold();
+    }
+
+    public void UploadSuccess(Exchange exchange)
+    {
+        if(exchange!=null)
+        {
+            data.BuildExchangeSHForAddtion(exchange);
+            data.RemoveExchangeTmpItem();
+            data.SetOpenchildBar(false);//允许地图操作
+            BuildJIRVISFunctionBtn();
+        }
+        else
+        {
+            JIRVIS.Instance.PlayTips("请检查网络连接是否正确");
+            data.SetOpenchildBar(false);//允许地图操作
+            BuildJIRVISFunctionBtn();
+        }
+    }
+
+    #endregion
+
     #region BUILD
 
 
@@ -989,12 +1102,12 @@ public class MapController : BaseController {
 
    
     //[获取完数据，开始开始构建地图数据]
-    public void FinishGetOtherStrongholdData(List<PlayerStrongholdAttribute> psalist, List<BusinessStrongholdAttribute> bsalist)
+    public void FinishGetOtherStrongholdData(List<PlayerStrongholdAttribute> psalist, List<BusinessStrongholdAttribute> bsalist,List<Exchange> exchanges)
     {
         data.SetWaitState(false);
 
         //为数据负值一下数值 ，并设置据点在地图上的位置
-        data.SetLocaitonRangeUserData(psalist,bsalist);
+        data.SetLocaitonRangeUserData(psalist,bsalist, exchanges);
        
         //待执行事件，添加据点
         if(JIRVIS.Instance.jIRVISData.getWaitexcuteEventlist.Contains(0))
@@ -1032,7 +1145,7 @@ public class MapController : BaseController {
     private void ExcuteGetOtherplayerStrongholdData()
     { 
         data.SetWaitState(true);
-        data.GetOtherStrongholdListwithCurrentplayerLocation(FinishGetOtherStrongholdData,AndaLocaltion.Instance.getLocationForDoublelist);
+      //  data.GetOtherStrongholdListwithCurrentplayerLocation(FinishGetOtherStrongholdData,AndaLocaltion.Instance.getLocationForDoublelist);
     }
 
     //[测试用 批量插入数据]
@@ -1381,6 +1494,35 @@ public class MapController : BaseController {
             data.GetmapUIItem_Icon_UserPor.UpdateScale(scale);
         }
 
+        if(data.getOtherExchagneItem!=null)
+        {
+            int count1 = data.getOtherExchagneItem.Count;
+            for (int i = 0; i < count1; i++)
+            {
+                Vector3 rP = data.getOtherExchangeWorldPose[i];//.strongholdInMapPosition;
+                Vector2 vector2 = data.GetCurCamera.WorldToScreenPoint(rP);
+                Vector3 p = ARMonsterSceneDataManager.Instance.UICamera.ScreenToWorldPoint(new Vector3(vector2.x, vector2.y, 90));
+                data.getOtherExchagneItem[i].UpdatePose(p);
+                float scale = 1300f / Vector3.Distance(rP, data.GetCurCamera.transform.position);
+                scale = (float)Mathf.Clamp(scale, 0.3f, 2.5f);
+                data.getOtherExchagneItem[i].UpdateScale(scale);
+            }
+        }
+
+        if(data.getMineExchangeItem!=null)
+        {
+            int count1 = data.getMineExchangeItem.Count;
+            for (int i = 0; i < count1; i++)
+            {
+                Vector3 rP = data.getMineExchangeWorldPose[i];//.strongholdInMapPosition;
+                Vector2 vector2 = data.GetCurCamera.WorldToScreenPoint(rP);
+                Vector3 p = ARMonsterSceneDataManager.Instance.UICamera.ScreenToWorldPoint(new Vector3(vector2.x, vector2.y, 90));
+                data.getMineExchangeItem[i].UpdatePose(p);
+                float scale = 1300f / Vector3.Distance(rP, data.GetCurCamera.transform.position);
+                scale = (float)Mathf.Clamp(scale, 0.3f, 2.5f);
+                data.getMineExchangeItem[i].UpdateScale(scale);
+            }
+        }
         /*for (int i = 0; i < count3; i++)
         {
             if (i >= 0 && i < count1)
@@ -1477,7 +1619,6 @@ public class MapController : BaseController {
         }
 
 
-
 #else
 
         if (Input.touchCount == 2)
@@ -1496,13 +1637,41 @@ public class MapController : BaseController {
             {
                 Vector2 curVec = touch2.position - touch1.position;
                 Vector2 oldVec = oldTouch2.position - oldTouch1.position;
+
+               
+
+
                 float angle = Vector2.Angle(oldVec, curVec);
                 angle *= Mathf.Sign(Vector3.Cross(oldVec, curVec).z);
                 ControlRotateCamera(new Vector3(0, angle, 0));
+
+                //计算老的两点距离和新的两点间距离，变大要放大模型，变小要缩放模型
+                float oldDistance = Vector2.Distance(oldTouch1.position, oldTouch2.position);
+                float newDistance = Vector2.Distance(touch1.position, touch2.position);
+                //两个距离之差，为正表示放大手势， 为负表示缩小手势
+                float offset = newDistance - oldDistance;
+                //放大因子， 一个像素按 0.01倍来算(100可调整)
+                float scaleFactor = offset / 100f;
+                Vector3 localScale = Vector3.zero;
+                Vector3 scale = new Vector3(localScale.x + scaleFactor,
+                                        localScale.y + scaleFactor,
+                                        localScale.z + scaleFactor);
+                //最小缩放到 0.3 倍
+                if (Mathf.Abs(scale.x) > 0.1f && Mathf.Abs(scale.y) > 0.1f && Mathf.Abs(scale.z) > 0.1f)
+                {
+                    Vector3 v3 = ARMonsterSceneDataManager.Instance.MapCamera.transform.position;
+                    v3.y -= scale.y * 10;
+                    v3.y = Mathf.Clamp(v3.y, 500f, 2500f);
+                    ARMonsterSceneDataManager.Instance.MapCamera.transform.position = v3;
+                }
+
+
                 oldTouch1 = touch1;
                 oldTouch2 = touch2;
             }
+
         }
+
 
 
 #endif

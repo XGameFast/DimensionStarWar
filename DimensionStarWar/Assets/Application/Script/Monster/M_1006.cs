@@ -22,7 +22,7 @@ public class M_1006 : MonsterBasic {
             {
                 m.SetFloat("_rongjie", v);
             }
-          
+
         }
     }
 }

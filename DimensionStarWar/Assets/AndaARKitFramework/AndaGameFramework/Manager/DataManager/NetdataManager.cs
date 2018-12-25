@@ -9,9 +9,11 @@ using GameRequest;
 public class NetdataManager : ManagerBase {
 
 
-    public string networkAdress2 = "http://106.14.16.150:8085/api/";
-    public string networkAdress3 = "http://106.14.16.150:8085/ConfigTxt/";
-    public string networkAdress4 = "http://106.14.16.150:8085/";
+    public string networkAdress2 = "http://47.99.45.109:8081/api/";
+    //public string networkAdress2 = "http://localhost:57789/api/";
+
+    public string networkAdress3 = "http://47.99.45.109:8081/ConfigTxt/";
+    public string networkAdress4 = "http://47.99.45.109:8081/";
     public string networkAdress = "http://www.x-game.xyz:9090/api/user/";
     private const string loginAPI = "login";
     private const string registerAPI = "register";
@@ -86,9 +88,57 @@ public class NetdataManager : ManagerBase {
 
     #endregion
 
+
+
+    #region 从服务器上获取想要的交易所的数据
+
+    public void CallServerGetExchangeInfo(int exchangeIndex,System.Action<Exchange> callback)
+    {
+        var _wForm = new WWWForm();
+        _wForm.AddField("token", AndaDataManager.Instance.userData.token);
+        _wForm.AddField("exchangeIndex", exchangeIndex);
+        string path = networkAdress2 + "Exchange/GetExchangeInfo";
+        StartCoroutine(ExcuteCallServerGetExchangeInfo(path, _wForm, callback));
+    }
+
+    private IEnumerator ExcuteCallServerGetExchangeInfo(string path,WWWForm _wForm ,System.Action<Exchange> callback)
+    {
+        AndaUIManager.Instance.OpenWaitBoard("稍等");
+        WWW postData = new WWW(path, _wForm);
+        yield return postData;
+        AndaUIManager.Instance.CloseWaitBoard();
+        if (postData.error != null)
+        {
+            Debug.Log(postData.error);
+        }
+        else
+        {
+
+#if UNITY_EDITOR
+            Debug.Log("data" + postData.text);
+#endif
+            ExchangeRequest data = JsonMapper.ToObject<ExchangeRequest>(postData.text);
+            if (data.code == "200")
+            {
+                callback(data.exchangeInfo);
+            }
+            else
+            {
+                callback(null);
+            }
+           
+        }
+       
+    }
+
+
+
+    #endregion
+
+
     #region 从服务器上获取 点击的商家据点的活动信息
 
-   // public void CallServerGetBSHActiveInfomation()
+    // public void CallServerGetBSHActiveInfomation()
 
 
     #endregion
@@ -99,7 +149,7 @@ public class NetdataManager : ManagerBase {
         var _wForm = new WWWForm();
         _wForm.AddField("acc", name);
         _wForm.AddField("pwd", "000000");
-        string path = "http://106.14.16.150:8085/api/Login/login";
+        string path = networkAdress2+ "Login/login";
         //string path = "http://localhost:57789/api/Login/Login";
         StartCoroutine(SendLoginPost(path, _wForm, callback));
     }
@@ -113,7 +163,7 @@ public class NetdataManager : ManagerBase {
         var _wForm = new WWWForm();
         _wForm.AddField("acc", name);
         _wForm.AddField("pwd", password);
-        string path = "http://106.14.16.150:8085/api/Login/login";
+        string path = networkAdress2 + "Login/login";
         //string path = "http://localhost:57789/api/Login/Login";
         StartCoroutine(SendLoginPost(path, _wForm, callBack));
     }
@@ -129,8 +179,10 @@ public class NetdataManager : ManagerBase {
         }
         else
         {
+#if UNITY_EDITOR
+            Debug.Log("Login" + postData.text);
+#endif
             var data = JsonMapper.ToObject<PlayerLogin>(postData.text);
-            Debug.Log(postData.text);
             if (data.code == "200")
             {
                 AndaDataManager.Instance.SetUserData(data.PlayerData);
@@ -147,13 +199,13 @@ public class NetdataManager : ManagerBase {
         _wForm.AddField("phone", phone);
         _wForm.AddField("code", code);
 
-        StartCoroutine(SendLoginPost("http://106.14.16.150:8085/api/Login/PhoneRegister", _wForm, callBack));
+        StartCoroutine(SendLoginPost(networkAdress2+"Login/PhoneRegister", _wForm, callBack));
     }
     public void SendSmsCode(System.Action<bool> callBack, string phone)
     {
         var _wForm = new WWWForm();
         _wForm.AddField("phone", phone);
-        StartCoroutine(SendSmsCodePost("http://106.14.16.150:8085/api/Login/SendCodeSms", _wForm, callBack));
+        StartCoroutine(SendSmsCodePost(networkAdress2+"Login/SendCodeSms", _wForm, callBack));
     }
 
     private IEnumerator SendSmsCodePost(string _url, WWWForm _wForm, System.Action<bool> callBack)
@@ -240,17 +292,17 @@ public class NetdataManager : ManagerBase {
 
     #region 通过经纬度查询范围内的所有据点数据
 
-    public void GetCurrentLocationRangeOtherData(List<double> location,System.Action<List<PlayerStrongholdAttribute>,List<BusinessStrongholdAttribute>> callback)
+    public void GetCurrentLocationRangeOtherData(List<double> location,System.Action<List<PlayerStrongholdAttribute>,List<BusinessStrongholdAttribute>, List<Exchange>> callback)
     {
         var _wForm = new WWWForm();
 
         _wForm.AddField("positionx", location[1].ToString());
         _wForm.AddField("positiony", location[0].ToString());
       
-        StartCoroutine(GetCurrentLocationRangeOtherData("http://106.14.16.150:8085/api/Region/GetRegion", _wForm, callback));
+        StartCoroutine(GetCurrentLocationRangeOtherData(networkAdress2+"Region/GetRegion", _wForm, callback));
     }
 
-    private IEnumerator GetCurrentLocationRangeOtherData(string _url, WWWForm _wForm ,System.Action<List<PlayerStrongholdAttribute>,List<BusinessStrongholdAttribute>> callback)
+    private IEnumerator GetCurrentLocationRangeOtherData(string _url, WWWForm _wForm ,System.Action<List<PlayerStrongholdAttribute>,List<BusinessStrongholdAttribute>, List<Exchange>> callback)
     {
         WWW postData = new WWW(_url, _wForm);
         yield return postData;
@@ -269,6 +321,7 @@ public class NetdataManager : ManagerBase {
             List<BusinessStrongholdGrowUpAttribute> tmpBusinessStronghold = data.resRegion.BusinessStrongHoldlist;
 
             List<PlayerStrongholdAttribute> playerStrongholds = new List<PlayerStrongholdAttribute>();
+
             List<BusinessStrongholdAttribute> businessStrongholds = new List<BusinessStrongholdAttribute>();
              
             foreach(var go in tmpPlayerStronghold)
@@ -286,7 +339,16 @@ public class NetdataManager : ManagerBase {
                 bsa.strongholdID = 30005;
                 businessStrongholds.Add(bsa);
             }
-            callback(playerStrongholds,businessStrongholds);
+
+            foreach(var go in data.resRegion.ExchangeList)
+            {
+                double x = go.exchangePositionx;
+                go.exchangePositionx = go.exchangePositiony;
+                go.exchangePositiony = x;
+            }
+             
+
+            callback(playerStrongholds,businessStrongholds, data.resRegion.ExchangeList);
            
         }
     }
@@ -663,8 +725,69 @@ public class NetdataManager : ManagerBase {
     }
 
 
+    #region 上传保卫模式的数据
+    public void UploadProtectGameResult(BattelFinish battelResult, System.Action<List<RewardData>> callback)
+    {
+        var _wForm = new WWWForm();
+        string json = JsonMapper.ToJson(battelResult);
+        #if UNITY_EDITOR
+        Debug.Log("FightLog:" + json);
+        #endif
+        _wForm.AddField("token", json);
+        string path = networkAdress2 + "Battel/Finish";
+        //string path = "http://localhost:57789/api/" + "Battel/Finish";
+        StartCoroutine(ExcuteUploadProtectGameResult(path, _wForm, callback));
+    }
 
 
+    private IEnumerator ExcuteUploadProtectGameResult(string _url, WWWForm _wForm, System.Action<List<RewardData>> callback)
+    {
+        AndaUIManager.Instance.OpenWaitBoard("请稍等");
+        WWW postData = new WWW(_url, _wForm);
+        yield return postData;
+        AndaUIManager.Instance.CloseWaitBoard();
+        if(string.IsNullOrEmpty(postData.error))
+        {
+#if UNITY_EDITOR
+            Debug.Log("postData.text" + postData.text);
+#endif
+            FinishBattel finishBattel = JsonMapper.ToObject<FinishBattel>(postData.text);
+            if (finishBattel.code == "200")
+            {
+                List<RewardData> rewardDatas = new List<RewardData>();
+                //先检查优惠券
+                if(finishBattel.couponList!=null && finishBattel.couponList.Count!=0)
+                {
+                    int count = finishBattel.couponList.Count;
+                    for(int i = 0 ; i < count ; i++)
+                    {
+                        AndaDataManager.Instance.userData.AddPlayerCoupon(ConvertTool.ConverterBattleCouponToPlayerCoupon(finishBattel.couponList[i]));
+                        rewardDatas.Add(ConvertTool.ConverterBattleCouponToRewardData(finishBattel.couponList[i]));
+                    }
+                }
+                if(finishBattel.objectList!=null && finishBattel.objectList.Count!=0)
+                {
+                    int count = finishBattel.objectList.Count;
+                    for (int i = 0; i < count; i++)
+                    {
+                        AndaDataManager.Instance.userData.AddConsuambleItem(ConvertTool.ConverterBattleObjectToSD_Pag4U(finishBattel.objectList[i]));
+                        rewardDatas.Add(ConvertTool.ConverterBattleObjectToRewardData(finishBattel.objectList[i]));
+                    }
+                }
+                callback(rewardDatas);
+            }
+            else
+            {
+                callback(null);
+            }
+        }
+        else
+        {
+            callback(null);
+        }
+    }
+
+    #endregion
 
 
 
@@ -683,21 +806,24 @@ public class NetdataManager : ManagerBase {
 
     private IEnumerator ExcuteUploadGameresutl(string _url, WWWForm _wForm ,System.Action<bool> callback)
     {
+        AndaUIManager.Instance.OpenWaitBoard("请稍等");
         WWW postData = new WWW(_url, _wForm);
         yield return postData;
+        AndaUIManager.Instance.CloseWaitBoard();
+
         if (postData.error != null)
         {
             Debug.Log(postData.error);
             //callback(false);
         }else
         {
+            #if UNITY_EDITOR
             Debug.Log("postData.text" + postData.text);
-            string s = postData.text;
+            #endif
             FinishBattel finishBattel = JsonMapper.ToObject<FinishBattel>(postData.text);
             if(finishBattel.code == "200")
             {
                AndaDataManager.Instance.UpdateMineDataOfChanllengeGame(finishBattel);
-              
             }
             callback(finishBattel.code == "200");
         }
@@ -842,9 +968,147 @@ public class NetdataManager : ManagerBase {
     #endregion
 
     #region 上传
+    /// <summary>
+    /// 上传奖励券到交易所
+    /// </summary>
+    /// <param name="ecbc">Exchange object.</param>
+    /// <param name="callback">Callback.</param>
+    public void CallServerUploadExBSCouponToExchange(ExchangeBusinessCoupon ecbc, System.Action<ExchangeBusinessCoupon> callback)
+    {
+        WWWForm wWWForm = new WWWForm();
+        wWWForm.AddField("token", AndaDataManager.Instance.userData.token);
+        wWWForm.AddField("exchangeIndex", ecbc.exchangeIndex);
+        wWWForm.AddField("playerCouponIndex", ecbc.playerCouponIndex);
+        wWWForm.AddField("count", ecbc.couponCount);
+        string json = JsonMapper.ToJson(ecbc.couponPrice);
+        wWWForm.AddField("price", json);
+        json = JsonMapper.ToJson(ecbc.buyType);
+        wWWForm.AddField("typeList", json);
+        string path = networkAdress2 + "Exchange/InsertExchangeCoupon";
+        StartCoroutine(ExcuteCallServerUploadExBSCouponToExchange(path, wWWForm, callback));
+    }
+
+    private IEnumerator ExcuteCallServerUploadExBSCouponToExchange(string _url, WWWForm wWWForm, System.Action<ExchangeBusinessCoupon> callback)
+    {
+        AndaUIManager.Instance.OpenWaitBoard("请稍等");
+        WWW postData = new WWW(_url, wWWForm);
+        yield return postData;
+        AndaUIManager.Instance.CloseWaitBoard();
+        if (postData.error != null)
+        {
+            callback(null);
+        }
+        else
+        {
+#if UNITY_EDITOR
+            Debug.Log(postData.text);
+#endif
+            ExchangeCouponRequest result = JsonMapper.ToObject<ExchangeCouponRequest>(postData.text);
+            if (result.code == "200")
+            {
+                ExchangeBusinessCoupon exchangeObject = result.exchangeCouponInfo;
+                AndaDataManager.Instance.userData.ReduceBussinesCoupon(exchangeObject.playerCouponIndex);
+                callback(exchangeObject);
+            }
+            else
+            {
+                callback(null);
+            }
+        }
+    }
 
 
 
+
+    public void CallServerUploadExchangeObjectToExchange(ExchangeObject exchangeObject , System.Action<ExchangeObject> callback)
+    {
+        WWWForm wWWForm = new WWWForm();
+        wWWForm.AddField("token", AndaDataManager.Instance.userData.token);
+        wWWForm.AddField("exchangeIndex", exchangeObject.exchangeIndex);
+        wWWForm.AddField("objectIndex", exchangeObject.objectIndex);
+        wWWForm.AddField("count", exchangeObject.objectCount);
+        string json = JsonMapper.ToJson(exchangeObject.objectPrice);
+        wWWForm.AddField("price", json);
+        json = JsonMapper.ToJson(exchangeObject.buyType);
+        wWWForm.AddField("typeList", json);
+        string path = networkAdress2 + "Exchange/InsertExchangeObject";
+        StartCoroutine(ExcuteCallServerUploadExchangeObjectToExchange(path, wWWForm, callback));
+    }
+
+    private IEnumerator ExcuteCallServerUploadExchangeObjectToExchange(string _url, WWWForm wWWForm, System.Action<ExchangeObject> callback)
+    {
+        AndaUIManager.Instance.OpenWaitBoard("请稍等");
+        WWW postData = new WWW(_url, wWWForm);
+        yield return postData;
+        AndaUIManager.Instance.CloseWaitBoard();
+        if (postData.error != null)
+        {
+            callback(null);
+        }
+        else
+        {
+#if UNITY_EDITOR
+            Debug.Log(postData.text);
+#endif
+            ExchangeObjectRequest result = JsonMapper.ToObject<ExchangeObjectRequest>(postData.text);
+            if (result.code == "200")
+            {
+                ExchangeObject exchangeObject = result.exchangeObjectInfo;
+                AndaDataManager.Instance.userData.ReduceConsumableItem(exchangeObject.objectIndex, exchangeObject.objectID,exchangeObject.objectCount);
+                callback(exchangeObject);
+            }
+            else
+            {
+                callback(null);
+            }
+        }
+    }
+
+
+    public void CallServerUploadExchangeStronghold(double x, double y, string description, string exName,int rate,System.Action<Exchange> callback)
+    {
+        WWWForm wWWForm = new WWWForm();
+        wWWForm.AddField("token", AndaDataManager.Instance.userData.token);
+        wWWForm.AddField("positionx", x.ToString());
+        wWWForm.AddField("positiony", y.ToString());
+        wWWForm.AddField("note", description);
+        wWWForm.AddField("payRate", rate);
+        wWWForm.AddField("exchangeName", exName);
+        string path = networkAdress2 + "Exchange/InsertExchangeInfo";
+        StartCoroutine(ExcuteCallServerUploadExchangeStronghold(path , wWWForm, callback));
+    }
+
+    private IEnumerator ExcuteCallServerUploadExchangeStronghold(string _url, WWWForm wWWForm, System.Action<Exchange> callback)
+    {
+        AndaUIManager.Instance.OpenWaitBoard("请稍等");
+        WWW postData = new WWW(_url, wWWForm);
+        yield return postData;
+        AndaUIManager.Instance.CloseWaitBoard();
+        if (postData.error != null)
+        {
+            callback(null);
+        }
+        else
+        {
+            #if UNITY_EDITOR
+            Debug.Log(postData.text);
+            #endif
+            ExchangeRequest result = JsonMapper.ToObject<ExchangeRequest>(postData.text);
+            if (result.code == "200")
+            {
+                AndaDataManager.Instance.userData.UpdateExchangeStrongholdList(result.exchangeInfo);
+                double tmp = result.exchangeInfo.exchangePositionx;
+                result.exchangeInfo.exchangePositionx = result.exchangeInfo.exchangePositiony;
+                result.exchangeInfo.exchangePositiony = tmp;
+                callback(result.exchangeInfo);
+            }
+            else
+            {
+                callback(null);
+            }
+        }
+
+    }
 
 
 
@@ -1027,6 +1291,141 @@ public class NetdataManager : ManagerBase {
     #endregion
 
 
+
+    #endregion
+
+    #region 从交易所购买
+
+    public void CallServerBuyExbsCouponFromExchange(int itemIndex, int payType, int payPrice,System.Action<ExchangeBusinessCoupon> action)
+    {
+        var _wForm = new WWWForm();
+        _wForm.AddField("token ", AndaDataManager.Instance.userData.token);
+        _wForm.AddField("buyType ", payType);
+        _wForm.AddField("exchangeCouponIndex, ", itemIndex);
+        string path = networkAdress2 + "Exchange/BuyExchangeCoupon";
+
+        StartCoroutine(ExcuteCallServerBuyExbsCouponFromExchange(payType, payPrice, path, _wForm, itemIndex, action));
+    }
+
+    private IEnumerator ExcuteCallServerBuyExbsCouponFromExchange(int type, int price ,string _url, WWWForm _wForm, int itemIndex, System.Action<ExchangeBusinessCoupon> action)
+    {
+        AndaUIManager.Instance.OpenWaitBoard("请稍等");
+        WWW postData = new WWW(_url, _wForm);
+        yield return postData;
+        AndaUIManager.Instance.CloseWaitBoard();
+        if (postData.error != null)
+        {
+            Debug.Log(postData.error);
+        }
+        else
+        {
+
+            Debug.Log(postData.text);
+            ExchangeCouponRequest data = JsonMapper.ToObject<ExchangeCouponRequest>(postData.text);
+            if (data.code == "200")
+            {
+
+                PlayerCoupon playerCoupon = new PlayerCoupon()
+                {
+                    playerIndex = data.exchangeCouponInfo.userIndex,
+                    playerCouponIndex = data.exchangeCouponInfo.playerCouponIndex,
+                    businessCouponIndex = data.exchangeCouponInfo.businessIndex,
+                    count = data.exchangeCouponInfo.couponCount,
+                    status = data.exchangeCouponInfo.coupon.status,
+                    expirationDate = data.exchangeCouponInfo.coupon.endtime,
+                    createTime = data.exchangeCouponInfo.coupon.createTime,//createTime,
+                    coupon = data.exchangeCouponInfo.coupon
+                };
+                AndaDataManager.Instance.userData.AddPlayerCoupon(playerCoupon);
+                if(type == 0)
+                {
+                    AndaDataManager.Instance.userData.ReduceCoin(price);
+                }else if(type == 1)
+                {
+                    AndaDataManager.Instance.userData.ReduceDimond(price);
+                }else if(type ==2)
+                {
+
+                }
+
+
+              
+                action(data.exchangeCouponInfo);
+            }
+            else
+            {
+                action(null);
+            }
+        }
+    }
+
+
+    public void CallServerBuyItemFromExchange(int itemIndex, int payType, int payPrice,System.Action<ExchangeObject> action)
+    {
+        var _wForm = new WWWForm();
+        _wForm.AddField("token", AndaDataManager.Instance.userData.token);
+        _wForm.AddField("buyType", payType);
+        _wForm.AddField("exchangeObjectIndex", itemIndex);
+        string path = networkAdress2 + "Exchange/BuyExchangeObject";
+        StartCoroutine(ExcuteCallServerBuyItemFromExchange(payType,payPrice,path, _wForm, itemIndex,action));
+    }
+
+    private IEnumerator ExcuteCallServerBuyItemFromExchange(int payType, int payPrice, string _url, WWWForm _wForm, int itemIndex, System.Action<ExchangeObject> action)
+    {
+        AndaUIManager.Instance.OpenWaitBoard("请稍等");
+        WWW postData = new WWW(_url, _wForm);
+        yield return postData;
+        AndaUIManager.Instance.CloseWaitBoard();
+        if (postData.error != null)
+        {
+            Debug.Log(postData.error);
+        }
+        else
+        {
+            Debug.Log(postData.text);
+            var data = JsonMapper.ToObject<ExchangeObjectRequest>(postData.text);
+            if (data.code == "200")
+            {
+                int GroupID =  AndaDataManager.Instance.GetObjectGroupID(data.exchangeObjectInfo.objectID);
+                switch(GroupID)
+                {
+                    case 1000:
+                     //  AndaDataManager.Instance.userData.AddMonster();
+                        break;
+                    case 40000:
+                        SD_Pag4U sD_Pag4U = new SD_Pag4U()
+                        {
+                            hostIndex = data.exchangeObjectInfo.userIndex,
+                            objectIndex = data.exchangeObjectInfo.objectIndex,
+                            objectID = data.exchangeObjectInfo.objectID,
+                            objectCount= data.exchangeObjectInfo.objectCount,
+                            objectValue = data.exchangeObjectInfo.objectValue
+                        };
+                        AndaDataManager.Instance.userData.AddConsuambleItem(sD_Pag4U);
+                        break;
+                }
+
+                if (payType == 0)
+                {
+                    AndaDataManager.Instance.userData.ReduceCoin(payPrice);
+                }
+                else if (payType == 1)
+                {
+                    AndaDataManager.Instance.userData.ReduceDimond(payPrice);
+                }
+                else if (payType == 2)
+                {
+
+                }
+
+
+                action(data.exchangeObjectInfo);
+            }else
+            {
+                action(null);
+            }
+        }
+    }
 
     #endregion
 
