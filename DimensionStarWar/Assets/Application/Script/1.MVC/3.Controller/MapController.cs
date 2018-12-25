@@ -284,7 +284,7 @@ public class MapController : BaseController {
         //AndaMap.Instance.andaMapData.SetCurrentMapCenterLatlong(new List<double> { location.LatitudeLongitude.x, location.LatitudeLongitude.y });
         //AndaMap.Instance.andaMapData.SetCurrentMapCenterLatlong(new List<double> { location.LatitudeLongitude.x, location.LatitudeLongitude.y });
         //GetPOIData();
-
+        ///
     }
 
     #region 通过当前位置获取周边数据
