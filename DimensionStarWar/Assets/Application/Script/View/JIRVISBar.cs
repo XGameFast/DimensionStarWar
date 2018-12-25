@@ -520,18 +520,24 @@ public class JIRVISBar : UIBasic2 {
     }
     #endregion
 
+
+
+
     #region 构建虚拟空间的实例按钮
-    public void BuildDimensionRoomListBtn(List<PlayerStrongholdAttribute> list, System.Action<int> click_callback,System.Action finish)
+    public void BuildDimensionRoomListBtn(List<PlayerStrongholdAttribute> list, System.Action<int> click_callback,System.Action finish ,bool replace )
     {
        
         //建立按钮
-        StartCoroutine(ExcuteBuildDimensionRoomListBtn(list,click_callback, finish));
+        StartCoroutine(ExcuteBuildDimensionRoomListBtn(list,click_callback, finish, replace));
         SetBtnBarState(true);
     }
 
-    private IEnumerator ExcuteBuildDimensionRoomListBtn(List<PlayerStrongholdAttribute> list, System.Action<int> click_callback, System.Action finish)
+    private IEnumerator ExcuteBuildDimensionRoomListBtn(List<PlayerStrongholdAttribute> list, System.Action<int> click_callback, System.Action finish , bool replace)
     {
-        JIRVIS.Instance.jIRVISData.InitBtnList();
+        if(replace)
+        {
+            JIRVIS.Instance.jIRVISData.InitBtnList();
+        }
         foreach (var go in list)
         {
             JIRVISBtnItem_Dimensionroom item = AndaDataManager.Instance.InstantiateMenu<JIRVISBtnItem_Dimensionroom>(ONAME.JIRVISButtonItem_DimensionRoomItem);
@@ -548,6 +554,7 @@ public class JIRVISBar : UIBasic2 {
         ReUIScrollViewPose();
 
     }
+
     #endregion
 
     #region 构建消耗品列表

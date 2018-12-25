@@ -51,6 +51,12 @@ public class BusinessCoupon
 
     //总数
     public int totalCount { get; set; }
+
+    /// <summary>
+    /// 类别（0不可直接兑换1可直接兑换）
+    /// </summary>
+    public int type { get; set; }
+
 }
 public class PlayerCoupon
 {

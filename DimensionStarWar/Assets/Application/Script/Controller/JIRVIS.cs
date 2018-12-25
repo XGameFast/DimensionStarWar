@@ -91,13 +91,13 @@ public class JIRVIS {
         BuildDimensionRoomBtnList(tmp,callbcak);
     }
 
-    public void BuildMonsterBtnList(List<PlayerMonsterAttribute> pmaList,System.Action<PlayerMonsterAttribute> click_callback ,System.Action finishload_callback=null)
+    public void BuildMonsterBtnList(List<PlayerMonsterAttribute> pmaList,System.Action<PlayerMonsterAttribute> click_callback ,System.Action finishload_callback=null , bool replace = true)
     {
         jIRVISData.getJIRVISBar.BuildMonsterListBtn(pmaList, click_callback,finishload_callback);
     }
-    public void BuildDimensionRoomBtnList(List<PlayerStrongholdAttribute> list, System.Action<int> click_callback ,System.Action finish = null)
+    public void BuildDimensionRoomBtnList(List<PlayerStrongholdAttribute> list, System.Action<int> click_callback ,System.Action finish = null,bool replace = true)
     {
-        jIRVISData.getJIRVISBar.BuildDimensionRoomListBtn(list, click_callback, finish);
+        jIRVISData.getJIRVISBar.BuildDimensionRoomListBtn(list, click_callback, finish, replace);
     }
    
     public void BuildConsumableBtnList(List<LD_Objs> lD_Objs ,System.Action<int>callback)

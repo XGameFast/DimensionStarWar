@@ -104,7 +104,7 @@ public class MapCtrData : ControllerData {
     }
     public ExchangeMenu getExchangeMenu {get {return exchangeMenu ;}}
 
-
+    public int GetCurChoossSHType {get{return currentChooseDiplaySHType ;}}
 
     public bool isOpenJirvisChildBar =false;
     public TowerBase mapCameraHitToweritem;
@@ -128,6 +128,9 @@ public class MapCtrData : ControllerData {
     private List<MapUIItem_icon_lvBoard_Name> businessStrongholdItems = new List<MapUIItem_icon_lvBoard_Name>();
     private List<MapUIItem_icon_lvBoard_Name> mineExchangeStrongholdItems = new List<MapUIItem_icon_lvBoard_Name>();
     private List<MapUIItem_icon_lvBoard_Name> OtherExchangeStrongholdItems = new List<MapUIItem_icon_lvBoard_Name>();
+    private List<AndaObjectBasic> mineExchagneStrongholdItem_obj = new List<AndaObjectBasic>();
+    private List<AndaObjectBasic> otherExcangeStrongholdItem_obj =new List<AndaObjectBasic>();
+    private List<AndaObjectBasic> bussinessStrongholdItems_obj =new List<AndaObjectBasic>();
     private List<Vector3> mineExchangeSHWorldPose = new List<Vector3>();
     private List<Vector3> otherExchangeSHWorldPose = new List<Vector3>();
     private MapUIItem_icon_UserPor currentLocationPointUIItem;
@@ -143,6 +146,15 @@ public class MapCtrData : ControllerData {
     private Vector3 curLocationInMapPostion ;
     private ExchangeMenu exchangeMenu;
 
+
+    //附近的查看的据点的种类，
+    // 0 = 列表总表 ，1 =玩家据点 ，2 = 交易所 ，3 = 商家据点 4 = boss 据点
+    //10 = 我的玩家据点， 11= 其他人的玩家据点， 12= 所有玩家据点。
+    //  20， =  我的交易所据点，21 = 其他玩家的交易所据点  22 = 所有玩家的交易所
+    // 30 = 所有商家据点
+    // 40 = 所有boss 据点
+    private int currentChooseDiplaySHType ;
+
     //用于判断是否可以建立据点 
     private bool buildStrongholdstate = false;
     public PlayerStrongholdAttribute curMineStrongholdAttr;
@@ -150,6 +162,8 @@ public class MapCtrData : ControllerData {
     public int shDisplayType = 4;
     public ExchangeUIItem_TmpSet tmpExchangeItem;
     public bool setMapType = true;//true = vv  false = ar
+    private float mapItemObjScale =180f;
+     
 
     public override void BuildData(BaseController _baseController)
     {
@@ -262,7 +276,15 @@ public class MapCtrData : ControllerData {
                 AndaDataManager.Instance.RecieveItem(OtherExchangeStrongholdItems[i]);
             }
             OtherExchangeStrongholdItems.Clear();
-
+        }
+        if(otherExcangeStrongholdItem_obj!=null)
+        {
+            int count = otherExcangeStrongholdItem_obj.Count;
+            for (int i = 0; i < count; i++)
+            {
+                AndaDataManager.Instance.RecieveItem(otherExcangeStrongholdItem_obj[i]);
+            }
+            otherExcangeStrongholdItem_obj.Clear();
         }
     }
 
@@ -277,6 +299,16 @@ public class MapCtrData : ControllerData {
             }
             mineExchangeStrongholdItems.Clear();
 
+        }
+
+        if (mineExchagneStrongholdItem_obj != null)
+        {
+            int count = mineExchagneStrongholdItem_obj.Count;
+            for (int i = 0; i < count; i++)
+            {
+                AndaDataManager.Instance.RecieveItem(mineExchagneStrongholdItem_obj[i]);
+            }
+            mineExchagneStrongholdItem_obj.Clear();
         }
     }
 
@@ -479,6 +511,11 @@ public class MapCtrData : ControllerData {
             _item.RegisterClickCallBack(mapController.OpenExchangeStrongholdInformation);
             if (mineExchangeStrongholdItems == null) mineExchangeStrongholdItems = new List<MapUIItem_icon_lvBoard_Name>();
             mineExchangeStrongholdItems.Add(_item);
+            AndaObjectBasic minObj = AndaDataManager.Instance.InstantiateOtherObj<AndaObjectBasic>("MapItem_ExchagneObj");
+            minObj.SetInto(AndaMap.Instance.andaMapController.abstractMap.transform);
+            minObj.transform.position = mineExchangeSHWorldPose[i];
+            minObj.transform.localScale = Vector3.one * mapItemObjScale;
+            mineExchagneStrongholdItem_obj.Add(minObj);
         }
     }
 
@@ -495,6 +532,11 @@ public class MapCtrData : ControllerData {
             _item.RegisterClickCallBack(mapController.OpenExchangeStrongholdInformation);
             if (OtherExchangeStrongholdItems == null) OtherExchangeStrongholdItems = new List<MapUIItem_icon_lvBoard_Name>();
             OtherExchangeStrongholdItems.Add(_item);
+            AndaObjectBasic otheObj = AndaDataManager.Instance.InstantiateOtherObj<AndaObjectBasic>("MapItem_ExchagneObj");
+            otheObj.SetInto(AndaMap.Instance.andaMapController.abstractMap.transform);
+            otheObj.transform.position = otherExchangeSHWorldPose[i];
+            otheObj.transform.localScale = Vector3.one * mapItemObjScale;
+            otherExcangeStrongholdItem_obj.Add(otheObj);
         }
     }
 
@@ -514,6 +556,11 @@ public class MapCtrData : ControllerData {
             _item.RegisterClickCallBack(mapController.ClickSelectMapItem);
             if (businessStrongholdItems == null) businessStrongholdItems = new List<MapUIItem_icon_lvBoard_Name>();
             businessStrongholdItems.Add(_item);
+            AndaObjectBasic andaObjectBasic = AndaDataManager.Instance.InstantiateTower<AndaObjectBasic>((20001+p.strongholdLevel).ToString());
+            andaObjectBasic.SetInto(AndaMap.Instance.andaMapController.abstractMap.transform);
+            andaObjectBasic.transform.position = bussinessStrongholdAttributes[i].strongholdInMapPosition;
+            andaObjectBasic.transform.localScale = Vector3.one * mapItemObjScale;
+            bussinessStrongholdItems_obj.Add(andaObjectBasic);
         }
         mapController.StartCoroutine(CheckBussinessSHPortol());
     }
@@ -702,6 +749,14 @@ public class MapCtrData : ControllerData {
         }
         
     }
+    /// <summary>
+    /// 当前选择显示据点标签
+    /// </summary>
+    /// <param name="type">Type.</param>
+    public void SetCurChooseDisplaySHType(int type)
+    {
+        currentChooseDiplaySHType = type;
+    }
 
 
 
@@ -713,4 +768,10 @@ public class MapCtrData : ControllerData {
 */
     }
 
+}
+
+public class SelectSHData
+{
+    public int selectSHIndex{get;set;}
+    public int type {get;set;}
 }
