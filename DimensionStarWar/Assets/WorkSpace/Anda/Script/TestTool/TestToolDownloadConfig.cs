@@ -58,7 +58,7 @@ public class TestToolDownloadConfig : MonoBehaviour {
     public bool SkillArchievementValueFileNameDownload {get { return _SkillArchievementValueFileNameDownload ; } set {_SkillArchievementValueFileNameDownload = value; } }
 
 
-    string networkAdress3 = "http://106.14.16.150:8085/ConfigTxt/";
+    string networkAdress3 = "http://47.99.45.109:8081/ConfigTxt/";
 
     public void Awake()
     {

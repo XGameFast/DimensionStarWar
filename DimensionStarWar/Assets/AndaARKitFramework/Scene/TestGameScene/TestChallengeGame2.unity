@@ -3615,6 +3615,21 @@ Prefab:
       propertyPath: TempBox
       value: 
       objectReference: {fileID: 1811178692}
+    - target: {fileID: 114795912449486026, guid: b657acdf1f9214268ae30bcc27bfeca5,
+        type: 2}
+      propertyPath: networkAdress2
+      value: http://47.99.45.109:8081/api/
+      objectReference: {fileID: 0}
+    - target: {fileID: 114795912449486026, guid: b657acdf1f9214268ae30bcc27bfeca5,
+        type: 2}
+      propertyPath: networkAdress3
+      value: http://47.99.45.109:8081/ConfigTxt/
+      objectReference: {fileID: 0}
+    - target: {fileID: 114795912449486026, guid: b657acdf1f9214268ae30bcc27bfeca5,
+        type: 2}
+      propertyPath: networkAdress4
+      value: http://47.99.45.109:8081/
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b657acdf1f9214268ae30bcc27bfeca5, type: 2}
   m_IsPrefabParent: 0
