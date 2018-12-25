@@ -22,9 +22,12 @@ public class JIRVISBar : UIBasic2 {
             return _editorBoardPoint;
         }
     }
-
+    public GameObject tmpPoint1;
+    public GameObject tmpPoint2;
+    public GameObject scrollPoint;
     public Transform videoPoint;
     public CanvasGroup tipsForChooseGroup;
+
     public GameObject tipsForChoose_YESButton;
     public GameObject tipsForChoose_NOButton;
     public GameObject tipsForCHoose_ComfirmButton;
@@ -39,10 +42,17 @@ public class JIRVISBar : UIBasic2 {
 
     public Slider tipsSlider;
     public Slider btnSlider;
+    public Slider btnSliderHori;
     public Text tipsLabel;
     public GridLayoutGroup btnGrid;
+
+    public GridLayoutGroup gridHori;
+
     public CanvasGroup canvasGroups;
+    public CanvasGroup btnGroupHori;
+
     public ScrollRect btnScrollView;
+    public ScrollRect btnScrollViewHori;
 
     private float btnFadeIntime = 0.15f;
 
@@ -60,12 +70,15 @@ public class JIRVISBar : UIBasic2 {
     private string tmpContent;
 
     private bool btnBarIsOpen;
+    private bool btnBarIsOpenHori;
 
     private Slider lastTipsSlider;
 
     private System.Action clickYES_callback;
     private System.Action clickNO_callback;
 
+    private Vector3 clickBtnPose;//刚刚点击的按钮，在什么位置
+    private GameObject lastClickBtn;
 
     //宠物按钮
     public GameObject monsterIconBtnItem;
@@ -74,7 +87,13 @@ public class JIRVISBar : UIBasic2 {
 
     public JIRVIS_FUNCBtn jirvis_funcBtn;
 
+    // 0 = 我的占星庭
+    private int lastListType  =-1;
+
     private List<string> messageQue;
+
+
+
     public void DisplayTips(string content, int messageLevel , bool autoClose = true)
     {
 
@@ -423,6 +442,7 @@ public class JIRVISBar : UIBasic2 {
             _jirvisFunBtn.SetInfo(_data[i].btnName, _data[i].btnIconKey, _data[i].clickCallBack);
             JIRVIS.Instance.jIRVISData.AddItem(_jirvisFunBtn);
             SetBtnEffectPosition(_jirvisFunBtn.transform.position);
+            _jirvisFunBtn.clickBackoutBtnPose = ClickBtnOutBtnPose;
             yield return new WaitForSeconds(btnFadeIntime);
         }
         ReUIScrollViewPose();
@@ -442,6 +462,7 @@ public class JIRVISBar : UIBasic2 {
             _jirvisFunBtn.transform.SetUIInto(btnGrid.transform);
             _jirvisFunBtn.SetInfo(go.btnName, go.btnIconKey, go.clickCallBack);
             JIRVIS.Instance.jIRVISData.AddItem(_jirvisFunBtn);
+            _jirvisFunBtn.clickBackoutBtnPose = ClickBtnOutBtnPose;
             SetBtnEffectPosition(_jirvisFunBtn.transform.position);
         }
 
@@ -458,7 +479,8 @@ public class JIRVISBar : UIBasic2 {
         JIRVIS.Instance.jIRVISData.AddItem(_jirvisFunBtn);
         SetBtnEffectPosition(_jirvisFunBtn.transform.position);
         ReUIScrollViewPose();
-        if(callback!=null)callback();
+        _jirvisFunBtn.clickBackoutBtnPose = ClickBtnOutBtnPose;
+        if (callback!=null)callback();
     }
 
 
@@ -470,6 +492,7 @@ public class JIRVISBar : UIBasic2 {
     {
         JIRVIS_FUNCBtn btnStruct = JIRVIS.Instance.jIRVISData.getItemList.FirstOrDefault(s=>s.transform.name == key) as JIRVIS_FUNCBtn;
         btnStruct.SetInfo(_btnStruct.btnName,_btnStruct.btnIconKey,_btnStruct.clickCallBack);
+        btnStruct.clickBackoutBtnPose = ClickBtnOutBtnPose;
         SetBtnEffectPosition(btnStruct.transform.position);
     }
 
@@ -479,6 +502,7 @@ public class JIRVISBar : UIBasic2 {
         {
             JIRVIS_FUNCBtn btnStruct = JIRVIS.Instance.jIRVISData.getItemList.FirstOrDefault(s=>s.transform.name == keys[i]) as JIRVIS_FUNCBtn;
             btnStruct.SetInfo(_btnStrucks[i].btnName,_btnStrucks[i].btnIconKey,_btnStrucks[i].clickCallBack);
+            btnStruct.clickBackoutBtnPose = ClickBtnOutBtnPose;
         }
     }
 
@@ -490,6 +514,7 @@ public class JIRVISBar : UIBasic2 {
             JIRVIS_FUNCBtn btnStruct = JIRVIS.Instance.jIRVISData.getItemList.FirstOrDefault(s => s.transform.name == keys[i]) as JIRVIS_FUNCBtn;
             btnStruct.SetInfo(_btnStrucks[i].btnName, _btnStrucks[i].btnIconKey, _btnStrucks[i].clickCallBack);
             SetBtnEffectPosition(btnStruct.transform.position);
+            btnStruct.clickBackoutBtnPose = ClickBtnOutBtnPose;
             yield return new WaitForSeconds(btnFadeIntime);
         }
     }
@@ -516,38 +541,130 @@ public class JIRVISBar : UIBasic2 {
         }
         ReUIScrollViewPose();
         if(finishload_callback!=null)finishload_callback();
-
     }
     #endregion
-
-
-
 
     #region 构建虚拟空间的实例按钮
     public void BuildDimensionRoomListBtn(List<PlayerStrongholdAttribute> list, System.Action<int> click_callback,System.Action finish ,bool replace )
     {
-       
+        if(btnBarIsOpenHori)
+        {
+            SetBtnBarStateHori(false);
+            lastClickBtn.GetComponentInChildren<TweenRotation>().PlayReverse();
+            return;
+        }
+
+        if(lastListType == 0)
+        {
+            lastClickBtn.GetComponentInChildren<TweenRotation>().PlayForward();
+            SetBtnBarStateHori(true);
+            return;
+        }
+
+        Vector3 t = btnScrollViewHori.gameObject.transform.position;
+        t.y = clickBtnPose.y;
+        btnScrollViewHori.gameObject.transform.position = t;
+        lastClickBtn.GetComponentInChildren<TweenRotation>().PlayForward();
         //建立按钮
         StartCoroutine(ExcuteBuildDimensionRoomListBtn(list,click_callback, finish, replace));
-        SetBtnBarState(true);
+        SetBtnBarStateHori(true);
+        lastListType = 0;
     }
 
     private IEnumerator ExcuteBuildDimensionRoomListBtn(List<PlayerStrongholdAttribute> list, System.Action<int> click_callback, System.Action finish , bool replace)
     {
         if(replace)
         {
+            JIRVIS.Instance.jIRVISData.InitBtnListForHoriz();
+        }
+
+        foreach (var go in list)
+        {
+            JIRVISBtnItem_Dimensionroom item = AndaDataManager.Instance.InstantiateMenu<JIRVISBtnItem_Dimensionroom>(ONAME.JIRVISButtonItem_DimensionRoomItem);
+            item.transform.SetUIInto(gridHori.transform);
+            item.BuildItem(go, click_callback);
+            JIRVIS.Instance.jIRVISData.AddItemForHori(item);
+            item.transform.localScale = Vector3.one * 0.7f;
+            yield return new WaitForSeconds(btnFadeIntime);
+        }
+        if(finish!=null)
+        {
+            finish();
+        }
+        ReUIScrollViewPoseHori();
+    }
+
+    #endregion
+
+
+    #region 构建商家据点按钮
+
+    public void BuildBussinessStrongholdListBtn(List<BusinessStrongholdAttribute> list, System.Action<int> click_callback, System.Action finish, bool replace)
+    {
+        //建立按钮
+        StartCoroutine(ExcuteBuildBussinessStrongholdListBtn(list, click_callback, finish, replace));
+        SetBtnBarState(true);
+    }
+
+    private IEnumerator ExcuteBuildBussinessStrongholdListBtn(List<BusinessStrongholdAttribute> list, System.Action<int> click_callback, System.Action finish, bool replace)
+    {
+        if (replace)
+        {
             JIRVIS.Instance.jIRVISData.InitBtnList();
         }
+
+        ItemScrollStruct itemScrollStruct = new ItemScrollStruct();
+        itemScrollStruct.center = scrollPoint.transform.position;
+        itemScrollStruct.distance = Vector3.Distance(tmpPoint1.transform.position, tmpPoint2.transform.position);
+
         foreach (var go in list)
         {
             JIRVISBtnItem_Dimensionroom item = AndaDataManager.Instance.InstantiateMenu<JIRVISBtnItem_Dimensionroom>(ONAME.JIRVISButtonItem_DimensionRoomItem);
             item.transform.SetUIInto(btnGrid.transform);
-            item.BuildItem(go, click_callback);
+            item.BuildItem(go, itemScrollStruct, click_callback);
             JIRVIS.Instance.jIRVISData.AddItem(item);
             SetBtnEffectPosition(item.transform.position);
             yield return new WaitForSeconds(btnFadeIntime);
         }
-        if(finish!=null)
+        if (finish != null)
+        {
+            finish();
+        }
+        ReUIScrollViewPose();
+
+    }
+    #endregion
+
+    #region 构建交易所按钮
+
+    public void BuildExchangeListBtn(List<Exchange> list, System.Action<int> click_callback, System.Action finish, bool replace)
+    {
+        //建立按钮
+        StartCoroutine(ExcuteBuildExchangeListBtn(list, click_callback, finish, replace));
+        SetBtnBarState(true);
+    }
+
+    private IEnumerator ExcuteBuildExchangeListBtn(List<Exchange> list, System.Action<int> click_callback, System.Action finish, bool replace)
+    {
+        if (replace)
+        {
+            JIRVIS.Instance.jIRVISData.InitBtnList();
+        }
+
+        ItemScrollStruct itemScrollStruct = new ItemScrollStruct();
+        itemScrollStruct.center = scrollPoint.transform.position;
+        itemScrollStruct.distance = Vector3.Distance(tmpPoint1.transform.position, tmpPoint2.transform.position);
+
+        foreach (var go in list)
+        {
+            JIRVISBtnItem_Dimensionroom item = AndaDataManager.Instance.InstantiateMenu<JIRVISBtnItem_Dimensionroom>(ONAME.JIRVISButtonItem_DimensionRoomItem);
+            item.transform.SetUIInto(btnGrid.transform);
+            item.BuildItem(go, itemScrollStruct, click_callback);
+            JIRVIS.Instance.jIRVISData.AddItem(item);
+            SetBtnEffectPosition(item.transform.position);
+            yield return new WaitForSeconds(btnFadeIntime);
+        }
+        if (finish != null)
         {
             finish();
         }
@@ -556,6 +673,7 @@ public class JIRVISBar : UIBasic2 {
     }
 
     #endregion
+
 
     #region 构建消耗品列表
 
@@ -627,6 +745,27 @@ public class JIRVISBar : UIBasic2 {
         }
     }
 
+    public void SetBtnBarStateHori(bool isOpen)
+    {
+        if(isOpen)
+        {
+            if(!btnBarIsOpenHori)
+            {
+                btnBarIsOpenHori = true;
+                StartCoroutine(OpenBtnBarHori());
+            }
+        }else
+        {
+            if(btnBarIsOpenHori)
+            {
+                btnBarIsOpenHori =false;
+                StartCoroutine(CloseBtnBarHori());
+            }
+        }
+    }
+
+
+
     private IEnumerator OpenBtnBar()
     {
         float tmp = 0 ;
@@ -641,6 +780,20 @@ public class JIRVISBar : UIBasic2 {
         //btnGrid.gameObject.SetTargetActiveOnce(true);
         //ReUIScrollViewPose();
     }
+
+    private IEnumerator OpenBtnBarHori()
+    {
+        float tmp = 0;
+        while (tmp < 1 && btnBarIsOpenHori)
+        {
+            tmp += Time.deltaTime;
+            btnSliderHori.value = Mathf.Lerp(0, 1, tmp * 4f);
+            btnGroupHori.alpha = Mathf.Lerp(0, 1, tmp);
+            yield return null;
+        }
+        btnGroupHori.blocksRaycasts = true;
+    }
+
 
 
     private IEnumerator CloseBtnBar()
@@ -658,6 +811,21 @@ public class JIRVISBar : UIBasic2 {
         }
         canvasGroups.blocksRaycasts = false;
     }
+    private IEnumerator CloseBtnBarHori()
+    {
+        float tmp = 0;
+
+        while (tmp < 1 && !btnBarIsOpenHori)
+        {
+            //Debug.Log("excuteclose");
+            tmp += Time.deltaTime;
+            float t = Mathf.Lerp(1, 0, tmp * 4f);
+            btnSliderHori.value = t;
+            btnGroupHori.alpha = t;
+            yield return null;
+        }
+        btnGroupHori.blocksRaycasts = false;
+    }
 
     private void ReUIScrollViewPose()
     {
@@ -665,6 +833,13 @@ public class JIRVISBar : UIBasic2 {
         //
         btnScrollView.content.localPosition = Vector2.zero;
     }
+
+    private void ReUIScrollViewPoseHori()
+    {
+       // btnScrollViewHori.content.localPosition = Vector2.zero;
+    }
+
+
     public void ClickDeafultBtn()
     {
         JIRVISButtonItemBase jIRVISButton = JIRVIS.Instance.jIRVISData.getItemList[0] as JIRVISButtonItemBase;
@@ -696,4 +871,10 @@ public class JIRVISBar : UIBasic2 {
         }
     }
      
+
+    private void ClickBtnOutBtnPose(Vector3 pose , GameObject _item)
+    {
+        lastClickBtn = _item;
+        clickBtnPose = pose;
+    }
 }

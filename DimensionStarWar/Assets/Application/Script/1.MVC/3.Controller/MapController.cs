@@ -530,7 +530,7 @@ public class MapController : BaseController {
                     BuildJIRVISBtns_MinePlayerSH();
                     break;
                 case 1: //玩家据点
-
+                    BuildJIRVISBtns_PlayerSH();
                     break;
                 case 2: //交易所据点
                     BuildJIRVISBtns_ExchangeSH();
@@ -583,7 +583,7 @@ public class MapController : BaseController {
             List<JIRVISFuncBtnStruct> jIRVISFuncBtnStructs = new List<JIRVISFuncBtnStruct>()
             {
                 new JIRVISFuncBtnStruct { btnName = "返回" , btnIconKey = ONAME.VVIcon ,clickCallBack = JIRVISClikc_ChangeToVVMode },
-                new JIRVISFuncBtnStruct { btnName = "我的据点" , btnIconKey = ONAME.mineStrongholIcon ,clickCallBack = JIRVISBuildMinestrongholdListBtn },
+                new JIRVISFuncBtnStruct { btnName = "我的据点" , btnIconKey = ONAME.minePlayerSH ,clickCallBack = JIRVISBuildMinestrongholdListBtn },
                 //new JIRVISFuncBtnStruct { btnName = data.getIsMap2D?"3D地图":"2D地图" , btnIconKey = data.getIsMap2D? ONAME.mapAngle3D:ONAME.mapAngle2D ,clickCallBack = ChangeMapAngle },
                 //new JIRVISFuncBtnStruct { btnName = "回退" , btnIconKey = ONAME.BackStep ,clickCallBack = BackToBuildDimensionRoomController }
             };
@@ -601,7 +601,7 @@ public class MapController : BaseController {
         {
             new JIRVISFuncBtnStruct { btnName = "回退" , btnIconKey = ONAME.BackStep ,clickCallBack = BackToBuildDimensionRoomController },
             new JIRVISFuncBtnStruct { btnName = "AR" , btnIconKey = ONAME.ARIcon ,clickCallBack = JIRVISClick_ChangeToARMode },
-            new JIRVISFuncBtnStruct { btnName = "玩家据点" , btnIconKey = ONAME.StrongholdIcon ,clickCallBack = ClickJIRVISBtns_EnterPlayerSH },
+            new JIRVISFuncBtnStruct { btnName = "玩家据点" , btnIconKey = ONAME.PlayerSH ,clickCallBack = ClickJIRVISBtns_EnterPlayerSH },
             new JIRVISFuncBtnStruct { btnName = "交易所" ,btnIconKey = ONAME.exchangeSH , clickCallBack = JIRVISBuildMinestrongholdListBtn},
             new JIRVISFuncBtnStruct { btnName = "商家据点" , btnIconKey = ONAME.businessStrongholdIcon ,clickCallBack = BuildExchangeTampleStronghold },
             new JIRVISFuncBtnStruct { btnName = "添加玩家据点" , btnIconKey = ONAME.AddStrongholdIcon ,clickCallBack = BuildExchangeTampleStronghold },
@@ -616,12 +616,15 @@ public class MapController : BaseController {
     {
         List<JIRVISFuncBtnStruct> jIRVISFuncBtnStructs = new List<JIRVISFuncBtnStruct>()
         {
-            new JIRVISFuncBtnStruct { btnName = "我的据点" , btnIconKey = ONAME.mineStrongholIcon ,clickCallBack = ClickJIRVISBtns_EnterMinePlayerSH },
-            new JIRVISFuncBtnStruct { btnName = "其他人的据点" ,btnIconKey = ONAME.otherSH , clickCallBack = ClickJIRVISBtns_EnterOtherPlayerSH},
+            new JIRVISFuncBtnStruct { btnName = "我的据点" , btnIconKey = ONAME.minePlayerSH ,clickCallBack = ClickJIRVISBtns_EnterMinePlayerSH },
+            new JIRVISFuncBtnStruct { btnName = "其他人的据点" ,btnIconKey = ONAME.otherPlayerSH , clickCallBack = ClickJIRVISBtns_EnterOtherPlayerSH},
             new JIRVISFuncBtnStruct { btnName = "所有人的据点" , btnIconKey = ONAME.allPlayerSH ,clickCallBack = ClicckJIRVISBtns_EnterAllPlayerSH },
-            new JIRVISFuncBtnStruct { btnName = "所有人的据点" , btnIconKey = ONAME.allPlayerSH ,clickCallBack = ClicckJIRVISBtns_EnterAllPlayerSH },
-
+            new JIRVISFuncBtnStruct { btnName = "交易所" , btnIconKey = ONAME.exchangeSH ,clickCallBack = ClickJIRVISBtn_EnterExchange },
+            new JIRVISFuncBtnStruct { btnName = "商家据点" , btnIconKey = ONAME.businessStrongholdIcon ,clickCallBack = ClickJIRVISBtn_EnterBSSH },
+            //new JIRVISFuncBtnStruct { btnName = "失守据点" , btnIconKey = ONAME.bossSH ,clickCallBack = ClickJIRVISBtn_EnterBossSH },
         };
+
+        JIRVIS.Instance.BuildFunctionBtn(jIRVISFuncBtnStructs);
     }
 
     private void BuildJIRVISBtns_MinePlayerSH()
@@ -634,6 +637,7 @@ public class MapController : BaseController {
         jIRVISFuncBtn.clickCallBack = ClickJIRVISBtn_BackStepFromMinePlayerSH;//回调上一步
         jIRVISFuncBtns.Add(jIRVISFuncBtn);
         JIRVIS.Instance.BuildFunctionBtn(jIRVISFuncBtns);
+
         JIRVIS.Instance.BuildDimensionRoomBtnList(data.getSeflStrongholdAttribute,CallBackClickJIRVISStorngholdBtn,null,false);
 
     }
@@ -647,6 +651,7 @@ public class MapController : BaseController {
         jIRVISFuncBtn.clickCallBack = ClickJIRVISBtn_BackStepFromOtherPlayerSH;//回调上一步
         jIRVISFuncBtns.Add(jIRVISFuncBtn);
         JIRVIS.Instance.BuildFunctionBtn(jIRVISFuncBtns);
+
         JIRVIS.Instance.BuildDimensionRoomBtnList(data.getOtherPlayerStrongholdAttribute, CallBackClickJIRVISStorngholdBtn, null, false);
     }
 
@@ -668,25 +673,25 @@ public class MapController : BaseController {
 
     private void ClickJIRVISBtns_EnterPlayerSH()
     {
-        data.SetCurChooseDisplaySHType(1);
+        data.SetCurChooseDisplaySHType((int)MapCtrData.mapDisplayType.playerSH);
         BuildJIRVISFunctionBtn();
     }
 
     private void ClickJIRVISBtns_EnterMinePlayerSH()
     {
-        data.SetCurChooseDisplaySHType(10);
+        data.SetCurChooseDisplaySHType(0);//0是我的所有占星庭
         BuildJIRVISFunctionBtn();
     }
 
     private void ClickJIRVISBtns_EnterOtherPlayerSH()
     {
-        data.SetCurChooseDisplaySHType(11);
+        data.SetCurChooseDisplaySHType(11);//11 其他人所有的占星庭
         BuildJIRVISFunctionBtn();
     }
 
     private void ClicckJIRVISBtns_EnterAllPlayerSH()
     {
-        data.SetCurChooseDisplaySHType(12);
+        data.SetCurChooseDisplaySHType(12); //我的和别人的所有据点的总和
         BuildJIRVISFunctionBtn();
     }
 
@@ -722,23 +727,106 @@ public class MapController : BaseController {
 
     private void BuildJIRVISBtns_ExchangeSH()
     {
+        List<JIRVISFuncBtnStruct> jIRVISFuncBtnStructs = new List<JIRVISFuncBtnStruct>()
+        {
+            new JIRVISFuncBtnStruct { btnName = "我的交易所" , btnIconKey = ONAME.mineExchagneSH ,clickCallBack = ClickJIRVISBtn_EnterMineExchangeSH },
+            new JIRVISFuncBtnStruct { btnName = "其他人的交易所" ,btnIconKey = ONAME.otherExchangeSH , clickCallBack = ClickJIRVISBtn_EnterOtherExchangeSH},
+            new JIRVISFuncBtnStruct { btnName = "所有人的交易所" , btnIconKey = ONAME.allExchangeSH,clickCallBack = ClickJIRVISBtn_EnterAllExchangeSH },
+            new JIRVISFuncBtnStruct { btnName = "占星庭" , btnIconKey = ONAME.PlayerSH ,clickCallBack = ClickJIRVISBtns_EnterPlayerSH },
+            new JIRVISFuncBtnStruct { btnName = "商家据点" , btnIconKey = ONAME.businessStrongholdIcon ,clickCallBack = ClickJIRVISBtn_EnterBSSH },
+          //  new JIRVISFuncBtnStruct { btnName = "失守据点" , btnIconKey = ONAME.bossSH ,clickCallBack = ClickJIRVISBtn_EnterBossSH },
+        };
 
+        JIRVIS.Instance.BuildFunctionBtn(jIRVISFuncBtnStructs);
     }
+
+
 
     private void BuildJIRVISBtns_MineExchangeSH()
     {
-
+        //构建我的所有据点列表
+        List<JIRVISFuncBtnStruct> jIRVISFuncBtns = new List<JIRVISFuncBtnStruct>();
+        JIRVISFuncBtnStruct jIRVISFuncBtn = new JIRVISFuncBtnStruct();
+        jIRVISFuncBtn.btnName = "返回";
+        jIRVISFuncBtn.btnIconKey = ONAME.BackStep;
+        jIRVISFuncBtn.clickCallBack = ClickJIRVISBtn_BackStep_MineExchangeSH;//回调上一步
+        jIRVISFuncBtns.Add(jIRVISFuncBtn);
+        JIRVIS.Instance.BuildFunctionBtn(jIRVISFuncBtns);
+        JIRVIS.Instance.BuildExchangeBtnList(data.getMineExchangeAttr, CallBackClickJIRVISStorngholdBtn, null, false);
     }
 
     private void BuildJIRVISBtns_OtherExchangeSh()
     {
-
+        //构建我的所有据点列表
+        List<JIRVISFuncBtnStruct> jIRVISFuncBtns = new List<JIRVISFuncBtnStruct>();
+        JIRVISFuncBtnStruct jIRVISFuncBtn = new JIRVISFuncBtnStruct();
+        jIRVISFuncBtn.btnName = "返回";
+        jIRVISFuncBtn.btnIconKey = ONAME.BackStep;
+        jIRVISFuncBtn.clickCallBack = ClickJIRVISBtn_BackStep_OtherExchangeSH;//回调上一步
+        jIRVISFuncBtns.Add(jIRVISFuncBtn);
+        JIRVIS.Instance.BuildFunctionBtn(jIRVISFuncBtns);
+        JIRVIS.Instance.BuildExchangeBtnList(data.getOtherExchangeAttr, CallBackClickJIRVISStorngholdBtn, null, false);
     }
 
     private void BuildJIRVISBtns_AllExchangeSH()
     {
 
+        List<JIRVISFuncBtnStruct> jIRVISFuncBtns = new List<JIRVISFuncBtnStruct>();
+        JIRVISFuncBtnStruct jIRVISFuncBtn = new JIRVISFuncBtnStruct();
+        jIRVISFuncBtn.btnName = "返回";
+        jIRVISFuncBtn.btnIconKey = ONAME.BackStep;
+        jIRVISFuncBtn.clickCallBack = ClickJIRVISBtn_BackStep_AllExchangeSH;//回调上一步
+        jIRVISFuncBtns.Add(jIRVISFuncBtn);
+        JIRVIS.Instance.BuildFunctionBtn(jIRVISFuncBtns);
+
+        List<Exchange> exchanges = new List<Exchange>();
+        exchanges.AddRange(data.getMineExchangeAttr);
+        exchanges.AddRange(data.getOtherExchangeAttr);
+        JIRVIS.Instance.BuildExchangeBtnList(exchanges, CallBackClickJIRVISStorngholdBtn, null, false);
+
     }
+
+    private void ClickJIRVISBtn_EnterExchange()
+    {
+        data.SetCurChooseDisplaySHType((int)MapCtrData.mapDisplayType.exchangeSH);
+        BuildJIRVISFunctionBtn();
+    }
+
+    private void ClickJIRVISBtn_EnterMineExchangeSH()
+    {
+        data.SetCurChooseDisplaySHType((int)MapCtrData.mapDisplayType.mineExchangeSH);
+        BuildJIRVISFunctionBtn();
+    }
+    private void ClickJIRVISBtn_EnterOtherExchangeSH()
+    {
+        data.SetCurChooseDisplaySHType((int)MapCtrData.mapDisplayType.otherExchangeSH);
+        BuildJIRVISFunctionBtn();
+    }
+    private void ClickJIRVISBtn_EnterAllExchangeSH()
+    {
+        data.SetCurChooseDisplaySHType((int)MapCtrData.mapDisplayType.allExchangeSH);
+        BuildJIRVISFunctionBtn();
+    }
+
+    private void ClickJIRVISBtn_BackStep_MineExchangeSH()
+    {
+        data.SetCurChooseDisplaySHType((int)MapCtrData.mapDisplayType.exchangeSH);
+        BuildJIRVISFunctionBtn();
+    }
+
+    private void ClickJIRVISBtn_BackStep_OtherExchangeSH()
+    {
+        data.SetCurChooseDisplaySHType((int)MapCtrData.mapDisplayType.exchangeSH);
+        BuildJIRVISFunctionBtn();
+    }
+
+    private void ClickJIRVISBtn_BackStep_AllExchangeSH()
+    {
+        data.SetCurChooseDisplaySHType((int)MapCtrData.mapDisplayType.exchangeSH);
+        BuildJIRVISFunctionBtn();
+    }
+
+
 
     #endregion
 
@@ -746,15 +834,40 @@ public class MapController : BaseController {
 
     private void BuildJIRVISBtns_BSSH()
     {
+        List<JIRVISFuncBtnStruct> jIRVISFuncBtnStructs = new List<JIRVISFuncBtnStruct>()
+        {
+            new JIRVISFuncBtnStruct { btnName = "所有商家据点" , btnIconKey = ONAME.allBussinessSH ,clickCallBack = ClickJIRVISBtn_AllBSSH },
+            new JIRVISFuncBtnStruct { btnName = "占星庭" , btnIconKey = ONAME.PlayerSH ,clickCallBack = ClickJIRVISBtns_EnterPlayerSH },
+            new JIRVISFuncBtnStruct { btnName = "交易所" , btnIconKey = ONAME.exchangeSH ,clickCallBack = ClickJIRVISBtn_EnterExchange },
+           // new JIRVISFuncBtnStruct { btnName = "失守据点" , btnIconKey = ONAME.bossSH ,clickCallBack = ClickJIRVISBtn_EnterBossSH },
+        };
 
+        JIRVIS.Instance.BuildFunctionBtn(jIRVISFuncBtnStructs);
     }
 
     private void BuildJIRVISBtn_AllBSSH()
     {
-
+        List<JIRVISFuncBtnStruct> jIRVISFuncBtns = new List<JIRVISFuncBtnStruct>();
+        JIRVISFuncBtnStruct jIRVISFuncBtn = new JIRVISFuncBtnStruct();
+        jIRVISFuncBtn.btnName = "返回";
+        jIRVISFuncBtn.btnIconKey = ONAME.BackStep;
+        jIRVISFuncBtn.clickCallBack = ClickJIRVISBtn_EnterBSSH;//回调上一步
+        jIRVISFuncBtns.Add(jIRVISFuncBtn);
+        JIRVIS.Instance.BuildFunctionBtn(jIRVISFuncBtns);
+        JIRVIS.Instance.BuildBussineStrongholdBtnList(data.getBussinessStrongholdAttribute, CallBackClickJIRVISStorngholdBtn, null, false);
     }
 
+    private void ClickJIRVISBtn_EnterBSSH()
+    {
+        data.SetCurChooseDisplaySHType((int)MapCtrData.mapDisplayType.bussinessSH);
+        BuildJIRVISFunctionBtn();
+    }
 
+    private void ClickJIRVISBtn_AllBSSH()
+    {
+        data.SetCurChooseDisplaySHType((int)MapCtrData.mapDisplayType.allBussinessSh);
+        BuildJIRVISFunctionBtn();
+    }
 
     #endregion
 
@@ -765,6 +878,16 @@ public class MapController : BaseController {
     }
 
     private void BuildJIRVISBtns_AllBossSH()
+    {
+
+    }
+
+    private void ClickJIRVISBtn_EnterBossSH()
+    {
+
+    }
+
+    private void ClickJIRVISBtns_AllBossSH()
     {
 
     }

@@ -99,7 +99,16 @@ public class JIRVIS {
     {
         jIRVISData.getJIRVISBar.BuildDimensionRoomListBtn(list, click_callback, finish, replace);
     }
-   
+    public void BuildBussineStrongholdBtnList(List<BusinessStrongholdAttribute> list, System.Action<int> click_callback, System.Action finish = null, bool replace = true)
+    {
+        jIRVISData.getJIRVISBar.BuildBussinessStrongholdListBtn(list, click_callback, finish, replace);
+    }
+
+    public void BuildExchangeBtnList(List<Exchange> list, System.Action<int> click_callback, System.Action finish = null, bool replace = true)
+    {
+        jIRVISData.getJIRVISBar.BuildExchangeListBtn(list, click_callback, finish, replace);
+    }
+
     public void BuildConsumableBtnList(List<LD_Objs> lD_Objs ,System.Action<int>callback)
     {
         jIRVISData.getJIRVISBar.BuildConsumableListBtn(lD_Objs,callback);

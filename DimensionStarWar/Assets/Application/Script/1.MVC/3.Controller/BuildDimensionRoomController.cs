@@ -759,7 +759,7 @@ public class BuildDimensionRoomController : BaseController {
 
                 List<JIRVISFuncBtnStruct> tmp = new List<JIRVISFuncBtnStruct>
                 {
-                    new JIRVISFuncBtnStruct{ btnName = "我的据点" , btnIconKey = ONAME.mineStrongholIcon, clickCallBack = OpenJIRVISStrongholdBtnForMine },
+                    new JIRVISFuncBtnStruct{ btnName = "我的据点" , btnIconKey = ONAME.minePlayerSH, clickCallBack = OpenJIRVISStrongholdBtnForMine },
                     //new JIRVISFuncBtnStruct{ btnName = "星域",btnIconKey = ONAME.StarMapIcon, clickCallBack = JIRVIS.Instance.aRMonsterMainController.EnterStarspace },
                     //new JIRVISFuncBtnStruct{ btnName = "探索",btnIconKey = ONAME.TrvalIcon,   clickCallBack = JIRVIS.Instance.aRMonsterMainController.EnterTravl },
                     //new JIRVISFuncBtnStruct{ btnName = "交易",btnIconKey = ONAME.MallIcon,    clickCallBack = JIRVIS.Instance.aRMonsterMainController.EnterMall },
@@ -781,7 +781,7 @@ public class BuildDimensionRoomController : BaseController {
 
                 List<JIRVISFuncBtnStruct> tmp2 = new List<JIRVISFuncBtnStruct>
                 {
-                    new JIRVISFuncBtnStruct{ btnName = "我的据点" , btnIconKey = ONAME.mineStrongholIcon, clickCallBack = OpenJIRVISStrongholdBtnForMine },
+                    new JIRVISFuncBtnStruct{ btnName = "我的据点" , btnIconKey = ONAME.minePlayerSH, clickCallBack = OpenJIRVISStrongholdBtnForMine },
                     new JIRVISFuncBtnStruct{ btnName = "星域",btnIconKey = ONAME.MapIcon, clickCallBack = EnterStarmap /*JIRVIS.Instance.aRMonsterMainController.EnterStarspace */},
                     new JIRVISFuncBtnStruct{ btnName = "探索",btnIconKey = ONAME.TrvalIcon,   clickCallBack = CallBackEnterSearch },
                      new JIRVISFuncBtnStruct{ btnName = "商城",btnIconKey = ONAME.MallIcon,  clickCallBack = CallBackEnterMall/*JIRVIS.Instance.aRMonsterMainController.EnterMall*/},

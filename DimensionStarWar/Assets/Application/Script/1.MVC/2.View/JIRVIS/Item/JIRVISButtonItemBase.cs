@@ -5,7 +5,7 @@ using UnityEngine;
 public class JIRVISButtonItemBase : AndaObjectBasic {
 
     private AndaObjectBasic btnFadeInReward;
-
+    public System.Action<Vector3,GameObject> clickBackoutBtnPose;
     public override void OnDispawn()
     {
         if(btnFadeInReward!=null)
@@ -31,6 +31,11 @@ public class JIRVISButtonItemBase : AndaObjectBasic {
 
     public virtual void ClickItem()
     {
-        
+        if(clickBackoutBtnPose!=null)
+        {
+            clickBackoutBtnPose(transform.position,gameObject);
+        }
     }
+
+
 }
