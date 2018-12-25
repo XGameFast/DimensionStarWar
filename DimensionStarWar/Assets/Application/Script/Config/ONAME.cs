@@ -221,7 +221,7 @@ public static class ONAME
     public static string playerStrongholdIcon = "51009";//其他玩家据点图标
     public static string businessStrongholdIcon = "51010" ;//商家据点图标
    
-    public static string StrongholdIcon = "51011" ;//据点图标 概括 
+    public static string StrongholdIcon = "51011" ;//玩家据点 据点图标 概括 
     public static string VVIcon = "51012";//vv 图标
     public static string AddStrongholdIcon = "51013";//
     public static string LocationIcon = "51014";
@@ -242,6 +242,15 @@ public static class ONAME
     public static string addExchange = "51026";
     public static string consignForsale = "51027";
     public static string cardTicket = "51028";
+    public static string otherSH = "51029";//其他玩家的占星庭
+    public static string allPlayerSH = "51030";//所有玩家据点
+    public static string exchangeSH = "51031";//交易所 总的概括
+    public static string mineExchagneSH = "51032";//我的交易所,
+    public static string otherExchangeSH = "51033";//其他玩家的交易所
+    public static string allExchangeSH = "51034";//所有的交易所
+    public static string bossSH = "51035";//boss 据点
+    public static string allBossSH = "51036";//所有Boss 据点
+    public static string allBussinessSH = "51037";//所有商家点
 
     public static string shootingTrainingIcon = "shootingTrainingIcon";
 
