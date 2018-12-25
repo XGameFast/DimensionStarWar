@@ -58,7 +58,7 @@ public class TestToolDownloadConfig : MonoBehaviour {
     public bool SkillArchievementValueFileNameDownload {get { return _SkillArchievementValueFileNameDownload ; } set {_SkillArchievementValueFileNameDownload = value; } }
 
 
-    string networkAdress3 = "http://106.14.16.150:8085/ConfigTxt/";
+    string networkAdress3 = "http://47.99.45.109:8081/ConfigTxt/";
 
     public void Awake()
     {
@@ -74,7 +74,18 @@ public class TestToolDownloadConfig : MonoBehaviour {
     private void ReadCurrentFiledData()
     {
         string json = PlayerPrefs.GetString(ONAME.MonsterConfigFileName);
-        Debug.Log("monstterConfig" + json);
+        //Debug.Log("TipsConfigFileName" + PlayerPrefs.GetString(ONAME.TipsConfigFileName));
+        //Debug.Log("BussinesStrongholdConfigFileName" + PlayerPrefs.GetString(ONAME.BussinesStrongholdConfigFileName));
+        //Debug.Log("ChanllengeGameConfigFileName" + PlayerPrefs.GetString(ONAME.ChanllengeGameConfigFileName));
+        //Debug.Log("MallConfigFileName" + PlayerPrefs.GetString(ONAME.MallConfigFileName));
+        //Debug.Log("GameAssetIDTypeConfig" + PlayerPrefs.GetString(ONAME.GameAssetIDTypeConfig));
+        //Debug.Log("ObjectsConfigFileName" + PlayerPrefs.GetString(ONAME.ObjectsConfigFileName));
+        //Debug.Log("ProtectGameConfigFileName" + PlayerPrefs.GetString(ONAME.ProtectGameConfigFileName));
+        Debug.Log("SkillConfigFileName" + PlayerPrefs.GetString(ONAME.SkillConfigFileName));
+        //Debug.Log("StrongholdConfigFileName" + PlayerPrefs.GetString(ONAME.StrongholdConfigFileName));
+        //Debug.Log("StarConfigFileName" + PlayerPrefs.GetString(ONAME.StarConfigFileName));
+        //Debug.Log("SkillArchievementValueFileName" + PlayerPrefs.GetString(ONAME.SkillArchievementValueFileName));
+        Debug.Log("MonsterConfigFileName" + PlayerPrefs.GetString(ONAME.MonsterConfigFileName));
     }
 
     //点击执行瞎子
