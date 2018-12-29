@@ -165,7 +165,7 @@ public static class MonsterGameData
                         {
                             new SkillAnimationConfig { skillID = 10011, skillAnimationLength = 1.4f , skillAnimationInterval = new List<float> { 14f ,30f, 42f}},
                             new SkillAnimationConfig { skillID = 11011, skillAnimationLength = 1f , skillAnimationInterval = new List<float> { 6f, 10f, 30f }},
-                            new SkillAnimationConfig { skillID = 12011, skillAnimationLength = 1.8f , skillAnimationInterval = new List<float> { 25f,38f, 54f }},
+                            new SkillAnimationConfig { skillID = 12011, skillAnimationLength = 1.8f , skillAnimationInterval = new List<float> { 21f,38f, 54f }},
                         }
                     }
 

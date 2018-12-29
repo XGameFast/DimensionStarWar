@@ -43,7 +43,7 @@ public class BusinessCoupon
     //优惠劵创建时间
     public int createTime { get; set; }
     //奖励掉落概率
-    public float rewardDropRate { get; set; }
+    public int rewardDropRate { get; set; }
     //掉落个数 , 这个也用于 合成表里的需要多少个数量合成
     public int rewardDropCount { get; set; }
     //奖励构成，由哪几个奖励合成

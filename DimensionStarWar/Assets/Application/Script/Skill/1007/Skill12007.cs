@@ -102,15 +102,25 @@ public class Skill12007 : SkillBallistic
             if (host.isPlayer)
             {
                 //Debug.DrawRay(GatheringObj.transform.position, GatheringObj.transform.forward, Color.red, 10f);
-                if (Physics.Raycast(GatheringObj.transform.position, dir.normalized, out hit, 50, 1 << LayerMask.NameToLayer("Monster") | 1 << LayerMask.NameToLayer("Boss")))
+                if (Physics.Raycast(GatheringObj.transform.position, dir.normalized, out hit, 50, 1 << LayerMask.NameToLayer("Monster") | 1 << LayerMask.NameToLayer("Boss") | 1 << LayerMask.NameToLayer("Defense")))
                 {
 
 
                     Hit(hit.transform.GetComponent<AndaObjectBasic>(), LayerMask.LayerToName(hit.transform.gameObject.layer));
 
-                    AndaObjectBasic hitExplore = AndaDataManager.Instance.InstantiateOtherObj<AndaObjectBasic>("12007_explore");
-                    hitExplore.transform.localScale = Vector3.one * ARMonsterSceneDataManager.Instance.getARWorldScale;
-                    hitExplore.transform.position = hit.point;
+                    Debug.Log(hit.collider.name);
+                    if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Defense"))
+                    {
+                        var hitExplore = AndaDataManager.Instance.InstantiateOtherObj(ONAME.commonDefenseEffectName);
+                        hitExplore.transform.localScale = Vector3.one * ARMonsterSceneDataManager.Instance.getARWorldScale;
+                        hitExplore.transform.position = hit.point;
+                    }
+                    else
+                    {
+                        AndaObjectBasic hitExplore = AndaDataManager.Instance.InstantiateOtherObj<AndaObjectBasic>("12007_explore");
+                        hitExplore.transform.localScale = Vector3.one * ARMonsterSceneDataManager.Instance.getARWorldScale;
+                        hitExplore.transform.position = hit.point;
+                    }
                 }
             }else
             {

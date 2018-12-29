@@ -12,29 +12,14 @@ public class Skill12011 : SkillBallistic
     {
         //特效返回
         ObjBackToSelf(mainObj);
-        ObjBackToSelf(exploreObj);
-
+        ObjBackToSelf(GatheringObj);
         //回收
         base.OnDispawn();
     }
-
-    protected override void StraightLineMovement()
-    {
-        //技能移动 每帧都在刷新
-        base.StraightLineMovement();
-        if (!isHitTarget && mainObjIsMoving)//判断是否为击中以及在移动状态下
-            mainObj.transform.position += mainObj.transform.forward.normalized * Time.deltaTime * playerSkillAttribute.baseSkillAttribute.skillMoveSpeed.DoubleToFloat() * ARMonsterSceneDataManager.Instance.getARWorldScale;
-    }
-
     //击中时发生
     protected override void Explore()
     {
         base.Explore();
-
-        //将击中特效放到指定位置
-        SetObjtToTargetPoint(exploreObj.gameObject, new Vector3(mainObj.transform.position.x, ARMonsterSceneDataManager.Instance.arWolrdCenterPosition.y, mainObj.transform.position.z));//mainObj.transform 表示技能主体在击中时的位置
-
-        mainObj.gameObject.SetTargetActiveOnce(false);
     }
 
     protected override void Hit(AndaObjectBasic hitTarget, string hitLayer)
@@ -46,24 +31,22 @@ public class Skill12011 : SkillBallistic
 
         //mainObj.gameObject.SetTargetActiveOnce(false);
 
-        //击中后停止移动
-        mainObjIsMoving = false;
-        if (hitLayer == "Defense")
-        {
-            var item = AndaDataManager.Instance.InstantiateOtherObj(ONAME.commonDefenseEffectName);
-            item.transform.localScale = Vector3.one * ARMonsterSceneDataManager.Instance.getARWorldScale;
-            item.transform.position = mainObj.transform.position;
-            ObjBackToSelf(mainObj);
-            item.ResetDestory(2f);
-        }
-        else
-        {
-            //判断Monster是否为null
-            if (host != null) host.ControllerHitEnemy();
+        //if (hitLayer == "Defense")
+        //{
+        //    var item = AndaDataManager.Instance.InstantiateOtherObj(ONAME.commonDefenseEffectName);
+        //    item.transform.localScale = Vector3.one * ARMonsterSceneDataManager.Instance.getARWorldScale;
+        //    item.transform.position = mainObj.transform.position;
+        //    ObjBackToSelf(mainObj);
+        //    item.ResetDestory(2f);
+        //}
+        //else
+        //{
+        //判断Monster是否为null
+        if (host != null) host.ControllerHitEnemy();
 
-            //击中目标 发送相关事件
-            base.Hit(hitTarget, hitLayer);
-        }
+        //击中目标 发送相关事件
+        base.Hit(hitTarget, hitLayer);
+        //}
     }
 
     protected override void StartSkill()
@@ -83,11 +66,11 @@ public class Skill12011 : SkillBallistic
         //当技能动画到某帧时触发
 
         base.RunningSkill();
-        //技能执行
-        mainObjIsMoving = true;
 
-        //设置移动特效起始位置
-        SetObjtToTargetPoint(mainObj.gameObject, insPoint.position, true);
-
+        GatheringObj.SetInto(host.leftLeg);
+        GatheringObj.gameObject.SetTargetActiveOnce(true);
+       
+        mainObj.transform.position = new Vector3(toTargetPoint.x, 0, toTargetPoint.z);
+        mainObj.gameObject.SetTargetActiveOnce(true);
     }
 }
