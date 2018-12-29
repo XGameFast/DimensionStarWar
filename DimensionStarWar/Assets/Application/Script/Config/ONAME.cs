@@ -218,15 +218,15 @@ public static class ONAME
     public static string ARIcon = "51007";//AR 图标
     public static string MonsterIcon = "51008";//怪兽图标 ， 概括
     
-    public static string playerStrongholdIcon = "51009";//其他玩家据点图标
+    public static string otherPlayerSH = "51009";//其他玩家占星庭图标
     public static string businessStrongholdIcon = "51010" ;//商家据点图标
    
-    public static string StrongholdIcon = "51011" ;//玩家据点 据点图标 概括 
+    public static string PlayerSH = "51011" ;//玩家占星庭 据点图标 概括 
     public static string VVIcon = "51012";//vv 图标
     public static string AddStrongholdIcon = "51013";//
     public static string LocationIcon = "51014";
 
-    public static string mineStrongholIcon = "51015";
+    public static string minePlayerSH = "51015";//我的占星庭
     
 
     public static string consumableIcon = "51016";
@@ -242,7 +242,7 @@ public static class ONAME
     public static string addExchange = "51026";
     public static string consignForsale = "51027";
     public static string cardTicket = "51028";
-    public static string otherSH = "51029";//其他玩家的占星庭
+    //public static string otherSH = "51029";//其他玩家的占星庭
     public static string allPlayerSH = "51030";//所有玩家据点
     public static string exchangeSH = "51031";//交易所 总的概括
     public static string mineExchagneSH = "51032";//我的交易所,

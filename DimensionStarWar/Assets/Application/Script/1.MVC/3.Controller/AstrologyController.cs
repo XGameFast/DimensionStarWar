@@ -115,7 +115,7 @@ public class AstrologyController : BaseController {
         //构建据点按钮
         JIRVISFuncBtnStruct mindeStrongholBtns = new JIRVISFuncBtnStruct
         {
-            btnName = "" , btnIconKey = ONAME.mineStrongholIcon , clickCallBack = ClickOpenStrongholdBtns
+            btnName = "" , btnIconKey = ONAME.minePlayerSH , clickCallBack = ClickOpenStrongholdBtns
         };
 
         btnStructs.Add(mindeStrongholBtns);

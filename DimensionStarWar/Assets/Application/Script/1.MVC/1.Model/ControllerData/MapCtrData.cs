@@ -6,6 +6,22 @@ using Mapbox.Unity.Location;
 using System.Linq;
 public class MapCtrData : ControllerData {
 
+    public enum mapDisplayType
+    {
+        minePlayerSH = 0,
+        playerSH =1,
+        exchangeSH =2,
+        bussinessSH =3,
+        bossSH =4 ,
+        otherPlayerSH = 11,
+        allPlayerSH = 12,
+        mineExchangeSH = 20,
+        otherExchangeSH =21,
+        allExchangeSH =22,
+        allBussinessSh = 30,
+        allBossSH = 40
+    }
+
     public BuildTmpTower tmpToweritem;
 
     //public AndaObjectBasic tmpToweritem;

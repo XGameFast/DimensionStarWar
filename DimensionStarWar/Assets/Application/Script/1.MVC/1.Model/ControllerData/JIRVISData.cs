@@ -73,6 +73,7 @@ public class JIRVISData {
     private PlayerStrongholdAttribute currentChallengeStronghold;
     private BusinessStrongholdAttribute currentProtectedStronghold;
     private List<AndaObjectBasic> itemlist;
+    private List<AndaObjectBasic> itemListForHori;
     private JIRVISBar jIRVISBar; 
     private OTYPE.GameDisplayType currentDisplayType = OTYPE.GameDisplayType.VV;
 
@@ -137,9 +138,29 @@ public class JIRVISData {
             itemlist.Clear();
         }
     }
+
+    public void InitBtnListForHoriz()
+    {
+        if(itemListForHori ==null)
+        {
+            itemListForHori = new List<AndaObjectBasic>();
+        }else
+        {
+            if(itemListForHori.Count == 0)return;
+            itemListForHori.RecieveListByAndaData();
+            itemListForHori.Clear();
+        }
+    }
+
+
     public void AddItem(JIRVISButtonItemBase item)
     {
         itemlist.Add(item);
+    }
+
+    public void AddItemForHori(JIRVISButtonItemBase item)
+    {
+        itemListForHori.Add(item);
     }
 
 
