@@ -1390,5 +1390,15 @@ public class MonsterBasic : AndaObjectBasic
     }
 
     #endregion
+
+    #region 
+    public void SynchroLayer(GameObject _t)
+    {
+        foreach (Transform _item in _t.GetComponentsInChildren<Transform>())
+        {
+            _item.gameObject.layer = transform.gameObject.layer;//更改物体的Layer层
+        }
+    }
+    #endregion
 }
 

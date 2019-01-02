@@ -14,6 +14,7 @@ public class M_1004 : MonsterBasic {
     public void Dazhaohu()
     {
         dazhaohu1.SetTargetActiveOnce(true);
+        SynchroLayer(dazhaohu1);
     }
 
    
@@ -21,13 +22,15 @@ public class M_1004 : MonsterBasic {
     {
         isfly = false;
         sayhello.gameObject.SetTargetActiveOnce(true);
+
         time = 0f;
        // sayHelloChild00.gameObject.SetTargetActiveOnce(true);
         sayHelloChild00.gameObject.SetTargetActiveOnce(true);
+        SynchroLayer(sayHelloChild00);
         sayhello.gameObject.transform.LookAt(ARMonsterSceneDataManager.Instance.GetUsedCamera.transform);
-        
-       // sayhello.transform.GetChild(1).gameObject.SetTargetActiveOnce(false);
-       // sayhello.transform.GetChild(0).gameObject.SetTargetActiveOnce(true);
+        SynchroLayer(sayhello);
+        // sayhello.transform.GetChild(1).gameObject.SetTargetActiveOnce(false);
+        // sayhello.transform.GetChild(0).gameObject.SetTargetActiveOnce(true);
     }
     public override void OnUpdate()
     {
@@ -53,6 +56,7 @@ public class M_1004 : MonsterBasic {
         sayHelloChild00.gameObject.SetTargetActiveOnce(false);
         sayHelloChild01.gameObject.SetTargetActiveOnce(true);
         sayHelloChild01.SetInto(ARMonsterSceneDataManager.Instance.aRWorld.screenEffectPoint.transform);
+        SynchroLayer(sayHelloChild01);
         Invoke("EndOfMonsterMoodAnimation", 2f);
     }
 
