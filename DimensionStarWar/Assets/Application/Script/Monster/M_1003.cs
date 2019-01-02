@@ -11,18 +11,25 @@ public class M_1003 : MonsterBasic {
 
     public void Dazhaohu1()
     {
+      
         dazhaohu1.SetTargetActiveOnce(true);
         shanxin.SetTargetActiveOnce(true);
+        SynchroLayer(shanxin);
+        SynchroLayer(dazhaohu1);
     }
     public void Dazhaohu2()
     {
+       
         dazhaohu2.SetTargetActiveOnce(true);
         xin.SetTargetActiveOnce(true);
+        SynchroLayer(dazhaohu2);
+        SynchroLayer(xin);
         Invoke("EndOfMonsterMoodAnimation", 3f);
     }
     public void Fankui()
     {
         fankui.SetTargetActiveOnce(true);
+        SynchroLayer(fankui);
     }
    
     public override void EndOfMonsterMoodAnimation()

@@ -23,6 +23,7 @@ public class M_1009 : MonsterBasic {
     {
         base.ControllerToIdle();
         headrender.gameObject.SetActive(true);
+        SynchroLayer(headrender);
     }
     public void fankui()
     {
@@ -30,6 +31,10 @@ public class M_1009 : MonsterBasic {
         txl.SetTargetActiveOnce(true);
         txr.SetTargetActiveOnce(true);
         dimian.SetTargetActiveOnce(true);
+        SynchroLayer(txtou);
+        SynchroLayer(txl);
+        SynchroLayer(txr);
+        SynchroLayer(dimian);
     }
     public override void EndOfMonsterMoodAnimation()
     {
