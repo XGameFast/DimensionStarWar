@@ -97,21 +97,21 @@ public class TestToolDownloadConfig : MonoBehaviour {
 
     private void CheckNeedGerUserData()
     {
-        if(isNeedGetUserData)
+      /*  if(isNeedGetUserData)
         {
-            AndaDataManager.Instance.TestLogin(CallBackUserData, Account  ,"000000");
+           // AndaDataManager.Instance.RealLogin(CallBackUserData, Account  ,"000000");
            
         }else
         {
             if(string.IsNullOrEmpty(PlayerPrefs.GetString("TestToolUserData")))
             {
-                AndaDataManager.Instance.TestLogin(CallBackUserData, Account, "000000");
+                AndaDataManager.Instance.RealLogin(CallBackUserData, Account, "000000");
             }else
             {
                 PlayerData playerData = LitJson.JsonMapper.ToObject<PlayerData>(PlayerPrefs.GetString("TestToolUserData"));
                 AndaDataManager.Instance.SetUserData(playerData);
             }
-        }
+        }*/
     }
 
 

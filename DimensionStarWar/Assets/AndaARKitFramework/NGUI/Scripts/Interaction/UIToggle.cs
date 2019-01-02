@@ -19,7 +19,7 @@ public class UIToggle : UIWidgetContainer
 	/// List of all the active toggles currently in the scene.
 	/// </summary>
 
-	static public BetterList<UIToggle> list = new BetterList<UIToggle>();
+	static public BetterList2<UIToggle> list = new BetterList2<UIToggle>();
 
 	/// <summary>
 	/// Current toggle that sent a state change notification.

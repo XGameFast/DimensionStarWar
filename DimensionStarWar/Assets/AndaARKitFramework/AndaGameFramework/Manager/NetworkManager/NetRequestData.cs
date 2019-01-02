@@ -88,6 +88,7 @@ public class PlayerLogin : Result
 {
     public string token { get; set; }
     public int type { get; set; }
+    public string phoneSecrect { get; set; }
     public PlayerData PlayerData { get; set; }
     public BusinessData BusinessData { get; set; }
 }

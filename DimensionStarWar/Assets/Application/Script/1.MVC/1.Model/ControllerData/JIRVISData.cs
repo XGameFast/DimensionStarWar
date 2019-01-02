@@ -34,6 +34,9 @@ public class JIRVISData {
     {
         get {return itemlist;}
     }
+
+    public List<AndaObjectBasic> getItemListHori{ get {return itemListForHori ;}}
+
     public List<int> getWaitexcuteEventlist
     {
         get 
@@ -65,6 +68,8 @@ public class JIRVISData {
 
     public JIRVISContent_ExchangeStrongholdEditorBar getjIRVISContent_ExchangeStrongholdEditorBar { get {return jIRVISContent_ExchangeStrongholdEditorBar;} }
 
+
+    public bool isRebacktoLoginMenu = false;
     public bool isSupportAR =false;
     //当前的游戏模式 1 = 挑战模式， 0= 保卫模式 
     public int currentPlayGameType;
@@ -119,6 +124,7 @@ public class JIRVISData {
     {
         WaitForExcuteEvent =new List<int>();
         InitBtnList();
+        InitBtnListForHoriz();
     }
 
     /// <summary>
@@ -271,7 +277,7 @@ public class JIRVISData {
         if (jIRVISContent_ChanllengeGameStronghold != null) AndaDataManager.Instance.RecieveItem(jIRVISContent_ChanllengeGameStronghold);
         jIRVISContent_ChanllengeGameStronghold = AndaDataManager.Instance.InstantiateMenu<JIRVISContent_ChanllengeGameStrongholdInfo>(ONAME.JIRVISEditorBar_ChanllengeGameStrongholdInfo);
         jIRVISContent_ChanllengeGameStronghold.transform.SetUIInto(JIRVIS.Instance.jIRVISData.getJIRVISBar.EditorboardPoint.transform);
-        jIRVISContent_ChanllengeGameStronghold.FadeIn();
+        //jIRVISContent_ChanllengeGameStronghold.FadeIn();
     }
 
 

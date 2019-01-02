@@ -18,9 +18,11 @@ public class JIRVISBtnItem_Dimensionroom : JIRVISButtonItemBase {
     public override void OnDispawn()
     {
         psa = null;
-        bsa= null;
+        bsa = null;
+        exc = null;
         if(monsterPor!=null)
         {
+            monsterPor.boardButton.onClick.RemoveAllListeners();
             AndaDataManager.Instance.RecieveItem(monsterPor);
             monsterPor = null;
         }
@@ -41,6 +43,8 @@ public class JIRVISBtnItem_Dimensionroom : JIRVISButtonItemBase {
         float per  = (float)_psa.strongholdGloryValue / limit;
       
         monsterPor = AndaDataManager.Instance.InstantiateMenu<MonsterPorItem>("ShporMonsterPorItem");
+
+        monsterPor.SetTargetActiveOnce(false);
 
         monsterPor.transform.SetUIInto(transform);
        
@@ -64,6 +68,7 @@ public class JIRVISBtnItem_Dimensionroom : JIRVISButtonItemBase {
         ClickCallBack = click_callback;
 
         monsterPor = AndaDataManager.Instance.InstantiateMenu<MonsterPorItem>("ShporMonsterPorItem");
+        monsterPor.SetTargetActiveOnce(false);
 
         monsterPor.transform.SetUIInto(transform);
 
@@ -80,7 +85,7 @@ public class JIRVISBtnItem_Dimensionroom : JIRVISButtonItemBase {
         monsterPor = AndaDataManager.Instance.InstantiateMenu<MonsterPorItem>("ShporMonsterPorItem");
         monsterPor.transform.SetUIInto(transform);
 
-        monsterPor.SetExchangeInfo(_exc.exchangeIndex, _exc.headImg, itemScrollStruct);
+        monsterPor.SetExchangeInfo(_exc.userIndex, _exc.exchangeIndex, _exc.headImg, itemScrollStruct);
 
         monsterPor.boardButton.onClick.AddListener(ClickItem);
 
@@ -122,8 +127,34 @@ public class JIRVISBtnItem_Dimensionroom : JIRVISButtonItemBase {
     public override void ClickItem()
     {
         base.ClickItem();
-        ClickCallBack(psa.strongholdIndex);
+        if(psa!=null)
+        {
+            ClickCallBack(psa.strongholdIndex);
+        }
+        if(bsa!=null)
+        {
+            ClickCallBack(bsa.strongholdIndex);
+        }
+
+        if(exc!=null)
+        {
+            ClickCallBack(exc.exchangeIndex);
+        }
+
     }
+
+    public override void SetFadeInEffect(int type)
+    {
+        base.SetFadeInEffect(type);
+        Invoke("InvokeOpenItem" , 0.2f);
+    }
+
+    private void InvokeOpenItem()
+    {
+        monsterPor.SetTargetActiveOnce(true);
+    }
+
+     
 }
 
 public class ItemScrollStruct

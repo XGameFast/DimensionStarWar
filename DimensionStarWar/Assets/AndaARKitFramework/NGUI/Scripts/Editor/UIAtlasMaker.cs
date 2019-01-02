@@ -230,7 +230,7 @@ public class UIAtlasMaker : EditorWindow
 
 		if (NGUISettings.atlas != null)
 		{
-			BetterList<string> spriteNames = NGUISettings.atlas.GetListOfSprites();
+			BetterList2<string> spriteNames = NGUISettings.atlas.GetListOfSprites();
 			foreach (string sp in spriteNames)
 			{
 				if (spriteList.ContainsKey(sp)) spriteList[sp] = 1;

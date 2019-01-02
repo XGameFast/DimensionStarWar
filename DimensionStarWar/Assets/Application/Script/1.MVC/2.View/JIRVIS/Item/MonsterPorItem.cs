@@ -65,11 +65,11 @@ public class MonsterPorItem : AndaObjectBasic {
         stuteItem.SetInto(levelBoardItem.transform);
         Material mt = stuteItem.GetComponent<Image>().material;
         mt.SetVector("_Center" , new Vector4(itemScrollStruct.center.x, itemScrollStruct.center.y, itemScrollStruct.center.z,0) );
-        mt.SetFloat("_HeightLimit" , itemScrollStruct.distance);
+        mt.SetFloat("_WidthLimit", itemScrollStruct.distance);
         AndaDataManager.Instance.GetStrongholdImg(_bsSHIndex , headImg , SetStrongholdPor);
     }
 
-    public void SetExchangeInfo(int _bsSHIndex, string headImg, ItemScrollStruct itemScrollStruct)
+    public void SetExchangeInfo(int userIndex,int _bsSHIndex, string headImg, ItemScrollStruct itemScrollStruct)
     {
         if (levelBoardItem != null) AndaDataManager.Instance.RecieveItem(levelBoardItem);
         levelBoardItem = AndaDataManager.Instance.InstantiateMenu<AndaObjectBasic>("exchangeLevelBoard0");
@@ -80,13 +80,25 @@ public class MonsterPorItem : AndaObjectBasic {
         stuteItem.SetInto(levelBoardItem.transform);
         Material mt = stuteItem.GetComponent<Image>().material;
         mt.SetVector("_Center", new Vector4(itemScrollStruct.center.x, itemScrollStruct.center.y, itemScrollStruct.center.z, 0));
-        mt.SetFloat("_HeightLimit", itemScrollStruct.distance);
-        AndaDataManager.Instance.GetStrongholdImg(_bsSHIndex, headImg, SetStrongholdPor);
+        //mt.SetFloat("_HeightLimit", itemScrollStruct.distance);
+        mt.SetFloat("_WidthLimit", itemScrollStruct.distance);
+        if(userIndex == AndaDataManager.Instance.userData.userIndex)
+        {
+            AndaDataManager.Instance.GetPlayerPorImg(SetStrongholdPor);
+        }else
+        {
+            AndaDataManager.Instance.GetStrongholdImg(_bsSHIndex, headImg, SetStrongholdPor);
+        }
+
     }
 
     private void SetStrongholdPor(int index ,Sprite _sprite)
     {
         stuteItem.GetComponent<Image>().sprite = _sprite;
+    }
+    private void SetStrongholdPor(Sprite _sp)
+    {
+        stuteItem.GetComponent<Image>().sprite = _sp;
     }
 
     public void SetMonsterInfo(int level, int monsterID, float gloryExp, Color color)

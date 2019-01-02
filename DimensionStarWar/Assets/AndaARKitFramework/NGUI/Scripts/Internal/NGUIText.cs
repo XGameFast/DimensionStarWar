@@ -185,7 +185,7 @@ static public class NGUIText
 				ch = ' ';
 			}
 
-			BMGlyph bmg = bitmapFont.bmFont.GetGlyph(ch);
+			BMGlyph2 bmg = bitmapFont.bmFont.GetGlyph(ch);
 
 			if (bmg != null)
 			{
@@ -224,7 +224,7 @@ static public class NGUIText
 				ch = ' ';
 			}
 
-			BMGlyph bmg = bitmapFont.bmFont.GetGlyph(ch);
+			BMGlyph2 bmg = bitmapFont.bmFont.GetGlyph(ch);
 
 			if (bmg != null)
 			{
@@ -328,7 +328,7 @@ static public class NGUIText
 	}
 
 	static Color mInvisible = new Color(0f, 0f, 0f, 0f);
-	static BetterList<Color> mColors = new BetterList<Color>();
+	static BetterList2<Color> mColors = new BetterList2<Color>();
 	static float mAlpha = 1f;
 #if DYNAMIC_FONT
 	static CharacterInfo mTempChar;
@@ -468,7 +468,7 @@ static public class NGUIText
 	/// Advanced symbol support originally contributed by Rudy Pangestu.
 	/// </summary>
 
-	static public bool ParseSymbol (string text, ref int index, BetterList<Color> colors, bool premultiply,
+	static public bool ParseSymbol (string text, ref int index, BetterList2<Color> colors, bool premultiply,
 		ref int sub, ref bool bold, ref bool italic, ref bool underline, ref bool strike, ref bool ignoreColor)
 	{
 		int length = text.Length;
@@ -1055,7 +1055,7 @@ static public class NGUIText
 		return v;
 	}
 
-	static BetterList<float> mSizes = new BetterList<float>();
+	static BetterList2<float> mSizes = new BetterList2<float>();
 
 	/// <summary>
 	/// Calculate the character index offset required to print the end of the specified text.

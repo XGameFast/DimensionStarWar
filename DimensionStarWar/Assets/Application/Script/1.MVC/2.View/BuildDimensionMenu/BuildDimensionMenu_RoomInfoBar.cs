@@ -497,9 +497,13 @@ public class BuildDimensionMenu_RoomInfoBar : AndaObjectBasic
             medal.SetMedalName(playerStrongholdAttribute.strongholdNickName);
             medal.gameObject.SetLayer(ONAME.LayerUI);
         }
-        medal.SetAlpha(1f);
-        medal.SetTargetActiveOnce(true);
-        medal.animator.Play("FadeIn");//.GetComponent<Animator>().Play("FadeIn");
+        if(medal!=null)
+        {
+            medal.SetAlpha(1f);
+            medal.SetTargetActiveOnce(true);
+            medal.animator.Play("FadeIn");//.GetComponent<Animator>().Play("FadeIn");
+        }
+      
 
     }
 
@@ -507,14 +511,18 @@ public class BuildDimensionMenu_RoomInfoBar : AndaObjectBasic
     {
         itemAnimator.enabled = true;
         itemAnimator.Play("FadeOut");
-        medal.SetTargetActiveOnce(false);
+        if(medal!=null) medal.SetTargetActiveOnce(false);
+
     }
 
     public void PlayItemOutAstrology()
     {
         itemAnimator.Play("FadeIn");
-        medal.SetTargetActiveOnce(true);
-        medal.animator.Play("FadeIn");
+        if(medal!=null)
+        {
+            medal.SetTargetActiveOnce(true);
+            medal.animator.Play("FadeIn");
+        }
         Invoke("InvokPlayeItemOutAstrology", 1f);
     }
 

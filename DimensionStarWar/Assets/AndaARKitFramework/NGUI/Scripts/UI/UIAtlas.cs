@@ -319,12 +319,12 @@ public class UIAtlas : MonoBehaviour
 	/// Convenience function that retrieves a list of all sprite names.
 	/// </summary>
 
-	public BetterList<string> GetListOfSprites ()
+	public BetterList2<string> GetListOfSprites ()
 	{
 		if (mReplacement != null) return mReplacement.GetListOfSprites();
 		if (mSprites.Count == 0) Upgrade();
 
-		BetterList<string> list = new BetterList<string>();
+		BetterList2<string> list = new BetterList2<string>();
 		
 		for (int i = 0, imax = mSprites.Count; i < imax; ++i)
 		{
@@ -338,13 +338,13 @@ public class UIAtlas : MonoBehaviour
 	/// Convenience function that retrieves a list of all sprite names that contain the specified phrase
 	/// </summary>
 
-	public BetterList<string> GetListOfSprites (string match)
+	public BetterList2<string> GetListOfSprites (string match)
 	{
 		if (mReplacement) return mReplacement.GetListOfSprites(match);
 		if (string.IsNullOrEmpty(match)) return GetListOfSprites();
 
 		if (mSprites.Count == 0) Upgrade();
-		BetterList<string> list = new BetterList<string>();
+		BetterList2<string> list = new BetterList2<string>();
 
 		// First try to find an exact match
 		for (int i = 0, imax = mSprites.Count; i < imax; ++i)

@@ -45,7 +45,7 @@ public class UIPrefabTool : EditorWindow
 	GUIStyle mStyle;
 
 	// List of all the added objects
-	BetterList<Item> mItems = new BetterList<Item>();
+	BetterList2<Item> mItems = new BetterList2<Item>();
 
 	/// <summary>
 	/// Get or set the dragged object.
@@ -670,7 +670,7 @@ public class UIPrefabTool : EditorWindow
 	}
 
 	// List of lights that have been deactivated
-	static BetterList<Light> mLights;
+	static BetterList2<Light> mLights;
 
 	/// <summary>
 	/// Deactivate all scene lights.
@@ -680,7 +680,7 @@ public class UIPrefabTool : EditorWindow
 	{
 		if (mLights == null)
 		{
-			mLights = new BetterList<Light>();
+			mLights = new BetterList2<Light>();
 			Light[] lights = FindObjectsOfType(typeof(Light)) as Light[];
 
 			foreach (Light l in lights)
@@ -870,7 +870,7 @@ public class UIPrefabTool : EditorWindow
 		}
 
 		// Create a list of indices, inserting an entry of '-1' underneath the dragged object
-		BetterList<int> indices = new BetterList<int>();
+		BetterList2<int> indices = new BetterList2<int>();
 
 		for (int i = 0; i < mItems.size; )
 		{

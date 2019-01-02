@@ -6,12 +6,14 @@ using Mapbox.Unity.Map;
 using Mapbox.Unity.Location;
 using Mapbox.Geocoding;
 using Mapbox.Utils;
+using Mapbox.Unity.Map.TileProviders;
+using UnityEngine.EventSystems;
 
 public class MapController : BaseController {
 
   
     // public BasicMap map;
-    private MapCtrData data;
+    public MapCtrData data;
     private Vector2 viewPort = Vector2.zero;
     private Vector2 getViewPort
     {
@@ -36,6 +38,7 @@ public class MapController : BaseController {
         ARMonsterSceneDataManager.Instance.OpenGameLight(true);
         BuildData();
         BuildMenu();
+        data.SetCurChooseDisplaySHType(1);
         StartCheckDisplayType();
         CheckNeedLocation();
         RegisterControlCamera(true);
@@ -63,19 +66,23 @@ public class MapController : BaseController {
     public override void OnUpdate()
     {
         base.OnUpdate();
-        if(data.isWait)return;
-        //[打开了 高层级的面板 底层的触控逻辑将不被执行]
-        if(!data.isOpenJirvisChildBar)
-        {   
-            if (!JIRVIS.Instance.isARType)
+        if(data.isWait)return; 
+        if (!JIRVIS.Instance.isARType)
+        {
+            MoveCamera();
+
+            RotateCamera();
+
+            ScaleMap();
+
+            if (canMoveCamera)
             {
-                MoveCamera();
-                RotateCamera();
-                ScaleMap();
+                UpdateCameraToTargetPose();
             }
         }
 
-        UpdatePlayerShUIPose();
+
+        //UpdatePlayerShUIPose();
         //检查据点是否范围内
         //CheckTowerInRect();
         //只有在 放置据点的时候，回去检测与其他据点的位置
@@ -302,13 +309,16 @@ public class MapController : BaseController {
     // psalist wiht mine and another stronghold , 
     private void FinishGetPOIData(List<PlayerStrongholdAttribute> psalist, List<BusinessStrongholdAttribute> bsalist,List<Exchange> excList)
     {
+        //先清空一遍 地图上的物件
+        data.RemoveMapItem();
+
         //开始构建地图
         AndaMap.Instance.BuildMap(null);
 
         //构建周围的据点数据
         data.SetLocaitonRangeUserData(psalist, bsalist,excList);
 
-        BuildMapItem();
+        StartCoroutine(BuildMapItem());
 
         CheckIsBuildNewStronghold();
 
@@ -342,10 +352,139 @@ public class MapController : BaseController {
 
     #region 加载地图上的物件 ，
 
-    private void BuildMapItem()
+    private IEnumerator BuildMapItem()
     {
         #region 构建据点
-        if (data.getOtherPlayerStrongholdAttribute != null )
+
+        if (AndaLocaltion.Instance._locationProvider != null)
+        {
+            data.BuildCurrentLocationPoint();
+        }
+
+        if (data.GetCurChoossSHType == 1)
+        {
+            if(data.getSeflStrongholdAttribute != null)
+            {
+                yield return StartCoroutine(data.BuildMineSHUI(0));
+                yield return StartCoroutine(data.BuildMineSHUI(1));
+                if (data.getOtherPlayerStrongholdAttribute != null)
+                {
+                    yield return StartCoroutine(data.BuildAnotherPlayerSHUI(2));
+                }
+
+                if (data.getBussinessStrongholdAttribute != null)
+                {
+                    yield return StartCoroutine(data.BuildAllRangeBussinessStrongholdItems(2));
+                }
+
+                if (data.getMineExchangeAttr != null)
+                {
+                    yield return StartCoroutine(data.BuildMineExchangeSHUI(2));
+                }
+
+                if (data.getOtherExchangeAttr != null)
+                {
+                    yield return StartCoroutine(data.BuildOtherExchangeUI(2));
+                }
+
+            }else 
+            {
+                yield return StartCoroutine(data.BuildAnotherPlayerSHUI(0));
+                yield return StartCoroutine(data.BuildAnotherPlayerSHUI(1));
+                if (data.getBussinessStrongholdAttribute != null)
+                {
+                    yield return StartCoroutine(data.BuildAllRangeBussinessStrongholdItems(2));
+                }
+
+                if (data.getMineExchangeAttr != null)
+                {
+                    yield return StartCoroutine(data.BuildMineExchangeSHUI(2));
+                }
+
+                if (data.getOtherExchangeAttr != null)
+                {
+                    yield return StartCoroutine(data.BuildOtherExchangeUI(2));
+                }
+            }
+        }
+
+        if (data.GetCurChoossSHType == 2)
+        {
+            if (data.getMineExchangeAttr != null)
+            {
+                yield return StartCoroutine(data.BuildMineExchangeSHUI(0));
+                yield return StartCoroutine(data.BuildMineExchangeSHUI(1));
+                if(data.getOtherExchangeAttr!=null)
+                {
+                    yield return StartCoroutine(data.BuildOtherExchangeUI(2));
+                }
+                if (data.getBussinessStrongholdAttribute != null)
+                {
+                    yield return StartCoroutine(data.BuildAllRangeBussinessStrongholdItems(2));
+                }
+
+                if (data.getSeflStrongholdAttribute != null)
+                {
+                    yield return StartCoroutine(data.BuildMineSHUI(2));
+                }
+
+                if (data.getOtherPlayerStrongholdAttribute != null)
+                {
+                    yield return StartCoroutine(data.BuildAnotherPlayerSHUI(2));
+                }
+            }
+            else
+            {
+                yield return StartCoroutine(data.BuildOtherExchangeUI(0));
+                yield return StartCoroutine(data.BuildOtherExchangeUI(1));
+
+                if (data.getBussinessStrongholdAttribute != null)
+                {
+                    yield return StartCoroutine(data.BuildAllRangeBussinessStrongholdItems(2));
+                }
+
+                if (data.getSeflStrongholdAttribute != null)
+                {
+                    yield return StartCoroutine(data.BuildMineSHUI(2));
+                }
+
+                if (data.getOtherPlayerStrongholdAttribute != null)
+                {
+                    yield return StartCoroutine(data.BuildAnotherPlayerSHUI(2));
+                }
+            }
+        }
+
+        if(data.GetCurChoossSHType ==  3)
+        {
+            yield return StartCoroutine(data.BuildAllRangeBussinessStrongholdItems(0));
+            yield return StartCoroutine(data.BuildAllRangeBussinessStrongholdItems(1));
+
+            if (data.getSeflStrongholdAttribute != null)
+            {
+                yield return StartCoroutine(data.BuildMineSHUI(2));
+            }
+
+            if (data.getOtherPlayerStrongholdAttribute != null)
+            {
+                yield return StartCoroutine(data.BuildAnotherPlayerSHUI(2));
+            }
+
+            if (data.getMineExchangeAttr != null)
+            {
+                yield return StartCoroutine(data.BuildMineExchangeSHUI(2));
+            }
+
+            if (data.getOtherExchangeAttr != null)
+            {
+                yield return StartCoroutine(data.BuildOtherExchangeUI(2));
+            }
+
+        }
+
+
+
+        /*if (data.getOtherPlayerStrongholdAttribute != null )
         {
              data.BuildAnotherPlayerSHUI();
         }
@@ -377,7 +516,7 @@ public class MapController : BaseController {
         if(AndaLocaltion.Instance._locationProvider!=null)
         {
             data.BuildCurrentLocationPoint();
-        }
+        }*/
         #region 据点构建完之后，刷新一下朝向
         //UpdateMedalFaceToMapCamera50();
         #endregion
@@ -414,88 +553,94 @@ public class MapController : BaseController {
     //[在贾维斯面板选择我的据点]
     private void CallBackClickJIRVISStorngholdBtn(int strongholdIndex)
     {
-
+        data.targetSHAttributeIndex = strongholdIndex;
         switch (data.GetCurChoossSHType)
         {
-            case 10:
-                SelectPlayerSHItem(0,strongholdIndex);
-                break;
-            case 11:
+            case 1:
                 SelectPlayerSHItem(1, strongholdIndex);
                 break;
-            case 12:
+            case 2:
                 SelectPlayerSHItem(2, strongholdIndex);
                 break;
-            case 20:
-                break;
-            case 21:
-                break;
-            case 22:
-                break;
-            case 30:
-                break;
-            case 31:
-                break;
-            case 32:
-                break;
-            case 40:
-                break;
-            case 41:
-                break;
-            case 42:
+            case 3:
+                //Debug.Log("RunherTimes?1");
+                SelectPlayerSHItem(3, strongholdIndex);
                 break;
         }
-        if (!AndaMap.Instance.andaMapData.GetMapCenterVector2d.Equals(AndaLocaltion.Instance.currentLocation.LatitudeLongitude))
+      /* if (!AndaMap.Instance.andaMapData.GetMapCenterVector2d.Equals(AndaLocaltion.Instance.currentLocation.LatitudeLongitude))
         {
             if (data.getCurSelectstrongholdIndex == strongholdIndex) return;
-        }
+        } */
     }
+
+
 
     private void SelectPlayerSHItem(int type, int _index)
     {
-        PlayerStrongholdAttribute playerStrongholdAttribute = null;
+       
         switch (type)
         {
-            case 0:
-              
-                playerStrongholdAttribute = data.getSeflStrongholdAttribute.FirstOrDefault(s=>s.strongholdIndex == _index);
-                AndaMap.Instance.andaMapData.SetCurrentMapCenterLatlong(playerStrongholdAttribute.strongholdPosition);
-                JIRVIS.Instance.SetCurrentDimensionroomIndex(playerStrongholdAttribute.strongholdIndex);
-                //切换地图中心坐标，需要重新构建POI数据
-                GetPOIData();
-                break;
             case 1:
-                playerStrongholdAttribute = data.getSeflStrongholdAttribute.FirstOrDefault(s => s.strongholdIndex == _index);
-                AndaMap.Instance.andaMapData.SetCurrentMapCenterLatlong(playerStrongholdAttribute.strongholdPosition);
-                JIRVIS.Instance.SetCurrentDimensionroomIndex(playerStrongholdAttribute.strongholdIndex);
-                InitCameraPose();
-                break;
-            case 2:
-                playerStrongholdAttribute = data.getSeflStrongholdAttribute.FirstOrDefault(s => s.strongholdIndex == _index);
-                if (playerStrongholdAttribute!=null)
+                //先查找 自己的，没有再查找其他人的
+                PlayerStrongholdAttribute playerStrongholdAttribute = data.getSeflStrongholdAttribute.FirstOrDefault(s=>s.strongholdIndex == _index);
+                if(playerStrongholdAttribute == null)
                 {
-                    data.SetCurrentPlayerstrongholdIndex(_index);
-                    AndaMap.Instance.andaMapData.SetCurrentMapCenterLatlong(playerStrongholdAttribute.strongholdPosition);
-                    JIRVIS.Instance.SetCurrentDimensionroomIndex(playerStrongholdAttribute.strongholdIndex);
-                    GetPOIData();
-                }else
-                {
-                    AndaMap.Instance.andaMapData.SetCurrentMapCenterLatlong(playerStrongholdAttribute.strongholdPosition);
-                    JIRVIS.Instance.SetCurrentDimensionroomIndex(playerStrongholdAttribute.strongholdIndex);
-                    InitCameraPose();
+                    playerStrongholdAttribute = AndaDataManager.Instance.GetPlayerAllStrongholdAttribute().FirstOrDefault(s=>s.strongholdIndex == _index);
+                    if(playerStrongholdAttribute!=null)//范围外我的据点
+                    {
+                        JIRVISASK_SureAboutLocationTargetPosition();
+                       
+                        AndaMap.Instance.andaMapData.SetCurrentMapCenterLatlong(playerStrongholdAttribute.strongholdPosition);
+                    }
+                    else //还是没有，那么找其他人的
+                    {
+                        playerStrongholdAttribute = data.getOtherPlayerStrongholdAttribute.FirstOrDefault(s => s.strongholdIndex == _index);
+                       
+                        AndaMap.Instance.andaMapData.SetMapCenterForGameWorld(playerStrongholdAttribute.strongholdInMapPosition);
+                        InitCameraPose(false);//更新相机位置
+                    }
                 }
+                else //范围内
+                {
+                    AndaMap.Instance.andaMapData.SetMapCenterForGameWorld(playerStrongholdAttribute.strongholdInMapPosition);
+                    InitCameraPose(false);//更新相机位置
+                }
+
+                break;
+         
+            case 2:
+                Exchange exchange = data.getMineExchangeAttr.FirstOrDefault(s => s.exchangeIndex == _index);
+                if(exchange!=null)//范围内
+                {
+                    Vector3 pose = data.ExchangeWolrdPose(exchange);
+                    AndaMap.Instance.andaMapData.SetMapCenterForGameWorld(pose);
+                    InitCameraPose(false);
+                }
+                else
+                {
+                    exchange = AndaDataManager.Instance.userData.userExchangeSHList.FirstOrDefault(s => s.exchangeIndex == _index);
+                    if(exchange!=null)//范围外
+                    {
+                        JIRVISASK_SureAboutLocationTargetPosition();
+                        List<double> vs = new List<double> { exchange.exchangePositiony, exchange.exchangePositionx};
+                        AndaMap.Instance.andaMapData.SetCurrentMapCenterLatlong(vs);
+                    }else //其他人的j交易所
+                    {
+                        exchange = data.getOtherExchangeAttr.FirstOrDefault(s => s.exchangeIndex == _index);
+                        Vector3 pose = data.ExchangeWolrdPose(exchange);
+                        AndaMap.Instance.andaMapData.SetMapCenterForGameWorld(pose);
+                        InitCameraPose(false);
+                    }
+                }
+                break;
+
+            case 3:
+                BusinessStrongholdAttribute bs = data.getBussinessStrongholdAttribute.FirstOrDefault(s => s.strongholdIndex == _index);
+                AndaMap.Instance.andaMapData.SetMapCenterForGameWorld(bs.strongholdInMapPosition);
+                InitCameraPose(false);
                 break;
         }
     }
-
-    private void SelectExchangeSHItem(int type, int _index)
-    {
-
-    }
-
-
-
-
     #endregion
 
     #region JIRVIS 按钮点击 回到我当前的定位的位置
@@ -523,62 +668,21 @@ public class MapController : BaseController {
         JIRVIS.Instance.RemoveCurrentBtnList();
         if(JIRVIS.Instance.jIRVISData.getCurDisplayType == OTYPE.GameDisplayType.VV)
         {
-
-            switch(data.GetCurChoossSHType)
+            List<JIRVISFuncBtnStruct> jIRVISFuncBtnStructs = new List<JIRVISFuncBtnStruct>()
             {
-                case 0: //列表总表
-                    BuildJIRVISBtns_MinePlayerSH();
-                    break;
-                case 1: //玩家据点
-                    BuildJIRVISBtns_PlayerSH();
-                    break;
-                case 2: //交易所据点
-                    BuildJIRVISBtns_ExchangeSH();
-                    break;
-                case 3: //商家据点
-                    BuildJIRVISBtns_BSSH();
-                    break;
-                case 4: //boss据点
-                    BuildJIRVISBtns_BossSH();
-                    break;
-                case 10: //我的玩家据点
-                    BuildJIRVISBtns_MinePlayerSH();
-                    break;
-                case 11: //其他人的玩家据点
-                    BuildJIRVISBtns_OtherPlayerSH();
-                    break;
-                case 12: //所有玩家据点
-                    BuildJIRVISBtns_AllPlayerSH();
-                    break;
-                case 20: //我的交易所据点
-                    BuildJIRVISBtns_MineExchangeSH();
-                    break;
-                case 21: //其他玩家的交易所据点
-                    BuildJIRVISBtns_OtherExchangeSh();
-                    break;
-                case 22: //所有玩家的交易所
-                    BuildJIRVISBtns_AllExchangeSH();
-                    break;
-                case 30: //所有商家据点
-                    BuildJIRVISBtn_AllBSSH();
-                    break;
-                case 40: //所有boss 据点
-                    BuildJIRVISBtns_AllBossSH();
-                    break;
-            }
-
-           /* List<JIRVISFuncBtnStruct> jIRVISFuncBtnStructs = new List<JIRVISFuncBtnStruct>()
-            {
+                new JIRVISFuncBtnStruct { btnName = "回退" , btnIconKey = ONAME.BackStep ,clickCallBack = BackToBuildDimensionRoomController },
                 new JIRVISFuncBtnStruct { btnName = "AR" , btnIconKey = ONAME.ARIcon ,clickCallBack = JIRVISClick_ChangeToARMode },
-                new JIRVISFuncBtnStruct { btnName = "我的据点" , btnIconKey = ONAME.mineStrongholIcon ,clickCallBack = JIRVISBuildMinestrongholdListBtn },
-                new JIRVISFuncBtnStruct {btnName ="其他据点" ,btnIconKey = ONAME.otherSH , clickCallBack = JIRVISBuildMinestrongholdListBtn},
+                new JIRVISFuncBtnStruct { btnName = "玩家据点" , btnIconKey = ONAME.PlayerSH, btnType = 1 ,clickCallBack = ClickJIRVISBtns_EnterPlayerSH },
+                new JIRVISFuncBtnStruct { btnName = "交易所" ,btnIconKey = ONAME.exchangeSH ,btnType =1, clickCallBack = ClickJIRVISBtn_EnterExchange},
+                new JIRVISFuncBtnStruct { btnName = "商家据点" , btnIconKey = ONAME.businessStrongholdIcon ,btnType =1,clickCallBack = ClickJIRVISBtn_EnterBSSH },
+                new JIRVISFuncBtnStruct { btnName = "添加玩家据点" , btnIconKey = ONAME.AddStrongholdIcon ,clickCallBack = BuildTmpTower },
+                new JIRVISFuncBtnStruct { btnName = "添加交易所据点" , btnIconKey = ONAME.addExchange ,clickCallBack = BuildExchangeTampleStronghold },
+                new JIRVISFuncBtnStruct { btnName = "添加交易所据点" , btnIconKey = ONAME.addExchange ,clickCallBack = BackToLoginMenu },
                 new JIRVISFuncBtnStruct { btnName = data.getIsMap2D?"3D地图":"2D地图" , btnIconKey = data.getIsMap2D? ONAME.mapAngle3D:ONAME.mapAngle2D ,clickCallBack = ChangeMapAngle },
-                new JIRVISFuncBtnStruct { btnName = "交易所" , btnIconKey = ONAME.addExchange ,clickCallBack = BuildExchangeTampleStronghold },
-                new JIRVISFuncBtnStruct { btnName = "回退" , btnIconKey = ONAME.BackStep ,clickCallBack = BackToBuildDimensionRoomController }
             };
-
-            JIRVIS.Instance.BuildFunctionBtn(jIRVISFuncBtnStructs);*/
-        }else
+            JIRVIS.Instance.BuildFunctionBtn(jIRVISFuncBtnStructs);
+        }
+        else
         {
             List<JIRVISFuncBtnStruct> jIRVISFuncBtnStructs = new List<JIRVISFuncBtnStruct>()
             {
@@ -593,304 +697,50 @@ public class MapController : BaseController {
        
     }
     #endregion
-   
-    #region 构建据点列表总表
-    private void BuildJIRVISBtns_Base()
-    {
-        List<JIRVISFuncBtnStruct> jIRVISFuncBtnStructs = new List<JIRVISFuncBtnStruct>()
-        {
-            new JIRVISFuncBtnStruct { btnName = "回退" , btnIconKey = ONAME.BackStep ,clickCallBack = BackToBuildDimensionRoomController },
-            new JIRVISFuncBtnStruct { btnName = "AR" , btnIconKey = ONAME.ARIcon ,clickCallBack = JIRVISClick_ChangeToARMode },
-            new JIRVISFuncBtnStruct { btnName = "玩家据点" , btnIconKey = ONAME.PlayerSH ,clickCallBack = ClickJIRVISBtns_EnterPlayerSH },
-            new JIRVISFuncBtnStruct { btnName = "交易所" ,btnIconKey = ONAME.exchangeSH , clickCallBack = JIRVISBuildMinestrongholdListBtn},
-            new JIRVISFuncBtnStruct { btnName = "商家据点" , btnIconKey = ONAME.businessStrongholdIcon ,clickCallBack = BuildExchangeTampleStronghold },
-            new JIRVISFuncBtnStruct { btnName = "添加玩家据点" , btnIconKey = ONAME.AddStrongholdIcon ,clickCallBack = BuildExchangeTampleStronghold },
-            new JIRVISFuncBtnStruct { btnName = "添加交易所据点" , btnIconKey = ONAME.addExchange ,clickCallBack = BuildExchangeTampleStronghold },
-            new JIRVISFuncBtnStruct { btnName = data.getIsMap2D?"3D地图":"2D地图" , btnIconKey = data.getIsMap2D? ONAME.mapAngle3D:ONAME.mapAngle2D ,clickCallBack = ChangeMapAngle },
-        };
-    }
-    #endregion
+  
 
     #region 构建玩家据点列表
-    private void BuildJIRVISBtns_PlayerSH()
-    {
-        List<JIRVISFuncBtnStruct> jIRVISFuncBtnStructs = new List<JIRVISFuncBtnStruct>()
-        {
-            new JIRVISFuncBtnStruct { btnName = "我的据点" , btnIconKey = ONAME.minePlayerSH ,clickCallBack = ClickJIRVISBtns_EnterMinePlayerSH },
-            new JIRVISFuncBtnStruct { btnName = "其他人的据点" ,btnIconKey = ONAME.otherPlayerSH , clickCallBack = ClickJIRVISBtns_EnterOtherPlayerSH},
-            new JIRVISFuncBtnStruct { btnName = "所有人的据点" , btnIconKey = ONAME.allPlayerSH ,clickCallBack = ClicckJIRVISBtns_EnterAllPlayerSH },
-            new JIRVISFuncBtnStruct { btnName = "交易所" , btnIconKey = ONAME.exchangeSH ,clickCallBack = ClickJIRVISBtn_EnterExchange },
-            new JIRVISFuncBtnStruct { btnName = "商家据点" , btnIconKey = ONAME.businessStrongholdIcon ,clickCallBack = ClickJIRVISBtn_EnterBSSH },
-            //new JIRVISFuncBtnStruct { btnName = "失守据点" , btnIconKey = ONAME.bossSH ,clickCallBack = ClickJIRVISBtn_EnterBossSH },
-        };
-
-        JIRVIS.Instance.BuildFunctionBtn(jIRVISFuncBtnStructs);
-    }
-
-    private void BuildJIRVISBtns_MinePlayerSH()
-    {
-        //构建我的所有据点列表
-        List<JIRVISFuncBtnStruct> jIRVISFuncBtns = new List<JIRVISFuncBtnStruct>();
-        JIRVISFuncBtnStruct jIRVISFuncBtn = new JIRVISFuncBtnStruct();
-        jIRVISFuncBtn.btnName = "返回";
-        jIRVISFuncBtn.btnIconKey = ONAME.BackStep;
-        jIRVISFuncBtn.clickCallBack = ClickJIRVISBtn_BackStepFromMinePlayerSH;//回调上一步
-        jIRVISFuncBtns.Add(jIRVISFuncBtn);
-        JIRVIS.Instance.BuildFunctionBtn(jIRVISFuncBtns);
-
-        JIRVIS.Instance.BuildDimensionRoomBtnList(data.getSeflStrongholdAttribute,CallBackClickJIRVISStorngholdBtn,null,false);
-
-    }
-    private void BuildJIRVISBtns_OtherPlayerSH()
-    {
-        //构建周围其他人的所有据点列表
-        List<JIRVISFuncBtnStruct> jIRVISFuncBtns = new List<JIRVISFuncBtnStruct>();
-        JIRVISFuncBtnStruct jIRVISFuncBtn = new JIRVISFuncBtnStruct();
-        jIRVISFuncBtn.btnName = "返回";
-        jIRVISFuncBtn.btnIconKey = ONAME.BackStep;
-        jIRVISFuncBtn.clickCallBack = ClickJIRVISBtn_BackStepFromOtherPlayerSH;//回调上一步
-        jIRVISFuncBtns.Add(jIRVISFuncBtn);
-        JIRVIS.Instance.BuildFunctionBtn(jIRVISFuncBtns);
-
-        JIRVIS.Instance.BuildDimensionRoomBtnList(data.getOtherPlayerStrongholdAttribute, CallBackClickJIRVISStorngholdBtn, null, false);
-    }
-
-    private void BuildJIRVISBtns_AllPlayerSH()
-    {
-        //构建我和周围所有其他人据点列表
-        List<JIRVISFuncBtnStruct> jIRVISFuncBtns = new List<JIRVISFuncBtnStruct>();
-        JIRVISFuncBtnStruct jIRVISFuncBtn = new JIRVISFuncBtnStruct();
-        jIRVISFuncBtn.btnName = "返回";
-        jIRVISFuncBtn.btnIconKey = ONAME.BackStep;
-        jIRVISFuncBtn.clickCallBack = ClickJIRVISBtn_BaackStepAllOtherPlayerSH;//回调上一步
-        jIRVISFuncBtns.Add(jIRVISFuncBtn);
-        JIRVIS.Instance.BuildFunctionBtn(jIRVISFuncBtns);
-        List<PlayerStrongholdAttribute> psas = new List<PlayerStrongholdAttribute>();
-        psas.AddRange(data.getSeflStrongholdAttribute);
-        psas.AddRange(data.getOtherPlayerStrongholdAttribute);
-        JIRVIS.Instance.BuildDimensionRoomBtnList(psas, CallBackClickJIRVISStorngholdBtn, null, false);
-    }
 
     private void ClickJIRVISBtns_EnterPlayerSH()
     {
+        List<PlayerStrongholdAttribute> psaList = new List<PlayerStrongholdAttribute>();
+        psaList.AddRange(AndaDataManager.Instance.GetPlayerAllStrongholdAttribute());
+        psaList.AddRange(data.getOtherPlayerStrongholdAttribute);
+        JIRVIS.Instance.BuildDimensionRoomBtnList(psaList, CallBackClickJIRVISStorngholdBtn, null, false);
         data.SetCurChooseDisplaySHType((int)MapCtrData.mapDisplayType.playerSH);
-        BuildJIRVISFunctionBtn();
-    }
-
-    private void ClickJIRVISBtns_EnterMinePlayerSH()
-    {
-        data.SetCurChooseDisplaySHType(0);//0是我的所有占星庭
-        BuildJIRVISFunctionBtn();
-    }
-
-    private void ClickJIRVISBtns_EnterOtherPlayerSH()
-    {
-        data.SetCurChooseDisplaySHType(11);//11 其他人所有的占星庭
-        BuildJIRVISFunctionBtn();
-    }
-
-    private void ClicckJIRVISBtns_EnterAllPlayerSH()
-    {
-        data.SetCurChooseDisplaySHType(12); //我的和别人的所有据点的总和
-        BuildJIRVISFunctionBtn();
-    }
-
-
-    //返回到Base
-    private void ClickJIRVISBtn_BackStepFromPlayerSH()
-    {
-        data.SetCurChooseDisplaySHType(0);
-        BuildJIRVISFunctionBtn();
-    }
-
-    //从我的据点列表返回，返回到 据点种类选择  目前来讲，这3条都是一样的
-    private void ClickJIRVISBtn_BackStepFromMinePlayerSH()
-    {
-        data.SetCurChooseDisplaySHType(1);
-        BuildJIRVISFunctionBtn();
-    } 
-
-    private void ClickJIRVISBtn_BackStepFromOtherPlayerSH()
-    {
-        data.SetCurChooseDisplaySHType(1);
-        BuildJIRVISFunctionBtn();
-    }
-
-    private void ClickJIRVISBtn_BaackStepAllOtherPlayerSH()
-    {
-        data.SetCurChooseDisplaySHType(1);
-        BuildJIRVISFunctionBtn();
     }
     #endregion
 
     #region 构建交易所列表
-
-    private void BuildJIRVISBtns_ExchangeSH()
-    {
-        List<JIRVISFuncBtnStruct> jIRVISFuncBtnStructs = new List<JIRVISFuncBtnStruct>()
-        {
-            new JIRVISFuncBtnStruct { btnName = "我的交易所" , btnIconKey = ONAME.mineExchagneSH ,clickCallBack = ClickJIRVISBtn_EnterMineExchangeSH },
-            new JIRVISFuncBtnStruct { btnName = "其他人的交易所" ,btnIconKey = ONAME.otherExchangeSH , clickCallBack = ClickJIRVISBtn_EnterOtherExchangeSH},
-            new JIRVISFuncBtnStruct { btnName = "所有人的交易所" , btnIconKey = ONAME.allExchangeSH,clickCallBack = ClickJIRVISBtn_EnterAllExchangeSH },
-            new JIRVISFuncBtnStruct { btnName = "占星庭" , btnIconKey = ONAME.PlayerSH ,clickCallBack = ClickJIRVISBtns_EnterPlayerSH },
-            new JIRVISFuncBtnStruct { btnName = "商家据点" , btnIconKey = ONAME.businessStrongholdIcon ,clickCallBack = ClickJIRVISBtn_EnterBSSH },
-          //  new JIRVISFuncBtnStruct { btnName = "失守据点" , btnIconKey = ONAME.bossSH ,clickCallBack = ClickJIRVISBtn_EnterBossSH },
-        };
-
-        JIRVIS.Instance.BuildFunctionBtn(jIRVISFuncBtnStructs);
-    }
-
-
-
-    private void BuildJIRVISBtns_MineExchangeSH()
-    {
-        //构建我的所有据点列表
-        List<JIRVISFuncBtnStruct> jIRVISFuncBtns = new List<JIRVISFuncBtnStruct>();
-        JIRVISFuncBtnStruct jIRVISFuncBtn = new JIRVISFuncBtnStruct();
-        jIRVISFuncBtn.btnName = "返回";
-        jIRVISFuncBtn.btnIconKey = ONAME.BackStep;
-        jIRVISFuncBtn.clickCallBack = ClickJIRVISBtn_BackStep_MineExchangeSH;//回调上一步
-        jIRVISFuncBtns.Add(jIRVISFuncBtn);
-        JIRVIS.Instance.BuildFunctionBtn(jIRVISFuncBtns);
-        JIRVIS.Instance.BuildExchangeBtnList(data.getMineExchangeAttr, CallBackClickJIRVISStorngholdBtn, null, false);
-    }
-
-    private void BuildJIRVISBtns_OtherExchangeSh()
-    {
-        //构建我的所有据点列表
-        List<JIRVISFuncBtnStruct> jIRVISFuncBtns = new List<JIRVISFuncBtnStruct>();
-        JIRVISFuncBtnStruct jIRVISFuncBtn = new JIRVISFuncBtnStruct();
-        jIRVISFuncBtn.btnName = "返回";
-        jIRVISFuncBtn.btnIconKey = ONAME.BackStep;
-        jIRVISFuncBtn.clickCallBack = ClickJIRVISBtn_BackStep_OtherExchangeSH;//回调上一步
-        jIRVISFuncBtns.Add(jIRVISFuncBtn);
-        JIRVIS.Instance.BuildFunctionBtn(jIRVISFuncBtns);
-        JIRVIS.Instance.BuildExchangeBtnList(data.getOtherExchangeAttr, CallBackClickJIRVISStorngholdBtn, null, false);
-    }
-
-    private void BuildJIRVISBtns_AllExchangeSH()
-    {
-
-        List<JIRVISFuncBtnStruct> jIRVISFuncBtns = new List<JIRVISFuncBtnStruct>();
-        JIRVISFuncBtnStruct jIRVISFuncBtn = new JIRVISFuncBtnStruct();
-        jIRVISFuncBtn.btnName = "返回";
-        jIRVISFuncBtn.btnIconKey = ONAME.BackStep;
-        jIRVISFuncBtn.clickCallBack = ClickJIRVISBtn_BackStep_AllExchangeSH;//回调上一步
-        jIRVISFuncBtns.Add(jIRVISFuncBtn);
-        JIRVIS.Instance.BuildFunctionBtn(jIRVISFuncBtns);
-
-        List<Exchange> exchanges = new List<Exchange>();
-        exchanges.AddRange(data.getMineExchangeAttr);
-        exchanges.AddRange(data.getOtherExchangeAttr);
-        JIRVIS.Instance.BuildExchangeBtnList(exchanges, CallBackClickJIRVISStorngholdBtn, null, false);
-
-    }
-
     private void ClickJIRVISBtn_EnterExchange()
     {
+        List<Exchange> exchanges = new List<Exchange>();
+        exchanges.AddRange(AndaDataManager.Instance.userData.userExchangeSHList);
+        if(data.getOtherExchangeAttr!=null) exchanges.AddRange(data.getOtherExchangeAttr);
+        JIRVIS.Instance.BuildExchangeBtnList(exchanges, CallBackClickJIRVISStorngholdBtn, null, false);
         data.SetCurChooseDisplaySHType((int)MapCtrData.mapDisplayType.exchangeSH);
-        BuildJIRVISFunctionBtn();
     }
-
-    private void ClickJIRVISBtn_EnterMineExchangeSH()
-    {
-        data.SetCurChooseDisplaySHType((int)MapCtrData.mapDisplayType.mineExchangeSH);
-        BuildJIRVISFunctionBtn();
-    }
-    private void ClickJIRVISBtn_EnterOtherExchangeSH()
-    {
-        data.SetCurChooseDisplaySHType((int)MapCtrData.mapDisplayType.otherExchangeSH);
-        BuildJIRVISFunctionBtn();
-    }
-    private void ClickJIRVISBtn_EnterAllExchangeSH()
-    {
-        data.SetCurChooseDisplaySHType((int)MapCtrData.mapDisplayType.allExchangeSH);
-        BuildJIRVISFunctionBtn();
-    }
-
-    private void ClickJIRVISBtn_BackStep_MineExchangeSH()
-    {
-        data.SetCurChooseDisplaySHType((int)MapCtrData.mapDisplayType.exchangeSH);
-        BuildJIRVISFunctionBtn();
-    }
-
-    private void ClickJIRVISBtn_BackStep_OtherExchangeSH()
-    {
-        data.SetCurChooseDisplaySHType((int)MapCtrData.mapDisplayType.exchangeSH);
-        BuildJIRVISFunctionBtn();
-    }
-
-    private void ClickJIRVISBtn_BackStep_AllExchangeSH()
-    {
-        data.SetCurChooseDisplaySHType((int)MapCtrData.mapDisplayType.exchangeSH);
-        BuildJIRVISFunctionBtn();
-    }
-
-
-
     #endregion
 
     #region 构建商家据点
 
-    private void BuildJIRVISBtns_BSSH()
-    {
-        List<JIRVISFuncBtnStruct> jIRVISFuncBtnStructs = new List<JIRVISFuncBtnStruct>()
-        {
-            new JIRVISFuncBtnStruct { btnName = "所有商家据点" , btnIconKey = ONAME.allBussinessSH ,clickCallBack = ClickJIRVISBtn_AllBSSH },
-            new JIRVISFuncBtnStruct { btnName = "占星庭" , btnIconKey = ONAME.PlayerSH ,clickCallBack = ClickJIRVISBtns_EnterPlayerSH },
-            new JIRVISFuncBtnStruct { btnName = "交易所" , btnIconKey = ONAME.exchangeSH ,clickCallBack = ClickJIRVISBtn_EnterExchange },
-           // new JIRVISFuncBtnStruct { btnName = "失守据点" , btnIconKey = ONAME.bossSH ,clickCallBack = ClickJIRVISBtn_EnterBossSH },
-        };
-
-        JIRVIS.Instance.BuildFunctionBtn(jIRVISFuncBtnStructs);
-    }
-
-    private void BuildJIRVISBtn_AllBSSH()
-    {
-        List<JIRVISFuncBtnStruct> jIRVISFuncBtns = new List<JIRVISFuncBtnStruct>();
-        JIRVISFuncBtnStruct jIRVISFuncBtn = new JIRVISFuncBtnStruct();
-        jIRVISFuncBtn.btnName = "返回";
-        jIRVISFuncBtn.btnIconKey = ONAME.BackStep;
-        jIRVISFuncBtn.clickCallBack = ClickJIRVISBtn_EnterBSSH;//回调上一步
-        jIRVISFuncBtns.Add(jIRVISFuncBtn);
-        JIRVIS.Instance.BuildFunctionBtn(jIRVISFuncBtns);
-        JIRVIS.Instance.BuildBussineStrongholdBtnList(data.getBussinessStrongholdAttribute, CallBackClickJIRVISStorngholdBtn, null, false);
-    }
 
     private void ClickJIRVISBtn_EnterBSSH()
     {
+        JIRVIS.Instance.BuildBussineStrongholdBtnList(data.getBussinessStrongholdAttribute, CallBackClickJIRVISStorngholdBtn, null, false);
         data.SetCurChooseDisplaySHType((int)MapCtrData.mapDisplayType.bussinessSH);
-        BuildJIRVISFunctionBtn();
-    }
-
-    private void ClickJIRVISBtn_AllBSSH()
-    {
-        data.SetCurChooseDisplaySHType((int)MapCtrData.mapDisplayType.allBussinessSh);
-        BuildJIRVISFunctionBtn();
     }
 
     #endregion
 
     #region 构建Boss 据点
-    private void BuildJIRVISBtns_BossSH()
-    {
-
-    }
-
-    private void BuildJIRVISBtns_AllBossSH()
-    {
-
-    }
-
+   
     private void ClickJIRVISBtn_EnterBossSH()
     {
 
     }
 
-    private void ClickJIRVISBtns_AllBossSH()
-    {
 
-    }
     #endregion
 
 
@@ -915,6 +765,32 @@ public class MapController : BaseController {
 
 
 
+    #endregion
+
+
+    #region 贾维斯询问，当前选择的据点 据点过远，是否理解前往
+
+
+    private void JIRVISASK_SureAboutLocationTargetPosition()
+    {
+        JIRVIS.Instance.PlayTipsForchoose("您选择的占星庭距离不在当前范围内，是否理解挑战前往", OTYPE.TipsType.chooseTips, "前往", "不了", PlayerAnswer_GotoTargetPostion, PlayerAnswer_FotgetGotoTargetPosition);
+        JIRVIS.Instance.RemoveCurrentBtnList();
+    }
+    #endregion
+    #region 玩家选择 立即前往目标据点
+    private void PlayerAnswer_GotoTargetPostion()
+    {
+        GetPOIData();
+        JIRVIS.Instance.CloseTips();
+    }
+    #endregion
+
+    #region 玩家不想去
+    private void PlayerAnswer_FotgetGotoTargetPosition()
+    {
+        JIRVIS.Instance.CloseTips();
+        BuildJIRVISFunctionBtn();
+    }
     #endregion
 
 
@@ -1072,8 +948,13 @@ public class MapController : BaseController {
         }
         else
         {
-            CancelPlayGame();
+            EnterOtherStrongholdGame();
         }
+    }
+
+    private void PlayerCancelPlayGame()
+    {
+        CancelPlayGame();
     }
 
     #endregion
@@ -1099,13 +980,21 @@ public class MapController : BaseController {
                                                           JIRVIS.Instance.jIRVISData.getCurMineStrongholdIndex, CallBackFinishAppleMatch);
         }
     }
+
+    private void EnterOtherStrongholdGame()
+    {
+        //JIRVIS.Instance.CloseTips();
+        //进入别人的据点
+        #if UNITY_EDITOR
+        Debug.Log("进入别人的据点");
+        #endif
+    }
+
     //【放弃挑战】
     private void CancelPlayGame()
     {
-        JIRVIS.Instance.CloseTips();
         data.SetOpenchildBar(false);//对地图的操作允许
         BuildJIRVISFunctionBtn();
-        //data.RemoveJIRVISEditor_ChanllengeGameStorngholdInfomationBar();
         JIRVIS.Instance.PlayTips("明智的选择");
     }
 
@@ -1175,23 +1064,6 @@ public class MapController : BaseController {
     #endregion
 
   
-    #region 更新相机位置，每次切换据点或者重新定位，相机都会对焦到相应位置
-
-    private void InitCameraPose()
-    {
-        Vector3 centerPose = AndaMap.Instance.GeoToWorldPoseWithCurrentLatlong();
-        Quaternion quaternion = Quaternion.LookRotation(centerPose - ARMonsterSceneDataManager.Instance.GetMapCameraPositionWithGamewroldY());
-        Vector3 euler = ARMonsterSceneDataManager.Instance.MapCamera.transform.eulerAngles;
-        euler.y = quaternion.eulerAngles.y;
-        ARMonsterSceneDataManager.Instance.MapCamera.transform.eulerAngles = euler;
-        Vector3 cFwd = ARMonsterSceneDataManager.Instance.MapCamera.transform.forward;
-        cFwd.y = 0;
-        Vector3 pose = centerPose + (centerPose - cFwd).normalized * 250;
-        pose.y = ARMonsterSceneDataManager.Instance.MapCamera.transform.position.y;
-        ARMonsterSceneDataManager.Instance.MapCamera.transform.position = pose;
-    }
-
-    #endregion
 
     #region 检查当前位置是否可以放置据点
 
@@ -1273,7 +1145,7 @@ public class MapController : BaseController {
                 OpenBussinessStrongholdInformation(shAttr);
                 break;
             case 2:
-
+             
                 break;
         }
     }
@@ -1282,8 +1154,9 @@ public class MapController : BaseController {
     #region 打开玩家据点信息面板_自己的
     private void OpenPlayerStrongholdInformaiton(StrongholdBaseAttribution _shBase)
     {
-        data.SetCurrentPlayerstrongholdIndex(_shBase.strongholdIndex);
-        JIRVISAskForEnterMineStrongholdNow();
+        //data.SetCurrentPlayerstrongholdIndex(_shBase.strongholdIndex);
+        //JIRVISAskForEnterMineStrongholdNow();
+        data.BuildMinePlayerStrongholdInfomation(_shBase as PlayerStrongholdAttribute);
     }
 
     #endregion
@@ -1292,6 +1165,7 @@ public class MapController : BaseController {
     private void OpenOtherPlayerStrongholdInformaiton(StrongholdBaseAttribution _shBase)
     {
         JIRVIS.Instance.jIRVISData.SetCurrentChallenggeStronghold((PlayerStrongholdAttribute)_shBase);
+
         CallSeverGetSelectStrongholdInfomation();
     }
     #region 向服务器索取要挑战的据点数据
@@ -1318,11 +1192,8 @@ public class MapController : BaseController {
 
             data.SetWaitState(false);
             data.SetOpenchildBar(true);//对地图的操作的禁止
-            RegisterControlCamera(false);
-            RegisterSelectMapItem(false);
             JIRVIS.Instance.jIRVISData.SetEnemys(playerMonsters);
-            JIRVIS.Instance.BuildOtherPlayerStrongholdInformation((PlayerStrongholdAttribute)JIRVIS.Instance.jIRVISData.getCurChallengeStrongholdAttr,playerMonsters[0]);
-            JIRVIS.Instance.jIRVISData.jIRVISContent_ChanllengeGameStronghold.CallBackResult = PlayerComfirmGame;
+            data.BuildOtherPlayerStrongholdInformation((PlayerStrongholdAttribute)JIRVIS.Instance.jIRVISData.getCurChallengeStrongholdAttr, playerMonsters[0], PlayerComfirmGame, PlayerCancelPlayGame);
         }
 
     }
@@ -1359,11 +1230,16 @@ public class MapController : BaseController {
         {
             BuildJIRVISFunctionBtn();
             JIRVIS.Instance.PlayTips("请检查网络");
-        }else
+            data.isOpenJirvisChildBar = false;
+        }
+        else
         {
+            data.isOpenJirvisChildBar = true;
             data.SetOpenchildBar(true);//不允许地图操作
             data.BuildExchangeInfoMenu();
             data.getExchangeMenu.SetInfo(_value);
+            data.getExchangeMenu.SetFollowInfo(data.ExchangeWolrdPose(_value), data.GetCurCamera);
+
         }
     }
 
@@ -1377,6 +1253,15 @@ public class MapController : BaseController {
 
     #endregion
 
+    #region 返回到登录界面
+
+    private void BackToLoginMenu()
+    {
+        JIRVIS.Instance.jIRVISData.isRebacktoLoginMenu = true;
+        callbackFinishController(ONAME.LOGINCONTROLLER);
+    }
+
+    #endregion
 
     #region 准备插入交易所据点
 
@@ -1858,9 +1743,9 @@ public class MapController : BaseController {
 
         if(data.GetCurCamera == null)return;
 
-        if(data.getSeflStrongholdAttribute !=null && (data.shDisplayType == 1 || data.shDisplayType == 4))
+        if(data.getMineStrongholdItem !=null && (data.shDisplayType == 1 || data.shDisplayType == 4))
         {
-            int count1 = data.getSeflStrongholdAttribute.Count;
+            int count1 = data.getMineStrongholdItem.Count;
             for (int i = 0; i < count1; i++)
             {
                 Vector3 rP = data.getSeflStrongholdAttribute[i].strongholdInMapPosition;
@@ -1872,9 +1757,9 @@ public class MapController : BaseController {
                 data.getMineStrongholdItem[i].UpdateScale(scale);
             }
         }
-        if (data.getOtherPlayerStrongholdAttribute != null && (data.shDisplayType == 1 || data.shDisplayType == 4))
+        if (data.getOtherStrongholdItem != null && (data.shDisplayType == 1 || data.shDisplayType == 4))
         {
-            int count1 = data.getOtherPlayerStrongholdAttribute.Count;
+            int count1 = data.getOtherStrongholdItem.Count;
             for (int i = 0; i < count1; i++)
             {
                 Vector3 rP = data.getOtherPlayerStrongholdAttribute[i].strongholdInMapPosition;
@@ -1887,9 +1772,9 @@ public class MapController : BaseController {
             }
         }
 
-        if (data.getBussinessStrongholdAttribute != null && (data.shDisplayType == 2 || data.shDisplayType == 4))
+        if (data.getBussinesStronghldItem != null && (data.shDisplayType == 2 || data.shDisplayType == 4))
         {
-            int count1 = data.getBussinessStrongholdAttribute.Count;
+            int count1 = data.getBussinesStronghldItem.Count;
             for (int i = 0; i < count1; i++)
             {
                 Vector3 rP = data.getBussinessStrongholdAttribute[i].strongholdInMapPosition;
@@ -2104,7 +1989,7 @@ public class MapController : BaseController {
 
     private void MoveCamera()
     {
-        if (JIRVIS.Instance.jIRVISData.getCurDisplayType == OTYPE.GameDisplayType.AR) return;
+        //if(data.isOpenJirvisChildBar)return;
 
 #if UNITY_EDITOR
 
@@ -2216,5 +2101,72 @@ public class MapController : BaseController {
 
     #endregion
 
+    #region 更新相机位置，每次切换据点或者重新定位，相机都会对焦到相应位置
+
+    private Quaternion targetCamearEuler;
+    private Vector3 targetCameraPose;
+    private float moveCameraProgress;
+    private bool canMoveCamera;
+    private Vector3 centerPose;
+    private void InitCameraPose(bool getWithGeo = true)
+    {
+        if (getWithGeo)
+        {
+            centerPose = AndaMap.Instance.GeoToWorldPoseWithCurrentLatlong();
+        }
+        else
+        {
+            centerPose = AndaMap.Instance.andaMapData.getMapcenterGameworldPose;
+        }
+
+        AndaMap.Instance.andaMapController.abstractMap.GetComponent<QuadTreeTileProvider>().enabled =false;
+        canMoveCamera = true;
+        moveCameraProgress = 0;
+    }
+
+    private void UpdateCameraToTargetPose()
+    {
+
+        Quaternion quaternion = Quaternion.LookRotation(centerPose - ARMonsterSceneDataManager.Instance.GetMapCameraPositionWithGamewroldY());
+       // Quaternion euler = ARMonsterSceneDataManager.Instance.MapCamera.transform.rotation;
+        //euler.y = quaternion.y;
+        targetCamearEuler = quaternion;
+
+        Vector3 cFwd = ARMonsterSceneDataManager.Instance.MapCamera.transform.forward;
+        cFwd.y = 0;
+        Vector3 pose = centerPose + (centerPose - cFwd).normalized * 800;
+        pose.y = ARMonsterSceneDataManager.Instance.MapCamera.transform.position.y;
+
+        targetCameraPose = pose;
+
+        float dis = Vector3.Distance(ARMonsterSceneDataManager.Instance.MapCamera.transform.position, targetCameraPose);
+        float speed = dis / 2;
+        ARMonsterSceneDataManager.Instance.MapCamera.transform.position = Vector3.MoveTowards(ARMonsterSceneDataManager.Instance.MapCamera.transform.position, targetCameraPose, speed);
+
+        moveCameraProgress += Time.deltaTime;//*0.5f;
+
+        ARMonsterSceneDataManager.Instance.MapCamera.transform.rotation = Quaternion.Lerp(ARMonsterSceneDataManager.Instance.MapCamera.transform.rotation, targetCamearEuler, moveCameraProgress);
+       
+        Vector3 e = ARMonsterSceneDataManager.Instance.MapCamera.transform.eulerAngles;
+        e.x = 40;
+        ARMonsterSceneDataManager.Instance.MapCamera.transform.eulerAngles = e;
+        if (moveCameraProgress >= 1)
+        {
+            ARMonsterSceneDataManager.Instance.MapCamera.transform.position = targetCameraPose;
+            ARMonsterSceneDataManager.Instance.MapCamera.transform.rotation = targetCamearEuler;
+
+            e = ARMonsterSceneDataManager.Instance.MapCamera.transform.eulerAngles;
+            e.x = 40f;
+            ARMonsterSceneDataManager.Instance.MapCamera.transform.eulerAngles = e;
+            canMoveCamera = false;
+            AndaMap.Instance.andaMapController.abstractMap.GetComponent<QuadTreeTileProvider>().enabled = true;
+        }
+
+
+       
+
+    }
+
+    #endregion
 }
 

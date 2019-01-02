@@ -73,7 +73,7 @@ public class TypewriterEffect : MonoBehaviour
 	bool mReset = true;
 	bool mActive = false;
 
-	BetterList<FadeEntry> mFade = new BetterList<FadeEntry>();
+	BetterList2<FadeEntry> mFade = new BetterList2<FadeEntry>();
 
 	/// <summary>
 	/// Whether the typewriter effect is currently active or not.

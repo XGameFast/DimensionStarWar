@@ -5,6 +5,7 @@ using UnityEngine.UI;
 //地图上的据点UI专用
 public class MapUIItem_icon_lvBoard_Name : AndaObjectBasic {
 
+    public Image userPorImg;
     public Image porImg;
     public Image levelboard;
     public Text shName;
@@ -15,18 +16,32 @@ public class MapUIItem_icon_lvBoard_Name : AndaObjectBasic {
     private System.Action<StrongholdBaseAttribution> clickCallBack;
     private System.Action<Exchange> clickExchage;
     private Exchange exchange;
+    private Vector3 worldPose;
+    private MapController mapController;
 
-    public void SetInfo(Exchange _exchange)
+    public override void OnDispawn()
     {
+        mapController = null;
+        base.OnDispawn();
+    }
+
+    public void SetController(MapController _mapController)
+    {
+        mapController = _mapController;
+    }
+
+    public void SetInfo(Exchange _exchange,Vector3 _worldPose)
+    {
+        worldPose = _worldPose;
         exchange = _exchange;
         shName.text = _exchange.ExchangeName;
         AndaDataManager.Instance.GetOtherPlayerPorImg(_exchange.userIndex,_exchange.headImg, UpdatePorImage );
-
     }
 
     public void SetInfo(StrongholdBaseAttribution _shAttr)
     {
         strongholdBaseAttribution = _shAttr;
+        worldPose = _shAttr.strongholdInMapPosition;
         shDataType = _shAttr.hostType;
         dataIndex = _shAttr.strongholdIndex;
         switch(shDataType)
@@ -36,9 +51,11 @@ public class MapUIItem_icon_lvBoard_Name : AndaObjectBasic {
                 Sprite levelBoard = AndaDataManager.Instance.GetStrongholdLevelBoardSprite(_shAttr.strongholdLevel);
                 UpdatePorImage(imgPor);
                 levelboard.sprite = levelBoard;
+                AndaDataManager.Instance.GetPlayerPorImg(SetUserPor);
                 break;
             case 1:
                //Sprite imgPor = AndaDataManager.Instance AndaDataManager.Instance.GetStrongholdPorSprite(p.statueID.ToString());
+
                levelboard.sprite = AndaDataManager.Instance.GetBussinessLevelBoardSprite(_shAttr.strongholdLevel);
                 break;
             case 2:
@@ -52,7 +69,10 @@ public class MapUIItem_icon_lvBoard_Name : AndaObjectBasic {
 
         shName.text = _shAttr.strongholdNickName;
     }
-
+    public void SetUserPor(Sprite _sp)
+    {
+        userPorImg.sprite = _sp;
+    }
     public void RegisterClickCallBack(System.Action<StrongholdBaseAttribution> callback)
     {
         clickCallBack = callback;
@@ -89,5 +109,19 @@ public class MapUIItem_icon_lvBoard_Name : AndaObjectBasic {
     public void UpdateScale(float v)
     {
         transform.localScale = Vector3.one*v;
+    }
+    private float baseScaleDistance = 1800;
+
+    public void Update()
+    {
+        if(mapController!=null)
+        {
+            Vector2 vector2 = mapController.data.GetCurCamera.WorldToScreenPoint(worldPose);
+            Vector3 p = ARMonsterSceneDataManager.Instance.UICamera.ScreenToWorldPoint(new Vector3(vector2.x, vector2.y, 90));
+            UpdatePose(p);
+            float scale = baseScaleDistance / Vector3.Distance(worldPose, mapController.data.GetCurCamera.transform.position);
+            scale = (float)Mathf.Clamp(scale, 0.3f, 2.5f);
+            UpdateScale(scale);
+        }
     }
 }

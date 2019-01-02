@@ -78,13 +78,13 @@ public class ExchangeMenu_SellBar : UIBasic2 {
                 break;
             case 1000:
                 SetImg(AndaDataManager.Instance.GetMonsterIconSprite(exchangeObject.objectID.ToString()));
-                SetName("");
-                SetDescription("");
+                SetName(exchangeObject.objName);
+                SetDescription(exchangeObject.objDescription);
                 break;
             case 40000:
                 SetImg(AndaDataManager.Instance.GetConsumableSprite(exchangeObject.objectID.ToString()));
-                SetName("");
-                SetDescription("");
+                SetName(exchangeObject.objName);
+                SetDescription(exchangeObject.objDescription);
                 break;
         }
     }

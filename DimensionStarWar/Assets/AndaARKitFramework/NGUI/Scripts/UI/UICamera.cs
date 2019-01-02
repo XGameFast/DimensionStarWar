@@ -123,7 +123,7 @@ public class UICamera : MonoBehaviour
 	/// List of all active cameras in the scene.
 	/// </summary>
 
-	static public BetterList<UICamera> list = new BetterList<UICamera>();
+	static public BetterList2<UICamera> list = new BetterList2<UICamera>();
 
 	public delegate bool GetKeyStateFunc (KeyCode key);
 	public delegate float GetAxisFunc (string name);
@@ -1255,7 +1255,7 @@ public class UICamera : MonoBehaviour
 	}
 
 	static DepthEntry mHit = new DepthEntry();
-	static BetterList<DepthEntry> mHits = new BetterList<DepthEntry>();
+	static BetterList2<DepthEntry> mHits = new BetterList2<DepthEntry>();
 
 	/// <summary>
 	/// Find the rigidbody on the parent, but return 'null' if a UIPanel is found instead.

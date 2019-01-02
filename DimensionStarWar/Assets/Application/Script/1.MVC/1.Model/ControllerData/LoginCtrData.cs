@@ -16,6 +16,13 @@ public class LoginCtrData : ControllerData {
     /// </summary>
     public int curLoginState = 0;
 
+    public void InitValue()
+    {
+        RemoveMenu();
+        loginMenu = null;
+        curLoginState = 0;
+    }
+
     public override void BuildData(BaseController _baseController)
     {
         base.BuildData(_baseController);
