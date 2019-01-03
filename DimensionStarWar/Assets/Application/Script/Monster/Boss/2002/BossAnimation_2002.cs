@@ -58,5 +58,10 @@ public class BossAnimation_2002 : BossAnimation {
         boss2002.animator.CrossFade("magical",0.2f);
     }
 
-
+    public override void PlayDead()
+    {
+        boss2002.animator.speed =1;
+        curAnimationType = (int)BossAnimationType.death;
+        boss2002.animator.CrossFade("dead", 0f);
+    }
 }

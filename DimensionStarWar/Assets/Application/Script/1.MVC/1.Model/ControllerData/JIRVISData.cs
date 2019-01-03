@@ -34,6 +34,9 @@ public class JIRVISData {
     {
         get {return itemlist;}
     }
+
+    public List<AndaObjectBasic> getItemListHori{ get {return itemListForHori ;}}
+
     public List<int> getWaitexcuteEventlist
     {
         get 
@@ -63,6 +66,10 @@ public class JIRVISData {
 
     public JIRVISContent_EditorMonsterInformation getJIRVISContent_EditorMonsterInformation { get {return jIRVISContent_EditorMonsterInformation ;}}
 
+    public JIRVISContent_ExchangeStrongholdEditorBar getjIRVISContent_ExchangeStrongholdEditorBar { get {return jIRVISContent_ExchangeStrongholdEditorBar;} }
+
+
+    public bool isRebacktoLoginMenu = false;
     public bool isSupportAR =false;
     //当前的游戏模式 1 = 挑战模式， 0= 保卫模式 
     public int currentPlayGameType;
@@ -71,6 +78,7 @@ public class JIRVISData {
     private PlayerStrongholdAttribute currentChallengeStronghold;
     private BusinessStrongholdAttribute currentProtectedStronghold;
     private List<AndaObjectBasic> itemlist;
+    private List<AndaObjectBasic> itemListForHori;
     private JIRVISBar jIRVISBar; 
     private OTYPE.GameDisplayType currentDisplayType = OTYPE.GameDisplayType.VV;
 
@@ -93,6 +101,10 @@ public class JIRVISData {
 
     public JIRVISContent_BussinessStrongholdInfo jIRVISContent_Bussiness;
 
+    public JIRVISContent_ChanllengeGameStrongholdInfo jIRVISContent_ChanllengeGameStronghold;
+
+    public JIRVISContent_ExchangeStrongholdEditorBar jIRVISContent_ExchangeStrongholdEditorBar;
+
     public bool lastChanllengeGameIsWin =false;
     // 代办事项， 0 = 建立据点
     private List<int> WaitForExcuteEvent;
@@ -100,6 +112,8 @@ public class JIRVISData {
     public bool IsAutoEnterAstroloy = false;
 
     public int isAutoEnterTargetScene = -1;
+
+    public PlayerMonsterAttribute curBossAttr;
 
     public void BuildData()
     {
@@ -110,6 +124,7 @@ public class JIRVISData {
     {
         WaitForExcuteEvent =new List<int>();
         InitBtnList();
+        InitBtnListForHoriz();
     }
 
     /// <summary>
@@ -129,9 +144,29 @@ public class JIRVISData {
             itemlist.Clear();
         }
     }
+
+    public void InitBtnListForHoriz()
+    {
+        if(itemListForHori ==null)
+        {
+            itemListForHori = new List<AndaObjectBasic>();
+        }else
+        {
+            if(itemListForHori.Count == 0)return;
+            itemListForHori.RecieveListByAndaData();
+            itemListForHori.Clear();
+        }
+    }
+
+
     public void AddItem(JIRVISButtonItemBase item)
     {
         itemlist.Add(item);
+    }
+
+    public void AddItemForHori(JIRVISButtonItemBase item)
+    {
+        itemListForHori.Add(item);
     }
 
 
@@ -158,6 +193,7 @@ public class JIRVISData {
     {
         currentProtectedStronghold = businessStrongholdAttribute;
         currentEnemyStrongholdIndex = businessStrongholdAttribute.strongholdIndex;
+      //  curBossAttr = ConvertTool.ConvertToPlayerMonsterAttribute(ConvertTool.ConvertMonsterIDToMonsterGrowupAttr(businessStrongholdAttribute.statueID)); 
         currentPlayGameType = 0;
     }
 
@@ -234,6 +270,32 @@ public class JIRVISData {
         jIRVISContent_Bussiness = AndaDataManager.Instance.InstantiateMenu<JIRVISContent_BussinessStrongholdInfo>(ONAME.JIRVISContent_BussinessStrongholdInfo);
         jIRVISContent_Bussiness.transform.SetUIInto(jIRVISBar.EditorboardPoint.transform);
         jIRVISContent_Bussiness.FadeIn();
+    }
+
+    public void BuildChallengeGameStrongholdBar()
+    {
+        if (jIRVISContent_ChanllengeGameStronghold != null) AndaDataManager.Instance.RecieveItem(jIRVISContent_ChanllengeGameStronghold);
+        jIRVISContent_ChanllengeGameStronghold = AndaDataManager.Instance.InstantiateMenu<JIRVISContent_ChanllengeGameStrongholdInfo>(ONAME.JIRVISEditorBar_ChanllengeGameStrongholdInfo);
+        jIRVISContent_ChanllengeGameStronghold.transform.SetUIInto(JIRVIS.Instance.jIRVISData.getJIRVISBar.EditorboardPoint.transform);
+        //jIRVISContent_ChanllengeGameStronghold.FadeIn();
+    }
+
+
+    public void BuildExchangeStrongholdEditorBar()
+    {
+        if(jIRVISContent_ExchangeStrongholdEditorBar == null)AndaDataManager.Instance.RecieveItem(jIRVISContent_ExchangeStrongholdEditorBar);
+        jIRVISContent_ExchangeStrongholdEditorBar = AndaDataManager.Instance.InstantiateMenu<JIRVISContent_ExchangeStrongholdEditorBar>(ONAME.jIRVISContent_ExchangeStrongholdEditorBar);
+        jIRVISContent_ExchangeStrongholdEditorBar.transform.SetUIInto(JIRVIS.Instance.jIRVISData.getJIRVISBar.EditorboardPoint.transform);
+        jIRVISContent_ExchangeStrongholdEditorBar.FadeIn();
+    }
+
+    public void RemoveExchangeStrongholdBar()
+    {
+        if (jIRVISContent_ExchangeStrongholdEditorBar != null)
+        {
+            AndaDataManager.Instance.RecieveItem(jIRVISContent_ExchangeStrongholdEditorBar);
+            jIRVISContent_ExchangeStrongholdEditorBar = null;
+        }
     }
 
     public void RemoveMonsterChangeInformaitonBar()

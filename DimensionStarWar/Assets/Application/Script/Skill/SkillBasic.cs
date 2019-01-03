@@ -262,11 +262,16 @@ public class SkillBasic : AndaObjectBasic
         {
             switch (hitLayer)
             {
+                case "Boss":
+                    SendSkillValue();
+                    ((BossBasic)hitTarget).HasBeenAttack(HitPower);
+                    break;
                 case "Monster":
                     SendSkillValue();
                     ((MonsterBasic)hitTarget).ControllerHasbeenHit(host, HitPower);
                     break;
                 case "Player":
+                    SendSkillValue();
                     ((MonsterBasic)hitTarget).ControllerHasbeenHit(host, HitPower);
                     break;
                 case "Objects":
@@ -321,10 +326,10 @@ public class SkillBasic : AndaObjectBasic
         switch(getSkillType)
         {
             case 0:
-                host.UpdateSKillUseData(1, getSkillType ,getSkillID , getSkillIndex);
+                host.UpdateSKillUseData(playerSkillAttribute.skillPower ,1, getSkillType ,getSkillID , getSkillIndex);
                 break;
             case 1:
-                host.UpdateSKillUseData (1,getSkillType,getSkillID,getSkillIndex);
+                host.UpdateSKillUseData (playerSkillAttribute.skillPower ,1,getSkillType,getSkillID,getSkillIndex);
                 break;
             case 2:
                 break;

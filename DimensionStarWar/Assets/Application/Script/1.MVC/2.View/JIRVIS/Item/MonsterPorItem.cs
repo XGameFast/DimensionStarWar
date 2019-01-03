@@ -49,8 +49,56 @@ public class MonsterPorItem : AndaObjectBasic {
         levelBoardItem.SetInto(transform);
         if(stuteItem!=null)AndaDataManager.Instance.RecieveItem(stuteItem);
         stuteItem = AndaDataManager.Instance.InstantiateMenu<AndaObjectBasic>("strongholdPor" + stuteID);
+//      stuteItem.GetComponent<Button>().enabled =false;
         stuteItem.SetInto(levelBoardItem.transform);
         SetStrongholdExpSlider(gloryExp , color);
+    }
+
+    public void SetBussinessStrongholdInfo(int _bsSHIndex,int _level, string headImg, ItemScrollStruct itemScrollStruct)
+    {
+        if (levelBoardItem != null) AndaDataManager.Instance.RecieveItem(levelBoardItem);
+        levelBoardItem = AndaDataManager.Instance.InstantiateMenu<AndaObjectBasic>("bussinessLevelBoard" + _level);
+        boardButton = levelBoardItem.GetComponentInChildren<Button>();
+        levelBoardItem.SetInto(transform);
+        if (stuteItem != null) AndaDataManager.Instance.RecieveItem(stuteItem);
+        stuteItem = AndaDataManager.Instance.InstantiateMenu<AndaObjectBasic>("spritePor_2");
+        stuteItem.SetInto(levelBoardItem.transform);
+        Material mt = stuteItem.GetComponent<Image>().material;
+        mt.SetVector("_Center" , new Vector4(itemScrollStruct.center.x, itemScrollStruct.center.y, itemScrollStruct.center.z,0) );
+        mt.SetFloat("_WidthLimit", itemScrollStruct.distance);
+        AndaDataManager.Instance.GetStrongholdImg(_bsSHIndex , headImg , SetStrongholdPor);
+    }
+
+    public void SetExchangeInfo(int userIndex,int _bsSHIndex, string headImg, ItemScrollStruct itemScrollStruct)
+    {
+        if (levelBoardItem != null) AndaDataManager.Instance.RecieveItem(levelBoardItem);
+        levelBoardItem = AndaDataManager.Instance.InstantiateMenu<AndaObjectBasic>("exchangeLevelBoard0");
+        boardButton = levelBoardItem.GetComponentInChildren<Button>();
+        levelBoardItem.SetInto(transform);
+        if (stuteItem != null) AndaDataManager.Instance.RecieveItem(stuteItem);
+        stuteItem = AndaDataManager.Instance.InstantiateMenu<AndaObjectBasic>("spritePor_3");
+        stuteItem.SetInto(levelBoardItem.transform);
+        Material mt = stuteItem.GetComponent<Image>().material;
+        mt.SetVector("_Center", new Vector4(itemScrollStruct.center.x, itemScrollStruct.center.y, itemScrollStruct.center.z, 0));
+        //mt.SetFloat("_HeightLimit", itemScrollStruct.distance);
+        mt.SetFloat("_WidthLimit", itemScrollStruct.distance);
+        if(userIndex == AndaDataManager.Instance.userData.userIndex)
+        {
+            AndaDataManager.Instance.GetPlayerPorImg(SetStrongholdPor);
+        }else
+        {
+            AndaDataManager.Instance.GetStrongholdImg(_bsSHIndex, headImg, SetStrongholdPor);
+        }
+
+    }
+
+    private void SetStrongholdPor(int index ,Sprite _sprite)
+    {
+        stuteItem.GetComponent<Image>().sprite = _sprite;
+    }
+    private void SetStrongholdPor(Sprite _sp)
+    {
+        stuteItem.GetComponent<Image>().sprite = _sp;
     }
 
     public void SetMonsterInfo(int level, int monsterID, float gloryExp, Color color)
@@ -60,9 +108,25 @@ public class MonsterPorItem : AndaObjectBasic {
         boardButton = levelBoardItem.GetComponentInChildren<Button>();
         levelBoardItem.SetInto(transform);
         if (stuteItem != null) AndaDataManager.Instance.RecieveItem(stuteItem);
-        Debug.Log("monsterID" + monsterID);
         stuteItem = AndaDataManager.Instance.InstantiateMenu<AndaObjectBasic>("monsterPor" + monsterID);
+      
+        //stuteItem.GetComponent<Button>().enabled = false;
         stuteItem.SetInto(levelBoardItem.transform);
         SetMonsterExpSlider(gloryExp, color);
     }
+
+    //构建商家据点按钮
+  /*  public void SetBussinessInfo(int level, string imgPath)
+    {
+        if (levelBoardItem != null) AndaDataManager.Instance.RecieveItem(levelBoardItem);
+        levelBoardItem = AndaDataManager.Instance.InstantiateMenu<AndaObjectBasic>("bussinessLevelBoard" + level);
+        boardButton = levelBoardItem.GetComponentInChildren<Button>();
+        levelBoardItem.SetInto(transform);
+        if (stuteItem != null) AndaDataManager.Instance.RecieveItem(stuteItem);
+        stuteItem = AndaDataManager.Instance.InstantiateMenu<AndaObjectBasic>("monsterPor" + monsterID);
+        //stuteItem.GetComponent<Button>().enabled = false;
+        stuteItem.SetInto(levelBoardItem.transform);
+        //SetMonsterExpSlider(gloryExp, color);
+    }*/
+
 }

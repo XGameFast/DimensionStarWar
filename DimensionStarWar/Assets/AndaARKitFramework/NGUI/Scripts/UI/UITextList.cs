@@ -61,20 +61,20 @@ public class UITextList : MonoBehaviour
 	protected int mTotalLines = 0;
 	protected int mLastWidth = 0;
 	protected int mLastHeight = 0;
-	BetterList<Paragraph> mParagraphs;
+	BetterList2<Paragraph> mParagraphs;
 
 	/// <summary>
 	/// Chat history is in a dictionary so that there can be multiple chat window tabs, each with its own text list.
 	/// The dictionary is static so that it travels from one scene to another without losing chat history.
 	/// </summary>
 
-	static Dictionary<string, BetterList<Paragraph>> mHistory = new Dictionary<string, BetterList<Paragraph>>();
+	static Dictionary<string, BetterList2<Paragraph>> mHistory = new Dictionary<string, BetterList2<Paragraph>>();
 
 	/// <summary>
 	/// Paragraphs belonging to this text list.
 	/// </summary>
 
-	protected BetterList<Paragraph> paragraphs
+	protected BetterList2<Paragraph> paragraphs
 	{
 		get
 		{
@@ -82,7 +82,7 @@ public class UITextList : MonoBehaviour
 			{
 				if (!mHistory.TryGetValue(name, out mParagraphs))
 				{
-					mParagraphs = new BetterList<Paragraph>();
+					mParagraphs = new BetterList2<Paragraph>();
 					mHistory.Add(name, mParagraphs);
 				}
 			}

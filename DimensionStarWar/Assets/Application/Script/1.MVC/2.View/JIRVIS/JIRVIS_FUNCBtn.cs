@@ -28,11 +28,26 @@ public class JIRVIS_FUNCBtn : JIRVISButtonItemBase {
         spriteItem = AndaDataManager.Instance.GetSpritePerfab(btnIconName);
         spriteItem = Instantiate(spriteItem);
         spriteItem.transform.SetUIInto(transform);
+        spriteItem.gameObject.SetActive(false);
+    }
+
+
+
+    public override void SetFadeInEffect(int type)
+    {
+        base.SetFadeInEffect(type);
+        Invoke("InvokOpenItem" , 0.2f);
+    }
+
+    private void InvokOpenItem()
+    {
+        spriteItem.gameObject.SetActive(true);
     }
 
     public override void ClickItem()
     {
         base.ClickItem();
         CallBackClickBtn();
+
     }
 }

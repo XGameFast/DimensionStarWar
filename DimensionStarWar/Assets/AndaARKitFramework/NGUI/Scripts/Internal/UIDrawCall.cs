@@ -16,23 +16,23 @@ using System.Collections.Generic;
 [AddComponentMenu("NGUI/Internal/Draw Call")]
 public class UIDrawCall : MonoBehaviour
 {
-	static BetterList<UIDrawCall> mActiveList = new BetterList<UIDrawCall>();
-	static BetterList<UIDrawCall> mInactiveList = new BetterList<UIDrawCall>();
+	static BetterList2<UIDrawCall> mActiveList = new BetterList2<UIDrawCall>();
+	static BetterList2<UIDrawCall> mInactiveList = new BetterList2<UIDrawCall>();
 
 	[System.Obsolete("Use UIDrawCall.activeList")]
-	static public BetterList<UIDrawCall> list { get { return mActiveList; } }
+	static public BetterList2<UIDrawCall> list { get { return mActiveList; } }
 
 	/// <summary>
 	/// List of active draw calls.
 	/// </summary>
 
-	static public BetterList<UIDrawCall> activeList { get { return mActiveList; } }
+	static public BetterList2<UIDrawCall> activeList { get { return mActiveList; } }
 
 	/// <summary>
 	/// List of inactive draw calls. Only used at run-time in order to avoid object creation/destruction.
 	/// </summary>
 
-	static public BetterList<UIDrawCall> inactiveList { get { return mInactiveList; } }
+	static public BetterList2<UIDrawCall> inactiveList { get { return mInactiveList; } }
 
 	public enum Clipping : int
 	{

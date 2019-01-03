@@ -43,22 +43,42 @@ public class BusinessCoupon
     //优惠劵创建时间
     public int createTime { get; set; }
     //奖励掉落概率
-    public float rewardDropRate { get; set; }
+    public int rewardDropRate { get; set; }
     //掉落个数 , 这个也用于 合成表里的需要多少个数量合成
     public int rewardDropCount { get; set; }
     //奖励构成，由哪几个奖励合成
     public List<BusinessCoupon> rewardcomposeID { get; set; }
+
+    //总数
+    public int totalCount { get; set; }
+
+    /// <summary>
+    /// 类别（0不可直接兑换1可直接兑换）
+    /// </summary>
+    public int type { get; set; }
+
 }
 public class PlayerCoupon
 {
+    //后段需要，前段不需要管：）
+    public int playerIndex{get;set;}
+    //在玩家数据库中的与玩家挂钩的主键
     public int playerCouponIndex { get; set; }
+    //这张优惠券来自哪个商家挂钩的优惠券主键
     public int businessCouponIndex { get; set; }
+    //玩家同种优化券有多少张
     public int count { get; set; }
     //优惠卷状态（0上架1下架2作废）
     public int status { get; set; }
+    //过期时间
     public int expirationDate { get; set; }
+    //建立时间
     public int createTime { get; set; }
+    //优惠券详情
     public BusinessCoupon coupon { get; set; }
+
+    public int businessIndex{get;set;}
+ 
 }
 
 public class StrongholdBaseConfigAttribute
@@ -151,6 +171,8 @@ public class StrongholdGrowUpAttribute
     public string autograph { get; set; }
 
     public List<int> coupons { get; set; }
+
+    public List<BusinessActivity> activitys { get; set; }
 }
 
 public class PlayerStrongHoldGrowUpAttribute: StrongholdGrowUpAttribute
@@ -168,12 +190,14 @@ public class PlayerStrongHoldGrowUpAttribute: StrongholdGrowUpAttribute
     public List<GameRequest.Medal> storngholdMedals { get; set; }
     //--
     public int currentExp { get; set; }
+   
 }
 
 public class BusinessStrongholdGrowUpAttribute : StrongholdGrowUpAttribute
 { 
     public BusinessData BusinessData{get;set;}
     public List<BusinessCoupon> businessCoupons { get; set; }
+    public List<BusinessActivity> businessActivity {get;set;}
 }
 
 

@@ -10,9 +10,26 @@ public class JIRVISBtnItem_Dimensionroom : JIRVISButtonItemBase {
     private System.Action<int> ClickCallBack;
 
     private PlayerStrongholdAttribute psa;
+    private BusinessStrongholdAttribute bsa;
+    private Exchange exc;
+
 
     private MonsterPorItem monsterPor;
-   [SerializeField]
+    public override void OnDispawn()
+    {
+        psa = null;
+        bsa = null;
+        exc = null;
+        if(monsterPor!=null)
+        {
+            monsterPor.boardButton.onClick.RemoveAllListeners();
+            AndaDataManager.Instance.RecieveItem(monsterPor);
+            monsterPor = null;
+        }
+        base.OnDispawn();
+    }
+
+
     public void BuildItem(PlayerStrongholdAttribute _psa,System.Action<int> click_callback)
     {
         psa = _psa;
@@ -27,7 +44,7 @@ public class JIRVISBtnItem_Dimensionroom : JIRVISButtonItemBase {
       
         monsterPor = AndaDataManager.Instance.InstantiateMenu<MonsterPorItem>("ShporMonsterPorItem");
 
-       
+        monsterPor.SetTargetActiveOnce(false);
 
         monsterPor.transform.SetUIInto(transform);
        
@@ -44,10 +61,55 @@ public class JIRVISBtnItem_Dimensionroom : JIRVISButtonItemBase {
 
     }
 
+
+    public void BuildItem(BusinessStrongholdAttribute _bsa ,ItemScrollStruct itemScrollStruct ,System.Action<int> click_callback)
+    {
+        bsa = _bsa;
+        ClickCallBack = click_callback;
+
+        monsterPor = AndaDataManager.Instance.InstantiateMenu<MonsterPorItem>("ShporMonsterPorItem");
+        monsterPor.SetTargetActiveOnce(false);
+
+        monsterPor.transform.SetUIInto(transform);
+
+        monsterPor.SetBussinessStrongholdInfo(_bsa.strongholdIndex ,_bsa.strongholdLevel, _bsa.headImage, itemScrollStruct);
+
+        monsterPor.boardButton.onClick.AddListener(ClickItem);
+       
+        SetNickName();
+    }
+    public void BuildItem(Exchange _exc  , ItemScrollStruct itemScrollStruct ,System.Action<int> click_callback)
+    {
+        exc = _exc;
+        ClickCallBack = click_callback;
+        monsterPor = AndaDataManager.Instance.InstantiateMenu<MonsterPorItem>("ShporMonsterPorItem");
+        monsterPor.transform.SetUIInto(transform);
+
+        monsterPor.SetExchangeInfo(_exc.userIndex, _exc.exchangeIndex, _exc.headImg, itemScrollStruct);
+
+        monsterPor.boardButton.onClick.AddListener(ClickItem);
+
+        SetNickName();
+    }
+
     private void SetNickName()
     {
         dimensionroom_nickname.transform.SetAsLastSibling();
-        dimensionroom_nickname.text = psa.strongholdNickName;
+        if(psa!=null)
+        {
+            dimensionroom_nickname.text = psa.strongholdNickName;
+        }
+
+        if(bsa!=null)
+        {
+            dimensionroom_nickname.text = bsa.strongholdNickName;
+        }
+
+        if(exc!=null)
+        {
+            dimensionroom_nickname.text = exc.ExchangeName;//;.strongholdNickName;
+        }
+       
     }
 
     private void SetLevelBoard()
@@ -65,6 +127,38 @@ public class JIRVISBtnItem_Dimensionroom : JIRVISButtonItemBase {
     public override void ClickItem()
     {
         base.ClickItem();
-        ClickCallBack(psa.strongholdIndex);
+        if(psa!=null)
+        {
+            ClickCallBack(psa.strongholdIndex);
+        }
+        if(bsa!=null)
+        {
+            ClickCallBack(bsa.strongholdIndex);
+        }
+
+        if(exc!=null)
+        {
+            ClickCallBack(exc.exchangeIndex);
+        }
+
     }
+
+    public override void SetFadeInEffect(int type)
+    {
+        base.SetFadeInEffect(type);
+        Invoke("InvokeOpenItem" , 0.2f);
+    }
+
+    private void InvokeOpenItem()
+    {
+        monsterPor.SetTargetActiveOnce(true);
+    }
+
+     
+}
+
+public class ItemScrollStruct
+{
+    public Vector3 center{get;set;}
+    public float distance {get;set;}
 }

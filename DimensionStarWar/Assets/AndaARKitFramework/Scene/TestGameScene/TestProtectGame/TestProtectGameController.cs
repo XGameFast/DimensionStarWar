@@ -1,80 +1,66 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
-public class TestProtectGameController : TestGameBaseController {
+public class TestProtectGameController : MonoBehaviour {
 
     private Boss2002 bossBasic ;
+    public Camera ct;
 
-    public override void ClickBuildMonster()
+    private MonsterBasic mineMonster;
+
+    public void Start()
     {
-        base.ClickBuildMonster();
+        ARMonsterSceneDataManager.Instance.mainCamera  = ct;
+    }
+
+    public  void ClickBuildMonster()
+    {
         BuildEnemy();
     }
 
 
-    public override void BuildEnemy()
+    public  void BuildEnemy()
     {
-        base.BuildEnemy();
-
+      
         PlayerMonsterAttribute playerMonster = new PlayerMonsterAttribute ();
-        playerMonster.monsterID = 2002;
+        playerMonster.monsterID = 2001;
         playerMonster.monsterSkillIDList = new List<PlayerSkillAttribute>
         {
-            new PlayerSkillAttribute{skillID = 10010},
-            new PlayerSkillAttribute{skillID = 10011},
-            new PlayerSkillAttribute{skillID = 10012}
+            new PlayerSkillAttribute{skillID = 10201},
+            new PlayerSkillAttribute{skillID = 11201},
+            new PlayerSkillAttribute{skillID = 12201}
         };
 
         bossBasic = AndaDataManager.Instance.InstantiateMonster<Boss2002>(playerMonster.monsterID.ToString());
         bossBasic.SetInfo(playerMonster);
-       
-        bossBasic.transform.position = curMineMonster.transform.position + -Vector3.Normalize(bossBasic.transform.position - curMineMonster.transform.position) * 10;
-        bossBasic.bossData.SetEnemy(curMineMonster);
+        Vector3 vector3 = ct.transform.position;
+        vector3.y =0 ;
+        bossBasic.transform.position = vector3 + Vector3.Normalize(bossBasic.transform.position - vector3) * 10;
+        bossBasic.bossData.SetBossActive(true);
     }
 
-    public override void ClickStartGame()
+
+    public void BuildMineMonster()
     {
-        base.ClickStartGame();
-        if(bossBasic!=null)
-        {
-       
-            bossBasic.bossData.SetBossActive(true);
-        }
-        curMineMonster.SetControllerState(true);
+        PlayerMonsterAttribute pma = AndaDataManager.Instance.GetUserPlayerMonstesrList().FirstOrDefault(s=>s.monsterID == 1007);
+        mineMonster = AndaDataManager.Instance.InstantiateMonster<MonsterBasic>(pma.monsterID.ToString());
+        mineMonster.isPlayer = true;
+        mineMonster.DownloadMonsterValue(pma, OTYPE.MonsterStateType.fight);
     }
 
-    private Vector3 lastMousePose;
-    private Transform targetShotPower;
-    protected override void OnUpdate()
+    public void ClickStartGame()
     {
-        base.OnUpdate();
-        if(bossBasic!=null)
-        {
-        if(targetShotPower == null)
-        {
-            if(bossBasic.getBossData2002.getElgunObjsList==null)return;
-            int count = bossBasic.getBossData2002.getElgunObjsList.Count;
-            for(int i = 0 ; i < count; i++)
-            {
-                if(bossBasic.getBossData2002.getElgunObjsList[i] != null)
-                {
-                    targetShotPower = bossBasic.getBossData2002.getElgunObjsList[i].transform;
-                }
-            }
-           
-        }else
-        {
-            GameCamera.transform.forward = - (GameCamera.transform.position - targetShotPower.position);
 
+        if(bossBasic!=null && mineMonster!=null)
+        {
+            // bossBasic.bossData.SetBossActive(true);
+            bossBasic.bossData.SetEnemy(mineMonster);
+            mineMonster.SetControllerState(true);
         }
-        }
-
-        //Vector3 vector3 = GameCamera.transform.eulerAngles;
-        //vector3.y += (Input.mousePosition.x - lastMousePose.x) * Time.deltaTime * 0.5f;
-        //vector3.x -= (Input.mousePosition.y - lastMousePose.y) * Time.deltaTime * 0.5f;
-        //lastMousePose = Input.mousePosition;
-        //GameCamera.transform.eulerAngles = vector3;
-        //GameCamera.transform.forward = - (GameCamera.transform.position -  new Vector3(bossBasic.selfPosX, bossBasic.selfPosY+4.5f, bossBasic.selfPosZ));
+       // curMineMonster.SetControllerState(true);
     }
+
+  
 }

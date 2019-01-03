@@ -9,6 +9,7 @@ public class BuildDimensionMenu_RoomInfoBar : AndaObjectBasic
 {
     public float loadSpeed;
     public Animator itemAnimator;
+    public GameObject fadeInEffect;
     public Text dimensionRoomName;
     public Text levelType;
 
@@ -42,6 +43,7 @@ public class BuildDimensionMenu_RoomInfoBar : AndaObjectBasic
 
     public CanvasGroup canvasGroup;
     public CanvasGroup canvasBoardGroup;
+    public CanvasGroup itemboardGroup;
 
     public PlayerStrongholdAttribute playerStrongholdAttribute;
 
@@ -216,7 +218,6 @@ public class BuildDimensionMenu_RoomInfoBar : AndaObjectBasic
                 statueIDs.Add(ids[i]);
             }
         }
-
     }
 
     public void PlayInfo()
@@ -233,8 +234,9 @@ public class BuildDimensionMenu_RoomInfoBar : AndaObjectBasic
             StartCoroutine(PlayRoomFreeExp());
             StartCoroutine(PlayRoomCapaity());
             StartCoroutine(PlayerRecoveryPower());
-            SetTowerObj();
+            //SetTowerObj();
         }
+        fadeInEffect.gameObject.SetActive(true);
         StartCoroutine(DisplayAlpha());
     }
 
@@ -463,6 +465,10 @@ public class BuildDimensionMenu_RoomInfoBar : AndaObjectBasic
 
     private IEnumerator DisplayAlpha()
     {
+        itemboardGroup.alpha = 0;
+        yield return new WaitForSeconds(0.5f);
+        fadeInEffect.gameObject.SetActive(false);
+        itemboardGroup.alpha = 1;
         float tmp = 0;
         while (tmp < 1)
         {
@@ -491,9 +497,13 @@ public class BuildDimensionMenu_RoomInfoBar : AndaObjectBasic
             medal.SetMedalName(playerStrongholdAttribute.strongholdNickName);
             medal.gameObject.SetLayer(ONAME.LayerUI);
         }
-        medal.SetAlpha(1f);
-        medal.SetTargetActiveOnce(true);
-        medal.animator.Play("FadeIn");//.GetComponent<Animator>().Play("FadeIn");
+        if(medal!=null)
+        {
+            medal.SetAlpha(1f);
+            medal.SetTargetActiveOnce(true);
+            medal.animator.Play("FadeIn");//.GetComponent<Animator>().Play("FadeIn");
+        }
+      
 
     }
 
@@ -501,14 +511,18 @@ public class BuildDimensionMenu_RoomInfoBar : AndaObjectBasic
     {
         itemAnimator.enabled = true;
         itemAnimator.Play("FadeOut");
-        medal.SetTargetActiveOnce(false);
+        if(medal!=null) medal.SetTargetActiveOnce(false);
+
     }
 
     public void PlayItemOutAstrology()
     {
         itemAnimator.Play("FadeIn");
-        medal.SetTargetActiveOnce(true);
-        medal.animator.Play("FadeIn");
+        if(medal!=null)
+        {
+            medal.SetTargetActiveOnce(true);
+            medal.animator.Play("FadeIn");
+        }
         Invoke("InvokPlayeItemOutAstrology", 1f);
     }
 

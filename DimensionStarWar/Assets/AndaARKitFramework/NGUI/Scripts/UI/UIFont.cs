@@ -24,7 +24,7 @@ public class UIFont : MonoBehaviour
 {
 	[HideInInspector][SerializeField] Material mMat;
 	[HideInInspector][SerializeField] Rect mUVRect = new Rect(0f, 0f, 1f, 1f);
-	[HideInInspector][SerializeField] BMFont mFont = new BMFont();
+	[HideInInspector][SerializeField] BMFont2 mFont = new BMFont2();
 	[HideInInspector][SerializeField] UIAtlas mAtlas;
 	[HideInInspector][SerializeField] UIFont mReplacement;
 
@@ -46,7 +46,7 @@ public class UIFont : MonoBehaviour
 	/// Access to the BMFont class directly.
 	/// </summary>
 
-	public BMFont bmFont
+	public BMFont2 bmFont
 	{
 		get
 		{

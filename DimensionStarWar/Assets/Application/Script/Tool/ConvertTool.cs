@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-
+using GameRequest;
 public static class ConvertTool{
 
     #region 转换怪兽数据
@@ -358,6 +358,137 @@ public static class ConvertTool{
         return ld_Commodity;
     }
     #endregion
+
+    #region ExchangeObj 包含的宠物信息转换成  ExchangeObj
+
+    public static ExchangeObject ConvertMonsterInfoToExchangeObj(ExchangeObject exchangeObject)
+    {
+        ExchangeObject eo = new ExchangeObject();
+        MonsterBaseConfig mbc = MonsterGameData.GetMonsterBaseConfig(exchangeObject.objectID);
+        eo = new ExchangeObject();
+        eo = exchangeObject;
+         
+        eo.objName = mbc.monsterName;
+        eo.objDescription = mbc.monsterDescription;
+        return eo;
+    }
+
+
+    #endregion
+
+    #region ExchangeObj 包含的消耗品信息转换成  ExchangeObj
+    public static ExchangeObject ConverterConsumableInfoToExchangeObj(ExchangeObject exchangeObject)
+    {
+        ExchangeObject eo = new ExchangeObject();
+        CD_ObjAttr cD_ObjAttr = MonsterGameData.GetCD_ObjAttr(exchangeObject.objectID);
+        eo = new ExchangeObject();
+        eo = exchangeObject;
+        int idType = AndaDataManager.Instance.GetObjTypeID(exchangeObject.objectID);
+        int smallID = exchangeObject.objectID - idType;
+        eo.objName = cD_ObjAttr.objectName[smallID];
+        eo.objDescription = cD_ObjAttr.objectDescription[smallID];
+        return eo;
+    }
+
+
+    #endregion
+
+    #region 将 商品优化券 转换成 ExchangeObj
+
+    #endregion
+
+
+    #region 输入 宠物ID，输出 构造的 monsterGrowupAttr
+    public static MonsterGrowUpAttribute ConvertMonsterIDToMonsterGrowupAttr(int monsterID)
+    {
+        MonsterGrowUpAttribute monsterGrowUpAttribute = new MonsterGrowUpAttribute();
+        MonsterBaseConfig mbc = MonsterGameData.GetMonsterBaseConfig(monsterID);
+
+        monsterGrowUpAttribute.monsterID = mbc.monsterID;
+        monsterGrowUpAttribute.monsterCurrentPower = mbc.monsterBaseBlood;
+        monsterGrowUpAttribute.monsterMaxPower = mbc.monsterBaseBlood;
+        monsterGrowUpAttribute.monsterSkillIDList = new List<SkillGrowupAttribute>
+        {
+            new SkillGrowupAttribute { skillID = mbc.monsterBaseSkillList[0] , skillNickName = MonsterGameData.GetSkillBaseAttribute(mbc.monsterBaseSkillList[0]).skillName , skillAchievementValue = 0},
+            new SkillGrowupAttribute { skillID = mbc.monsterBaseSkillList[1] , skillNickName = MonsterGameData.GetSkillBaseAttribute(mbc.monsterBaseSkillList[1]).skillName , skillAchievementValue = 0},
+            new SkillGrowupAttribute { skillID = mbc.monsterBaseSkillList[2] , skillNickName = MonsterGameData.GetSkillBaseAttribute(mbc.monsterBaseSkillList[2]).skillName , skillAchievementValue = 0}
+
+        };
+        monsterGrowUpAttribute.monsterNickName = mbc.monsterName;
+        return monsterGrowUpAttribute;
+    }
+
+    #endregion
+
+
+    #region 将服务器给的battleobj 专程P_g4u
+    public static SD_Pag4U ConverterBattleObjectToSD_Pag4U(BattelObject bo)
+    {
+        SD_Pag4U sD_Pag4U =new SD_Pag4U
+        {
+            objectCount = bo.addCount,
+            objectIndex = bo.objectIndex,
+            objectID = bo.objectId,
+
+        };
+        return sD_Pag4U;
+    }
+    #endregion
+
+    #region 将服务给的物品转成 rewardata
+
+    public static RewardData ConverterBattleObjectToRewardData(BattelObject ob)
+    {
+        RewardData rd = new  RewardData
+        {
+            rewardID = ob.objectId,
+            rewardCount = ob.addCount,
+        };
+        return rd;
+    }
+
+    #endregion
+
+
+    #region 将服务器给的优惠券数据转换成 RewardData
+
+    public static RewardData ConverterBattleCouponToRewardData(BattelCoupon bc)
+    {
+        RewardData rd = new RewardData
+        {
+            rewardCoupon = new RewardCoupon
+            {
+                headImg = bc.coupon.image,
+                bussiIndex = bc.coupon.strongholdIndex,
+                couponName = bc.coupon.title,
+                couponDes = bc.coupon.description,
+                count = bc.addCount
+            }
+        };
+        return rd;
+    }
+
+    #endregion
+
+    #region 将服务器的优惠券转换成PlayerConpon
+    public static PlayerCoupon ConverterBattleCouponToPlayerCoupon(BattelCoupon bc)
+    {
+        PlayerCoupon pc = new PlayerCoupon()
+        {
+            playerCouponIndex = bc.PlayerCouponIndex,
+            businessCouponIndex = bc.coupon.businesscouponIndex,
+            count = bc.addCount,
+            status = bc.coupon.status,
+            expirationDate = bc.coupon.endtime,
+            createTime = bc.coupon.createTime,
+            coupon = bc.coupon
+        };
+        return pc;
+    }
+
+
+    #endregion
+
 
 
     #region 将世界坐标转为屏幕坐标

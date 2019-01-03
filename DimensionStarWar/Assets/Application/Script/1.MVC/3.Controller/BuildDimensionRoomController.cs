@@ -42,7 +42,7 @@ public class BuildDimensionRoomController : BaseController {
     {
         base.EndController();
         UnregisterFingerEvent();
-        FingerEvent.slierForX-=SliderHori;
+        //FingerEvent.slierForX-=SliderHori;
         data.InitValue();
     }
 
@@ -70,14 +70,9 @@ public class BuildDimensionRoomController : BaseController {
     private void OpenJIRVISStrongholdBtnForMine()
     {
         JIRVIS.Instance.BuildDimensionRoomBtnList(data.getPlayerSHAData, ClickJIRVISDimensionBtn);
-        JIRVISFuncBtnStruct jIRVISFuncBtnStruct = new JIRVISFuncBtnStruct
-        {
-            btnName = "返回",
-            btnIconKey = ONAME.BackStep,
-            clickCallBack  = CloseJIRVISStrongholdBtnForMine
-        };
-        JIRVIS.Instance.AddFunctionBtn(jIRVISFuncBtnStruct);
+       
     }
+
 
     private void CloseJIRVISStrongholdBtnForMine()
     {
@@ -370,15 +365,17 @@ public class BuildDimensionRoomController : BaseController {
 
     private void RegisterFingerEvent()
     {
-        FingerEvent.slierForX += SliderHori;
+        /*FingerEvent.slierForX += SliderHori;
         FingerEvent.clickSelectItemEvent += TouchItem;
+        */
         data.getm_Menu.FadeIn();
     }
 
     private void UnregisterFingerEvent()
     {
-        FingerEvent.slierForX -= SliderHori;
+        /*FingerEvent.slierForX -= SliderHori;
         FingerEvent.clickSelectItemEvent -= TouchItem;
+        */
         if(data.getm_Menu!=null)
         {
             data.getm_Menu.FadeOut(null);
@@ -646,8 +643,7 @@ public class BuildDimensionRoomController : BaseController {
     private void ClickJIRVISOpenFreeMonsters()
     {
         List<PlayerMonsterAttribute> monsterAttributes = AndaDataManager.Instance.GetUserFreesMonster();
-        JIRVIS.Instance.BuildMonsterBtnList(monsterAttributes, ClickAddNewMonsterToThisStronghold);
-        JIRVIS.Instance.AddFunctionBtn(new JIRVISFuncBtnStruct {btnName = "backstep" , btnIconKey = ONAME.BackStep , clickCallBack = ClickCancelSetMonster } );
+        JIRVIS.Instance.BuildMonsterBtnList(monsterAttributes, ClickAddNewMonsterToThisStronghold, null , true, 6 );
     }
 
     private void ClickCancelSetMonster()
@@ -749,7 +745,7 @@ public class BuildDimensionRoomController : BaseController {
 
                 List<JIRVISFuncBtnStruct> tmp = new List<JIRVISFuncBtnStruct>
                 {
-                    new JIRVISFuncBtnStruct{ btnName = "我的据点" , btnIconKey = ONAME.mineStrongholIcon, clickCallBack = OpenJIRVISStrongholdBtnForMine },
+                    new JIRVISFuncBtnStruct{ btnName = "我的据点" , btnIconKey = ONAME.minePlayerSH, clickCallBack = OpenJIRVISStrongholdBtnForMine },
                     //new JIRVISFuncBtnStruct{ btnName = "星域",btnIconKey = ONAME.StarMapIcon, clickCallBack = JIRVIS.Instance.aRMonsterMainController.EnterStarspace },
                     //new JIRVISFuncBtnStruct{ btnName = "探索",btnIconKey = ONAME.TrvalIcon,   clickCallBack = JIRVIS.Instance.aRMonsterMainController.EnterTravl },
                     //new JIRVISFuncBtnStruct{ btnName = "交易",btnIconKey = ONAME.MallIcon,    clickCallBack = JIRVIS.Instance.aRMonsterMainController.EnterMall },
@@ -771,7 +767,7 @@ public class BuildDimensionRoomController : BaseController {
 
                 List<JIRVISFuncBtnStruct> tmp2 = new List<JIRVISFuncBtnStruct>
                 {
-                    new JIRVISFuncBtnStruct{ btnName = "我的据点" , btnIconKey = ONAME.mineStrongholIcon, clickCallBack = OpenJIRVISStrongholdBtnForMine },
+                    new JIRVISFuncBtnStruct{ btnName = "我的据点" , btnIconKey = ONAME.minePlayerSH, btnType = 1 , clickCallBack = OpenJIRVISStrongholdBtnForMine },
                     new JIRVISFuncBtnStruct{ btnName = "星域",btnIconKey = ONAME.MapIcon, clickCallBack = EnterStarmap /*JIRVIS.Instance.aRMonsterMainController.EnterStarspace */},
                     new JIRVISFuncBtnStruct{ btnName = "探索",btnIconKey = ONAME.TrvalIcon,   clickCallBack = CallBackEnterSearch },
                      new JIRVISFuncBtnStruct{ btnName = "商城",btnIconKey = ONAME.MallIcon,  clickCallBack = CallBackEnterMall/*JIRVIS.Instance.aRMonsterMainController.EnterMall*/},
@@ -978,6 +974,8 @@ public class BuildDimensionRoomController : BaseController {
             JIRVIS.Instance.PlayTips("次元技术局正在抓紧修复并打通星域传送，推荐暂时先使用探测器");
             return;
         }
+
+        JIRVIS.Instance.RemoveCurrentBtnList();
         if (AndaDataManager.Instance.userData.userStrongholdList.Count != 0)
         {
             data.getDimensionMenu.PlayCurrentItemEnterStarmap(data.getCurSelectItemIndex);
@@ -1052,7 +1050,6 @@ public class BuildDimensionRoomController : BaseController {
     private void CallBackClickJIRVISOpenMonsterListBtn()
     {
         JIRVIS.Instance.BuildMonsterBtnList(data.getPlayerMonsters,CallBackClickJIRVISMonsterBtn);
-        JIRVIS.Instance.AddFunctionBtn(new JIRVISFuncBtnStruct { btnName = "", btnIconKey = ONAME.BackStep , clickCallBack = CallBackClickJIRVISCloseMineMonsterListBtn});
     }
 
     //[在占星庭界面点了回退按钮，关闭我的宠物列表]

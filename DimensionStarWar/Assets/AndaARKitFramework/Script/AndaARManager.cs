@@ -25,6 +25,7 @@ public class AndaARManager  {
     private System.Action FinishCloseRegconize;
 
     public bool isSetARPose;
+    public bool isFixed=false;
     public void SetController(AndaARWorldController _andaARWorldController ,AndaARCameraManager _andaARCameraManager)
     {
         andaARWorldController = _andaARWorldController;
@@ -101,8 +102,15 @@ public class AndaARManager  {
 
 
 
-        if (scale<0.5f) scale*=0.4f;
-        else  scale *=0.85f;
+        if(!isFixed)
+        {
+            if (scale < 0.5f) scale *= 0.4f;
+            else scale *= 0.85f;
+        }else
+        {
+            scale = 1;
+        }
+      
 
 
         ARMonsterSceneDataManager.Instance.aRWorld.transform.localScale =  Vector3.one * scale;
@@ -126,6 +134,11 @@ public class AndaARManager  {
         }
     }
 
+
+    public void SetNeedFixedScale(bool _isFixed)
+    {
+        isFixed = _isFixed;
+    }
 
 
 }

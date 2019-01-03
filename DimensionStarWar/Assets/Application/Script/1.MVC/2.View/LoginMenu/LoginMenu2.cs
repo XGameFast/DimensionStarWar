@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 public class LoginMenu2 : UIBasic2 {
 
+    public Animator GetEICodeBarAnimator;
     public InputField inputAccount;
     public InputField inputPassword;
     public Button loginButton;
@@ -16,21 +17,51 @@ public class LoginMenu2 : UIBasic2 {
     public GameObject sendCodeTimeChange;
 
     private float sendTime = 0f;
+    private int curType = 0;
 
     public override void OnDispawn()
     {
         base.OnDispawn();
         isPressDown = false;
     }
+    public override void OnSpawn()
+    {
+        base.OnSpawn();
+        baseGroup.alpha = 1;
+    }
 
     public void PreloadUserAccountAndPassword()
     {
-        string account = PlayerPrefs.GetString("UserAccount");
-        if (account != null || account != "")
+        if(JIRVIS.Instance.jIRVISData.isRebacktoLoginMenu)
         {
-            inputAccount.text = account;
-            inputPassword.text = PlayerPrefs.GetString("UserPasswords");
+
+        }else
+        {
+            string lastLogin = PlayerPrefs.GetString("LastLogin");
+            if (lastLogin == "")
+            {
+
+            }
+            else
+            {
+                switch (lastLogin)
+                {
+                    case "Wechat":
+                        WXLogin();
+                        break;
+
+                    case "QQ":
+                        QQLogin();
+                        break;
+                    case "Phone":
+                        string phoneAccount = PlayerPrefs.GetString("DefualtPhoneAccount");
+                        string phoneSecret = PlayerPrefs.GetString("DefualtPhoneSerect");
+                        AndaDataManager.Instance.RealLogin(loginController.LoginFinish, phoneAccount, phoneSecret);
+                        break;
+                }
+            }
         }
+       
     }
 
     public override void InitMenu(BaseController _baseController)
@@ -43,11 +74,13 @@ public class LoginMenu2 : UIBasic2 {
 
         JIRVIS.Instance.PlayTips(OTYPE.Tipscontent.welcometologinmenu);
 
+        //BuildButtonOnpressEvent();
+        Invoke("InvokeFadeIn" , 1f);
+    }
 
-
-
-        BuildButtonOnpressEvent();
-
+    private void InvokeFadeIn()
+    {
+        GetComponent<Animator>().Play("FadeIn");
     }
 
     private void BuildButtonOnpressEvent()
@@ -80,9 +113,26 @@ public class LoginMenu2 : UIBasic2 {
 
         //SendCodeButton.gameObject.SetActive(false);
         //SendSmsCodeCallBack(true);
-
         loginController.SendCode(SendSmsCodeCallBack, inputAccount.text);
     }
+
+
+   
+    public void OpenGetEICodeBar()
+    {
+        curType = 2;
+        inputAccount.contentType =  InputField.ContentType.IntegerNumber;
+        inputAccount.characterLimit = 11;
+        inputPassword.contentType = InputField.ContentType.IntegerNumber;
+        inputAccount.characterLimit = 6;
+
+        if (!GetEICodeBarAnimator.gameObject.activeSelf)
+        {
+            GetEICodeBarAnimator.gameObject.SetTargetActiveOnce(true);
+            GetEICodeBarAnimator.Play("FadeIn");
+        }
+    }
+
 
 
     public void SendSmsCodeCallBack(bool sendOk)
@@ -179,14 +229,24 @@ public class LoginMenu2 : UIBasic2 {
         inputPassword.interactable = true;
         loginButton.interactable = true;
     }
-    public void QQCallBack(string code)
-    {
-        isPressDown = true;
-        AndaDataManager.Instance.QQLogin(loginController.CallBackLogin, code);
-    }
+
     public void QQLogin()
     {
-        Debug.Log(1);
+
+        /*inputAccount.contentType = InputField.ContentType.IntegerNumber;
+        inputAccount.characterLimit = 11;
+        inputPassword.contentType = InputField.ContentType.IntegerNumber;
+        inputAccount.characterLimit = 6;
+*/
+
+        curType = 0;
+        if (GetEICodeBarAnimator.gameObject.activeSelf)
+        {
+            GetEICodeBarAnimator.gameObject.SetTargetActiveOnce(false);
+            GetEICodeBarAnimator.Play("Empty");
+        }
+
+        // Debug.Log(1);
 #if UNITY_IPHONE
 
 
@@ -200,19 +260,29 @@ public class LoginMenu2 : UIBasic2 {
 
 #endif
     }
-    public void OnResp(string code)
-    {
-        //登录
-        isPressDown = true;
-        AndaDataManager.Instance.WeChatLogin(loginController.CallBackLogin,code);
 
+    public void QQCallBack(string code)
+    {
+
+        isPressDown = true;
+        AndaDataManager.Instance.QQLogin(loginController.QQLoginResult, code);
     }
+
+
 
     
     public void WXLogin()
     {
+        curType = 1;
 
-        Debug.Log(1);
+        if (GetEICodeBarAnimator.gameObject.activeSelf)
+        {
+            GetEICodeBarAnimator.gameObject.SetTargetActiveOnce(false);
+            GetEICodeBarAnimator.Play("Empty");
+        }
+
+
+       // Debug.Log(1);
 #if UNITY_IPHONE
 
 
@@ -228,5 +298,30 @@ public class LoginMenu2 : UIBasic2 {
     }
 
 
+    public void OnResp(string code)
+    {
+        //登录
+        isPressDown = true;
+        AndaDataManager.Instance.WeChatLogin(loginController.WexinLoginResult, code);
+    }
+
+
+
+    public void ChangeEICode()
+    {
+        if (curType == 2)
+        {
+            if (inputPassword.text.Length >= 6)
+            {
+                AndaDataManager.Instance.PhoneLogin(loginController.PhoneLoginResult, inputAccount.text, inputPassword.text);
+
+            }
+            else
+            {
+                JIRVIS.Instance.PlayTips("请输入正确的验证码");
+            }
+        }
+
+    }
 
 }

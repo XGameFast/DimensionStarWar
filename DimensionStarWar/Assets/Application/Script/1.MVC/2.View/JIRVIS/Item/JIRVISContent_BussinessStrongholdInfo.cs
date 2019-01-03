@@ -233,7 +233,6 @@ public class JIRVISContent_BussinessStrongholdInfo : UIBasic2
 
         StartCoroutine(ExcuteSetMonsterInfo(mbc,nk, sk,dk));
 
-
     }
 
     private IEnumerator ExcuteSetMonsterInfo(MonsterBaseConfig mc ,SkillBaseAttribute nk, SkillBaseAttribute sk, SkillBaseAttribute dk)

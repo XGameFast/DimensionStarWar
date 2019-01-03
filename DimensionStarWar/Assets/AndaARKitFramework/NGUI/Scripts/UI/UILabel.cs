@@ -952,7 +952,7 @@ public class UILabel : UIWidget
 		}
 	}
 
-	static BetterList<UILabel> mList = new BetterList<UILabel>();
+	static BetterList2<UILabel> mList = new BetterList2<UILabel>();
 	static Dictionary<Font, int> mFontUsage = new Dictionary<Font, int>();
 
 	/// <summary>
@@ -1072,7 +1072,7 @@ public class UILabel : UIWidget
 
 				if (fnt == font)
 				{
-					if (mTempLabels == null) mTempLabels = new BetterList<UILabel>();
+					if (mTempLabels == null) mTempLabels = new BetterList2<UILabel>();
 
 					if (!mTempLabels.Contains(lbl))
 					{
@@ -1099,7 +1099,7 @@ public class UILabel : UIWidget
 
 				if (dc != null)
 				{
-					if (mTempDrawcalls == null) mTempDrawcalls = new BetterList<UIDrawCall>();
+					if (mTempDrawcalls == null) mTempDrawcalls = new BetterList2<UIDrawCall>();
 					if (!mTempDrawcalls.Contains(dc)) mTempDrawcalls.Add(dc);
 				}
 			}
@@ -1120,8 +1120,8 @@ public class UILabel : UIWidget
 	}
 
 	[System.NonSerialized] static int mFontChangedDepth = 0;
-	[System.NonSerialized] static BetterList<UIDrawCall> mTempDrawcalls;
-	[System.NonSerialized] static BetterList<UILabel> mTempLabels;
+	[System.NonSerialized] static BetterList2<UIDrawCall> mTempDrawcalls;
+	[System.NonSerialized] static BetterList2<UILabel> mTempLabels;
 
 	/// <summary>
 	/// Get the sides of the rectangle relative to the specified transform.

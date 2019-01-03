@@ -183,7 +183,7 @@ public class AndaARWorldController : MonoBehaviour
     {
         if(JIRVIS.Instance.jIRVISData.GetSettingDataWithARTipsSkip)
         {
-            Invoke("InvokeStartRecognise", 1f);
+            Invoke("InvokeStartRecognise",0.1f);
         }
         else
         {
@@ -194,7 +194,7 @@ public class AndaARWorldController : MonoBehaviour
 
     private void CloseARGuideTips()
     {
-        Invoke("InvokeStartRecognise",1f);
+        Invoke("InvokeStartRecognise", 0.1f);
         JIRVIS.Instance.CloseTips();
         JIRVIS.Instance.CloseJIRVISARTipsEditorBar();
     }

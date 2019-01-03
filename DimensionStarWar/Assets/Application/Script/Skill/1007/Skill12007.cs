@@ -10,35 +10,17 @@ public class Skill12007 : SkillBallistic
     public override void OnDispawn()
     {
         //特效返回
-        ObjBackToSelf(mainObj);
+       // ObjBackToSelf(mainObj);
         ObjBackToSelf(GatheringObj);
-        ObjBackToSelf(exploreObj);
+       // ObjBackToSelf(exploreObj);
 
         //回收
         base.OnDispawn();
     }
 
-    protected override void StraightLineMovement()
-    {
-        //技能移动 每帧都在刷新
-        base.StraightLineMovement();
-        if (!isHitTarget && mainObjIsMoving)//判断是否为击中以及在移动状态下
-        {
-            mainObj.transform.position += mainObj.transform.forward.normalized * Time.deltaTime * playerSkillAttribute.baseSkillAttribute.skillMoveSpeed.DoubleToFloat() * ARMonsterSceneDataManager.Instance.getARWorldScale*3f;
-            GatheringObj.localRotation= Quaternion.Euler(mainObj.localRotation.eulerAngles.x,0,0);
-        }
-    }
+   
 
-    //击中时发生
-    protected override void Explore()
-    {
-        base.Explore();
-        //将击中特效放到指定位置
-        SetObjtToTargetPoint(exploreObj.gameObject, mainObj.transform.position);//mainObj.transform 表示技能主体在击中时的位置
-        ObjBackToSelf(mainObj);
-        mainObj.gameObject.SetTargetActiveOnce(false);
-    }
-
+   
     protected override void Hit(AndaObjectBasic hitTarget, string hitLayer)
     {
         //击中时执行
@@ -55,7 +37,7 @@ public class Skill12007 : SkillBallistic
             var item = AndaDataManager.Instance.InstantiateOtherObj(ONAME.commonDefenseEffectName);
             item.transform.localScale = Vector3.one * ARMonsterSceneDataManager.Instance.getARWorldScale;
             item.transform.position = mainObj.transform.position;
-            ObjBackToSelf(mainObj);
+           
             item.ResetDestory(2f);
         }
         else
@@ -74,7 +56,7 @@ public class Skill12007 : SkillBallistic
         base.StartSkill();
 
         //5秒后销毁
-        ResetDestory(5f);
+
 
 
         GatheringObj.transform.parent = null;
@@ -84,10 +66,10 @@ public class Skill12007 : SkillBallistic
         SetObjtToTargetPoint(GatheringObj.gameObject, host.leftLeg.position, false);
 
         //初始化 可击中单位的Layer
-        List<string> hitLayer = new List<string> { host.isPlayer ? "Monster" : "Player", "Objects", "Defense", "Skill" };
+        //List<string> hitLayer = new List<string> { host.isPlayer ? "Monster" : "Player", "Objects", "Defense", "Skill" };
 
         //注册被击中事件
-        dandao.RegisterEvent(Hit, hitLayer, 0);
+        //dandao.RegisterEvent(Hit, hitLayer, 0);
 
     }
 
@@ -97,13 +79,69 @@ public class Skill12007 : SkillBallistic
 
         base.RunningSkill();
         //技能执行
-        mainObjIsMoving = true;
+        //mainObjIsMoving = true;
 
         //设置移动特效起始位置
-        SetObjtToTargetPoint(mainObj.gameObject, host.leftLeg.position, true);
+        //SetObjtToTargetPoint(mainObj.gameObject, host.leftLeg.position, true);
 
       
         //激活特效
         GatheringObj.gameObject.SetTargetActiveOnce(true);
+
+        StartCoroutine(ExcuteWShot());
+    }
+
+    RaycastHit hit;
+    private IEnumerator ExcuteWShot()
+    {
+        float t = 0;
+        Vector3 dir = toTargetPoint - GatheringObj.transform.position;
+        while (t < 8)
+        {
+           
+            if (host.isPlayer)
+            {
+                //Debug.DrawRay(GatheringObj.transform.position, GatheringObj.transform.forward, Color.red, 10f);
+                if (Physics.Raycast(GatheringObj.transform.position, dir.normalized, out hit, 50, 1 << LayerMask.NameToLayer("Monster") | 1 << LayerMask.NameToLayer("Boss") | 1 << LayerMask.NameToLayer("Defense")))
+                {
+
+
+                    Hit(hit.transform.GetComponent<AndaObjectBasic>(), LayerMask.LayerToName(hit.transform.gameObject.layer));
+
+                    Debug.Log(hit.collider.name);
+                    if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Defense"))
+                    {
+                        var hitExplore = AndaDataManager.Instance.InstantiateOtherObj(ONAME.commonDefenseEffectName);
+                        hitExplore.transform.localScale = Vector3.one * ARMonsterSceneDataManager.Instance.getARWorldScale;
+                        hitExplore.transform.position = hit.point;
+                    }
+                    else
+                    {
+                        AndaObjectBasic hitExplore = AndaDataManager.Instance.InstantiateOtherObj<AndaObjectBasic>("12007_explore");
+                        hitExplore.transform.localScale = Vector3.one * ARMonsterSceneDataManager.Instance.getARWorldScale;
+                        hitExplore.transform.position = hit.point;
+                    }
+                }
+            }else
+            {
+                //Debug.DrawRay(GatheringObj.transform.position, GatheringObj.transform.forward, Color.red, 10f);
+                if (Physics.Raycast(GatheringObj.transform.position, dir.normalized, out hit, 50, 1 << LayerMask.NameToLayer("Player")))
+                {
+                   
+                    Hit(hit.transform.GetComponent<AndaObjectBasic>(), LayerMask.LayerToName(hit.transform.gameObject.layer));
+
+                    AndaObjectBasic hitExplore = AndaDataManager.Instance.InstantiateOtherObj<AndaObjectBasic>("12007_explore");
+                    hitExplore.transform.localScale = Vector3.one * ARMonsterSceneDataManager.Instance.getARWorldScale;
+                    hitExplore.transform.position = hit.point;
+                }
+            }
+
+            yield return new WaitForSeconds(0.1f);
+            t +=1;
+        }
+
+        //5秒后销毁
+        ResetDestory(1f);
+
     }
 }

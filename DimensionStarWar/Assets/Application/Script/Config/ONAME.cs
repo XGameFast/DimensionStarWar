@@ -34,6 +34,12 @@ public static class ONAME
     public static string ASTROLOGYLOBBY = "AstrologylobbyController";
     public static string MAPCONCTROLLER = "MapController";
     public static string CHALLENGEGAMECONTROLLER = "ChallengegameController";
+
+    public static string PROTECTGAMECONTROLLER = "ProtectGameController";
+    public static string PROTECTGAMECTR_2001 = "ProtectGameCtr_2001";
+
+
+
     public static string SHOOTINGTRAININGCONTROLLER = "ShootingTrainingController";
 
     public static string PACKAGECONTROLLER = "PackageController";
@@ -90,10 +96,14 @@ public static class ONAME
     public static string BuildDimensionRoomMenu = "BuildDimensionRoomMenu";
     public static string AstrologyMenu = "AstrologyMenu";
     public static string ChallengeGameMenu = "ChallengeGameView";
+    public static string ProtectGameView2001 = "ProtectGameView_2001";
+
     public static string ShootingTrainingMenu = "ShootingTrainingView";
     public static string PackageMenu = "PackageMenu";
     public static string MallMenu = "MallMenu";
     public static string MallDetail = "MallDetail";
+    public static string SingleRewardBar = "SingleRewardBar";
+
 
     public static string DimensionMonsterInfomaitonHologarmBar = "DimensionMonsterInfomaitonHologarmBar";
     public static string BuildDimensionMenu_RoomInfoBar = "BuildDimensionMenu_RoomInfoBar";
@@ -106,7 +116,7 @@ public static class ONAME
     public static string JIRVISContent_EditorMonsterInformation = "JIRVISContent_EditorMonsterInformation";
     public static string JIRVISContent_RewardBarForNormalReward = "JIRVISContent_RewardBarForNormalReward";
     public static string JIRVISContent_BussinessStrongholdInfo = "JIRVISContent_BussinessStrongholdInfo";
-
+    public static string jIRVISContent_ExchangeStrongholdEditorBar = "jIRVISContent_ExchangeStrongholdEditorBar";
     public static string MallBar = "MallBar";
     public static string ConsumableBar = "ConsumableBar";
     public static string SkillBar = "SkillBar";
@@ -121,6 +131,8 @@ public static class ONAME
     public static string JIRVISContent_RewardBarForChanllengeWinWithMedal= "JIRVISContent_RewardBarForChanllengeWinWithMedal";
     public static string JIRVISContent_RewardBarForChanllengeLose = "JIRVISContent_RewardBarForChanllengeLose";
     public static string JIRVISContent_RewardBarForChanllengeWinNoMedal = "JIRVISContent_RewardBarForChanllengeWinNoMedal";
+    public static string JIRVISTips_SingleTips = "JIRVISTips_SingleTips";
+    public static string JIRVISTips_ChooseTIps = "JIRVISTips_ChooseTIps";
     public static string HologramCameraView = "HologarmCameraView";
     public static string HologarmCameraMonsterInfoItems = "HologarmCameraMonsterInfoItems";
 
@@ -136,6 +148,11 @@ public static class ONAME
 
     public static string PlayerPowerShotBar = "PlayerPowerShotBar";
 
+
+    public static string ExchangeMenu ="ExchangeMenu";
+
+    public static string MapBar_MineStrongholdInformationBar = "MapBar_MineStrongholdInformationBar";
+
     #endregion
 
     #region UI物件
@@ -143,10 +160,19 @@ public static class ONAME
     public static string PackageConsumableItem = "PackageConsumableItem";
     public static string MallConsumableItem = "MallConsumableItem";
 
+    public static string MapUIItemShboard_LocationPoint = "MapUIItemShboard_LocationPoint";
     public static string MapUIItemShboard_PlayerSH = "MapUIItemShboard_PlayerSH";
     public static string MapUIItemShboard_BussinesssSH = "MapUIItemShboard_BussinesssSH";
     public static string MapUIItemShboard_BossSh = "MapUIItemShboard_BossSh";
     public static string MapUIItemShboard_exchangeSH = "MapUIItemShboard_exchangeSH";
+    public static string MapUIItemShboard_Exchange_Tmp = "MapUIItemShboard_Exchange_Tmp";
+    public static string TipsItemPoint = "TipsItemPoint";
+    /// <summary>
+    /// 在交易所 列出的用于购买的item
+    /// </summary>
+    public static string ExchangeMenuItem_BuyItem = "ExchangeMenuItem_BuyItem";
+
+    public static string ExchangeMenuItem_SellItem = "ExchangeMenuItem_SellItem";
 
     #endregion
     #region 消耗品
@@ -196,15 +222,15 @@ public static class ONAME
     public static string ARIcon = "51007";//AR 图标
     public static string MonsterIcon = "51008";//怪兽图标 ， 概括
     
-    public static string playerStrongholdIcon = "51009";//其他玩家据点图标
+    public static string otherPlayerSH = "51009";//其他玩家占星庭图标
     public static string businessStrongholdIcon = "51010" ;//商家据点图标
    
-    public static string StrongholdIcon = "51011" ;//据点图标 概括 
+    public static string PlayerSH = "51011" ;//玩家占星庭 据点图标 概括 
     public static string VVIcon = "51012";//vv 图标
     public static string AddStrongholdIcon = "51013";//
     public static string LocationIcon = "51014";
 
-    public static string mineStrongholIcon = "51015";
+    public static string minePlayerSH = "51015";//我的占星庭
     
 
     public static string consumableIcon = "51016";
@@ -217,6 +243,18 @@ public static class ONAME
     public static string freeMonsters = "51023";
     public static string mapAngle3D = "51024";
     public static string mapAngle2D = "51025";
+    public static string addExchange = "51026";
+    public static string consignForsale = "51027";
+    public static string cardTicket = "51028";
+    //public static string otherSH = "51029";//其他玩家的占星庭
+    public static string allPlayerSH = "51030";//所有玩家据点
+    public static string exchangeSH = "51031";//交易所 总的概括
+    public static string mineExchagneSH = "51032";//我的交易所,
+    public static string otherExchangeSH = "51033";//其他玩家的交易所
+    public static string allExchangeSH = "51034";//所有的交易所
+    public static string bossSH = "51035";//boss 据点
+    public static string allBossSH = "51036";//所有Boss 据点
+    public static string allBussinessSH = "51037";//所有商家点
 
     public static string shootingTrainingIcon = "shootingTrainingIcon";
 
@@ -304,6 +342,10 @@ public static class ONAME
     public static string commonDefenseEffectName = "commonDefenseEffectName";
     public static string MonsterFadeInEffectName = "MonsterFadeInEffectName";
     public static string ARSetPointEffect = "ARSetPointEffect";
+    public static string RewardFadeInEffect = "RewardFadeInEffect";
+    public static string JIRVISBtnFadeInEffect = "JIRVISBtnFadeInEffect";
+    public static string JIRVISBtnFadeInEffect_01 = "JIRVISBtnFadeInEffect_01";//圆
+    public static string JIRVISBtnFadeInEffect_02 = "JIRVISBtnFadeInEffect_02";//6边形
     #endregion
 
     #region 配置文件的名字

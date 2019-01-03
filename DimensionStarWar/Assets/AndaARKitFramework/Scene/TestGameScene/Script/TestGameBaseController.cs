@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.UI;
 
 public class TestGameBaseController : MonoBehaviour {
 
@@ -39,6 +40,19 @@ public class TestGameBaseController : MonoBehaviour {
         亢宿的特殊技能 = 12010,
     }
 
+    [HideInInspector]
+    [SerializeField]
+    public Text enemyPower ;
+    [HideInInspector]
+    [SerializeField]
+    public Text minePower;
+
+    [HideInInspector]
+    [SerializeField]
+    public Text enemyMakePower;
+    [HideInInspector]
+    [SerializeField]
+    public Text mineMakePower;
 
 
     [HideInInspector][SerializeField]
@@ -75,8 +89,15 @@ public class TestGameBaseController : MonoBehaviour {
 
     [HideInInspector][SerializeField]
     public int playerStrongholdIndex;
-   
+
+
+    [HideInInspector]
+    [SerializeField]
+    public int tmpMonsterPower;
+
+
     public Transform enemyPoint;
+    public Transform minePiont;
 
     private PlayerMonsterAttribute curMineMonsterAttr;
     private PlayerMonsterAttribute curEnemyMonsterAttr;
@@ -100,6 +121,9 @@ public class TestGameBaseController : MonoBehaviour {
     {
          
         curMineMonsterAttr = AndaDataManager.Instance.userData.userMonsterList.FirstOrDefault(s=>s.monsterID == (int)_selectMonsterID);
+        curMineMonsterAttr.mosterPower = tmpMonsterPower == 0? curMineMonsterAttr.mosterPower : tmpMonsterPower;
+
+        curMineMonsterAttr.monsterMaxPower = tmpMonsterPower == 0 ? curMineMonsterAttr.mosterPower : tmpMonsterPower;
     }
 
     public virtual void BuildEnemyMonsterAttribute()
@@ -110,8 +134,12 @@ public class TestGameBaseController : MonoBehaviour {
 
     public virtual void ClickStartGame()
     {
-        Invoke("InvokeStart",2f);
+        Invoke("InvokeStart",1f);
+    }
 
+    public virtual void RestartGame()
+    {
+        InvokeStart();
     }
 
     private void InvokeStart()
@@ -126,14 +154,15 @@ public class TestGameBaseController : MonoBehaviour {
         curMineMonster = AndaDataManager.Instance.InstantiateMonster<MonsterBasic>(curMineMonsterAttr.monsterID.ToString());
         curMineMonster.SetInto(ARMonsterSceneDataManager.Instance.aRWorld.transform);
         curMineMonster.SetScalePercent(1f);
-        curMineMonster.SetInto(ARMonsterSceneDataManager.Instance.aRWorld.transform);
-        curMineMonster.transform.position = ARMonsterSceneDataManager.Instance.GetCameraForwardFixPoint(4f);
-        curMineMonster.transform.forward =  -ARMonsterSceneDataManager.Instance.GetMainCameraForwardYZero();
+        curMineMonster.SetInto(minePiont);
+       //curMineMonster.transform.position = ARMonsterSceneDataManager.Instance.GetCameraForwardFixPoint(4f);
+        curMineMonster.transform.forward =   ARMonsterSceneDataManager.Instance.GetMainCameraForwardYZero();
         curMineMonster.isPlayer=true;
-        curMineMonster.DownloadMonsterValue(curMineMonsterAttr, OTYPE.MonsterStateType.fight);
-        curMineMonster.MonsterHaeBeenHit += CallBackUpdateMineMonsterSP;
-        curMineMonster.MonsetCosumeEnergy += CallBackUpdateMineMonsterEP;
-      // curMineMonster.gameObject.SetLayer(ONAME.LayerDeafualt);
+        curMineMonster.UsedSkillAttackedTarget += ListerEnmeyUseSkillPower;
+        curMineMonster.MonsterHaeBeenHit += UpdateMineMonsterPower;
+        curMineMonster.MonsterDeadEvent += ListenrMonsterDeath;
+        // curMineMonster.MonsetCosumeEnergy += CallBackUpdateMineMonsterEP;
+        // curMineMonster.gameObject.SetLayer(ONAME.LayerDeafualt);
         ARMonsterSceneDataManager.Instance.currentSceneMonster = curMineMonster;
 
 
@@ -169,17 +198,20 @@ public class TestGameBaseController : MonoBehaviour {
    
         curEnemyMonsterAttr = ConvertTool.ConvertToPlayerMonsterAttribute(enemyGrowupAttribute);
         enemy  = AndaDataManager.Instance.InstantiateMonster<MonsterBasic>(curEnemyMonsterAttr.monsterID.ToString());
-       // enemy.DownloadMonsterValue(curEnemyMonsterAttr, OTYPE.MonsterStateType.fight);
         enemy.isPlayer = false;
+       
+        enemy.MonsterHaeBeenHit+=UpdateEnemeyMonsterPower;
+        enemy.MonsterDeadEvent += ListenrMonsterDeath;
+        enemy.UsedSkillAttackedTarget += ListerEnmeyUseSkillPower;
         enemy.transform.SetInto(enemyPoint);
-       //enemy.gameObject.SetLayer(ONAME.LayerDeafualt);
-        //enemy.SetInto(enemyPoint);
     }
 
     public virtual void BuildPlayerControl()
     {
+        curMineMonster.DownloadMonsterValue(curMineMonsterAttr, OTYPE.MonsterStateType.fight);
+        enemy.DownloadMonsterValue(curEnemyMonsterAttr, OTYPE.MonsterStateType.fight);
         curMineMonster.SetControllerState(true);
-        //enemy.SetControllerState(true);
+        enemy.SetControllerState(true);
  
         //FingerEvent.HoriDrag += CallBackDragEvent;
         //FingerEvent.clickEvent +=CallBackAttack;
@@ -187,18 +219,18 @@ public class TestGameBaseController : MonoBehaviour {
 
     public void CallBackAttack()
     {
-        if(curMineMonster!=null)
+        /*if(curMineMonster!=null)
         {
             Debug.Log("Attack!!");
             curMineMonster.ControlChangeSkillFixSkill(0);
             curMineMonster.ControllerToAttak(hitTarget);
-        }
+        }*/
     }
 
     public void CallBackDragEvent(int dir)
     {
 
-        if (dir == -1)
+       /*if (dir == -1)
             dir = 1;
         else if (dir == 1)
             dir = 2;
@@ -208,7 +240,7 @@ public class TestGameBaseController : MonoBehaviour {
         curMineMonster.ControlChangeSkillFixSkill(dir);
         curMineMonster.ControllerToAttak(hitTarget);
         //强制切回 普通攻击
-        curMineMonster.ControlChangeSkillFixSkill(0);
+        curMineMonster.ControlChangeSkillFixSkill(0);*/
     }
 
     private void Update()
@@ -225,16 +257,34 @@ public class TestGameBaseController : MonoBehaviour {
         
     }
 
-    public void CallBackUpdateMineMonsterSP(int cur,int max)
+
+    public void UpdateMineMonsterPower(int cur, int max)
     {
-      //  mineMonsterStrengPower.text = cur+"/"+max;
+       
+        minePower.text = cur.ToString();
     }
 
-    public void CallBackUpdateMineMonsterEP(int cur,int max)
+    public void UpdateEnemeyMonsterPower(int cur,int max)
     {
-       //  mineMonsterEnergyPower.text = cur + "/" + max;
+        enemyPower.text = cur.ToString();
     }
 
+    public void ListerEnmeyUseSkillPower(int _makePower)
+    {
+        enemyMakePower.text = _makePower.ToString();
+    }
+
+    public void ListerMineMonsterUseSkillPower(int _makePower)
+    {
+        mineMakePower.text = _makePower.ToString();
+    }
+
+ 
+    public void ListenrMonsterDeath(int index,  bool isPlayer)
+    {
+        curMineMonster.SetControllerState(false);
+        enemy.SetControllerState(false);
+    }
 
 
 }

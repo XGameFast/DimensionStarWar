@@ -16,7 +16,7 @@ public class UIKeyNavigation : MonoBehaviour
 	/// List of all the active UINavigation components.
 	/// </summary>
 
-	static public BetterList<UIKeyNavigation> list = new BetterList<UIKeyNavigation>();
+	static public BetterList2<UIKeyNavigation> list = new BetterList2<UIKeyNavigation>();
 
 	public enum Constraint
 	{

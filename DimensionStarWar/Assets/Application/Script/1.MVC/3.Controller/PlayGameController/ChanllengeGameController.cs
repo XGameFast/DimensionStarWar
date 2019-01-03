@@ -98,6 +98,7 @@ public class ChanllengeGameController : BaseController {
         data.getChallengeGameView.UpdateMineMonsterPower(pma.mosterPower,pma.monsterMaxPower);
 
         data.getChallengeGameView.UpdateMonster(pma);
+
         if (pma.mosterPower <= 0)
         {
             JIRVIS.Instance.PlayTips("星宿意志力为0无法上场，请选择意志力大于0的宠物上场！");

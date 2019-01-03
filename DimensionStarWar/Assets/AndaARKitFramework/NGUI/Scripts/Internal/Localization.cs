@@ -197,7 +197,7 @@ static public class Localization
 
 	static public void Load (TextAsset asset)
 	{
-		ByteReader reader = new ByteReader(asset);
+		ByteReader2 reader = new ByteReader2(asset);
 		Set(asset.name, reader.ReadDictionary());
 	}
 
@@ -207,7 +207,7 @@ static public class Localization
 
 	static public void Set (string languageName, byte[] bytes)
 	{
-		ByteReader reader = new ByteReader(bytes);
+		ByteReader2 reader = new ByteReader2(bytes);
 		Set(languageName, reader.ReadDictionary());
 	}
 
@@ -259,10 +259,10 @@ static public class Localization
 	static bool LoadCSV (byte[] bytes, TextAsset asset, bool merge = false)
 	{
 		if (bytes == null) return false;
-		ByteReader reader = new ByteReader(bytes);
+		ByteReader2 reader = new ByteReader2(bytes);
 
 		// The first line should contain "KEY", followed by languages.
-		BetterList<string> header = reader.ReadCSV();
+		BetterList2<string> header = reader.ReadCSV();
 
 		// There must be at least two columns in a valid CSV file
 		if (header.size < 2) return false;
@@ -337,7 +337,7 @@ static public class Localization
 		// Read the entire CSV file into memory
 		for (;;)
 		{
-			BetterList<string> temp = reader.ReadCSV();
+			BetterList2<string> temp = reader.ReadCSV();
 			if (temp == null || temp.size == 0) break;
 			if (string.IsNullOrEmpty(temp[0])) continue;
 			AddCSV(temp, languagesToAdd, languageIndices);
@@ -359,7 +359,7 @@ static public class Localization
 	/// Helper function that adds a single line from a CSV file to the localization list.
 	/// </summary>
 
-	static void AddCSV (BetterList<string> newValues, string[] newLanguages, Dictionary<string, int> languageIndices)
+	static void AddCSV (BetterList2<string> newValues, string[] newLanguages, Dictionary<string, int> languageIndices)
 	{
 		if (newValues.size < 2) return;
 		string key = newValues[0];
@@ -388,7 +388,7 @@ static public class Localization
 	/// Used to merge separate localization files into one.
 	/// </summary>
 
-	static string[] ExtractStrings (BetterList<string> added, string[] newLanguages, Dictionary<string, int> languageIndices)
+	static string[] ExtractStrings (BetterList2<string> added, string[] newLanguages, Dictionary<string, int> languageIndices)
 	{
 		if (newLanguages == null)
 		{

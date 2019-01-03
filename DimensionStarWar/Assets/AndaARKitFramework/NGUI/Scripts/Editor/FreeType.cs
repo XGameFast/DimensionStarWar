@@ -464,7 +464,7 @@ static public class FreeType
 	/// Create a bitmap font from the specified dynamic font.
 	/// </summary>
 
-	static public bool CreateFont (Font ttf, int size, int faceIndex, bool kerning, string characters, int padding, out BMFont font, out Texture2D tex)
+	static public bool CreateFont (Font ttf, int size, int faceIndex, bool kerning, string characters, int padding, out BMFont2 font, out Texture2D tex)
 	{
 		font = null;
 		tex = null;
@@ -493,7 +493,7 @@ static public class FreeType
 		}
 		else
 		{
-			font = new BMFont();
+			font = new BMFont2();
 			font.charSize = size;
 
 			Color32 white = Color.white;
@@ -516,7 +516,7 @@ static public class FreeType
 			FT_GlyphSlotRec space = (FT_GlyphSlotRec)Marshal.PtrToStructure(faceRec.glyph, typeof(FT_GlyphSlotRec));
 
 			// Space is not visible and doesn't have a texture
-			BMGlyph spaceGlyph = font.GetGlyph(32, true);
+			BMGlyph2 spaceGlyph = font.GetGlyph(32, true);
 			spaceGlyph.offsetX = 0;
 			spaceGlyph.offsetY = 0;
 			spaceGlyph.advance = (space.metrics.horiAdvance >> 6);
@@ -574,7 +574,7 @@ static public class FreeType
 					entries.Add(ch);
 
 					// Record the metrics
-					BMGlyph bmg = font.GetGlyph(ch, true);
+					BMGlyph2 bmg = font.GetGlyph(ch, true);
 					bmg.offsetX = (glyph.metrics.horiBearingX >> 6);
 					bmg.offsetY = -(glyph.metrics.horiBearingY >> 6);
 					bmg.advance = (glyph.metrics.horiAdvance >> 6);
@@ -630,7 +630,7 @@ static public class FreeType
 				Rect rect = rects[i];
 
 				// Set the texture coordinates
-				BMGlyph glyph = font.GetGlyph(entries[i], true);
+				BMGlyph2 glyph = font.GetGlyph(entries[i], true);
 				glyph.x = Mathf.RoundToInt(rect.x * font.texWidth);
 				glyph.y = Mathf.RoundToInt(rect.y * font.texHeight);
 				glyph.width = Mathf.RoundToInt(rect.width * font.texWidth);
@@ -649,7 +649,7 @@ static public class FreeType
 			// Offset all glyphs so that they are not using the baseline
 			for (int i = 0, imax = entries.Count; i < imax; ++i)
 			{
-				BMGlyph glyph = font.GetGlyph(entries[i], true);
+				BMGlyph2 glyph = font.GetGlyph(entries[i], true);
 				glyph.offsetY += baseline;
 			}
 		}

@@ -48,6 +48,8 @@ public class JIRVIS {
         return jIRVIS;
     }
 
+   
+
     public void PlayTips(OTYPE.Tipscontent tipsType)
     {
         jIRVISData.getJIRVISBar.DisplayTips(MonsterGameData.GetTipsContent(tipsType),1);
@@ -56,6 +58,11 @@ public class JIRVIS {
     public void PlayTips(string tipsContent , bool autoClose =true)
     {
         jIRVISData.getJIRVISBar.DisplayTips(tipsContent, 1 ,autoClose);
+    }
+
+    public void PlaySingleTips(string content ,float duration = 4f )
+    {
+        jIRVISData.getJIRVISBar.DisplaySingleTips(content,duration);
     }
 
 
@@ -82,7 +89,7 @@ public class JIRVIS {
     public void BuildCurrentDimensionRoomMonsterBtn(System.Action<PlayerMonsterAttribute> callback,System.Action finish_callback=null)
     {
         List<PlayerMonsterAttribute> tmp = AndaDataManager.Instance.GetPlayerMonsterAttributeBelongThisStronghold(jIRVISData.getCurMineStrongholdIndex);
-        jIRVISData.getJIRVISBar.BuildMonsterListBtn(tmp,callback,finish_callback);
+        jIRVISData.getJIRVISBar.BuildMonsterListBtn(5,tmp,callback,finish_callback,true);
     }
 
     public void BuildMineStrongholdListBtn(System.Action<int> callbcak)
@@ -91,15 +98,24 @@ public class JIRVIS {
         BuildDimensionRoomBtnList(tmp,callbcak);
     }
 
-    public void BuildMonsterBtnList(List<PlayerMonsterAttribute> pmaList,System.Action<PlayerMonsterAttribute> click_callback ,System.Action finishload_callback=null)
+    public void BuildMonsterBtnList(List<PlayerMonsterAttribute> pmaList,System.Action<PlayerMonsterAttribute> click_callback ,System.Action finishload_callback=null , bool replace = true , int monsterType = 5)
     {
-        jIRVISData.getJIRVISBar.BuildMonsterListBtn(pmaList, click_callback,finishload_callback);
+        jIRVISData.getJIRVISBar.BuildMonsterListBtn(monsterType,pmaList, click_callback,finishload_callback,replace);
     }
-    public void BuildDimensionRoomBtnList(List<PlayerStrongholdAttribute> list, System.Action<int> click_callback)
+    public void BuildDimensionRoomBtnList(List<PlayerStrongholdAttribute> list, System.Action<int> click_callback ,System.Action finish = null,bool replace = true)
     {
-        jIRVISData.getJIRVISBar.BuildDimensionRoomListBtn(list, click_callback);
+        jIRVISData.getJIRVISBar.BuildDimensionRoomListBtn(list, click_callback, finish, replace);
     }
-   
+    public void BuildBussineStrongholdBtnList(List<BusinessStrongholdAttribute> list, System.Action<int> click_callback, System.Action finish = null, bool replace = true)
+    {
+        jIRVISData.getJIRVISBar.BuildBussinessStrongholdListBtn(list, click_callback, finish, replace);
+    }
+
+    public void BuildExchangeBtnList(List<Exchange> list, System.Action<int> click_callback, System.Action finish = null, bool replace = true)
+    {
+        jIRVISData.getJIRVISBar.BuildExchangeListBtn(list, click_callback, finish, replace);
+    }
+
     public void BuildConsumableBtnList(List<LD_Objs> lD_Objs ,System.Action<int>callback)
     {
         jIRVISData.getJIRVISBar.BuildConsumableListBtn(lD_Objs,callback);
@@ -150,10 +166,18 @@ public class JIRVIS {
 
     public void RemoveCurrentBtnList()
     {
-        if(jIRVISData.getItemList.Count == 0)return;
+        if(jIRVISData.getItemList.Count != 0)
+        {
+            jIRVISData.InitBtnList();
+            jIRVISData.getJIRVISBar.RemoveCurrentBtnList();
+        }
+       
+        if(jIRVISData.getItemListHori.Count !=0)
+        {
+            jIRVISData.InitBtnListForHoriz();
+            jIRVISData.getJIRVISBar.RemoveCurrentBtnListHoriz();
+        }
       
-        jIRVISData.InitBtnList();
-        jIRVISData.getJIRVISBar.RemoveCurrentBtnList();
     }
 
     public void ClickDeafultBtn()
@@ -215,6 +239,8 @@ public class JIRVIS {
         PlayTipsForchoose(OTYPE.Tipscontent.changeStrongholdStatu , OTYPE.TipsType.chooseTips ,"确定", "取消" ,callbackComfirm,callbackCancel);
     }
 
+
+
     #region 打开AR演示提示视频
     public void OpenJIRVISARTipsEditorBar()
     {
@@ -253,6 +279,15 @@ public class JIRVIS {
 
     #endregion
 
+    #region 打开其他玩家的详情面板
+    public void BuildOtherPlayerStrongholdInformation(PlayerStrongholdAttribute psa , PlayerMonsterAttribute pma)
+    {
+        jIRVISData.BuildChallengeGameStrongholdBar();
+        jIRVISData.jIRVISContent_ChanllengeGameStronghold.SetInfo(pma , psa);
+    }
+
+    #endregion
+
     #region 打开星宿的名字 和 据点修改 面板
     public void BuildEditorBarForMonsterChangeNameOrBelongStorngholdIndex(PlayerMonsterAttribute playerMonsterAttribute , int strongholdIndex , System.Action callbackSure , System.Action callbackCancel)
     {
@@ -266,6 +301,14 @@ public class JIRVIS {
     }
 
 
+    #endregion
+
+    #region 打开交易所编辑面板
+    public void OpenExchangeEditorBar(System.Action<string ,string ,int > comfirm, System.Action cancel)
+    {
+        jIRVISData.BuildExchangeStrongholdEditorBar();
+        jIRVISData.getjIRVISContent_ExchangeStrongholdEditorBar.SetInfo(comfirm,cancel);
+    }
     #endregion
 
     #region 检查奖励
@@ -300,6 +343,7 @@ public class JIRVISFuncBtnStruct
 {
     public string btnName{get;set;}
     public string btnIconKey{get;set;}
+    public int btnType {get;set;} // 默认为0 ， = 1的时候，是个打开 列表的按钮，
     public System.Action clickCallBack{get;set;}
     public System.Action<int> clickCallBackForItemID{get;set;}
 }
