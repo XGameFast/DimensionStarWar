@@ -1577,6 +1577,70 @@ public class NetdataManager : ManagerBase {
         }
     }
     #endregion
+
+    #region
+    public void PlayerCouponUp(int playerCouponIndex, System.Action<bool> callback)
+    {
+        var _wForm = new WWWForm();
+        _wForm.AddField("token", AndaDataManager.Instance.userData.token);
+        _wForm.AddField("playerCouponIndex", playerCouponIndex);
+        string path = networkAdress2 + "PlayerCoupon/Up";
+        //string path = "http://localhost:57789/api/" + "SD_Pag/Consume";
+        StartCoroutine(PlayerCouponUpResutl(path, _wForm, callback));
+    }
+
+    private IEnumerator PlayerCouponUpResutl(string _url, WWWForm _wForm, System.Action<bool> callback)
+    {
+        WWW postData = new WWW(_url, _wForm);
+        yield return postData;
+        if (postData.error != null)
+        {
+            Debug.Log(postData.error);
+            //callback(false);
+        }
+        else
+        {
+            Debug.Log("postData.text" + postData.text);
+            string s = postData.text;
+            PlayerCouponRequest res = JsonMapper.ToObject<PlayerCouponRequest>(postData.text);
+            if (res.code == "200")
+            {
+                Debug.Log("提交成功");
+            }
+            callback(res.code == "200");
+        }
+    }
+    #endregion
+
+    #region 服务器消息获取
+    public void GetServerMessage(System.Action<ServerMessageRequest> callback)
+    {
+        var _wForm = new WWWForm();
+        if (AndaDataManager.Instance.userData == null)
+            return;
+        _wForm.AddField("token", AndaDataManager.Instance.userData.token);
+        string path = networkAdress2 + "ServerMessage/Get";
+        StartCoroutine(ExcuteGetServerMessage(path, _wForm, callback));
+    }
+
+    private IEnumerator ExcuteGetServerMessage(string _url, WWWForm _wForm, System.Action<ServerMessageRequest> callback)
+    {
+    
+        WWW postData = new WWW(_url, _wForm);
+        yield return postData;
+
+        if (postData.error != null)
+        {
+            Debug.Log(postData.error);
+        }
+        else
+        {
+            Debug.Log(postData.text);
+            ServerMessageRequest result = JsonMapper.ToObject<ServerMessageRequest>(postData.text);
+            callback(result);
+        }
+    }
+    #endregion
 }
 
 
