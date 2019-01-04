@@ -131,6 +131,8 @@ public static class ONAME
     public static string JIRVISContent_RewardBarForChanllengeWinWithMedal= "JIRVISContent_RewardBarForChanllengeWinWithMedal";
     public static string JIRVISContent_RewardBarForChanllengeLose = "JIRVISContent_RewardBarForChanllengeLose";
     public static string JIRVISContent_RewardBarForChanllengeWinNoMedal = "JIRVISContent_RewardBarForChanllengeWinNoMedal";
+    public static string JIRVISTips_SingleTips = "JIRVISTips_SingleTips";
+    public static string JIRVISTips_ChooseTIps = "JIRVISTips_ChooseTIps";
     public static string HologramCameraView = "HologarmCameraView";
     public static string HologarmCameraMonsterInfoItems = "HologarmCameraMonsterInfoItems";
 
@@ -148,6 +150,8 @@ public static class ONAME
 
 
     public static string ExchangeMenu ="ExchangeMenu";
+
+    public static string MapBar_MineStrongholdInformationBar = "MapBar_MineStrongholdInformationBar";
 
     #endregion
 
@@ -339,6 +343,9 @@ public static class ONAME
     public static string MonsterFadeInEffectName = "MonsterFadeInEffectName";
     public static string ARSetPointEffect = "ARSetPointEffect";
     public static string RewardFadeInEffect = "RewardFadeInEffect";
+    public static string JIRVISBtnFadeInEffect = "JIRVISBtnFadeInEffect";
+    public static string JIRVISBtnFadeInEffect_01 = "JIRVISBtnFadeInEffect_01";//圆
+    public static string JIRVISBtnFadeInEffect_02 = "JIRVISBtnFadeInEffect_02";//6边形
     #endregion
 
     #region 配置文件的名字

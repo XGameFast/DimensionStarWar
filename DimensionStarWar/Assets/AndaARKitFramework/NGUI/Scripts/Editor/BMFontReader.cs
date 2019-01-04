@@ -44,13 +44,13 @@ static public class BMFontReader
 	/// Reload the font data.
 	/// </summary>
 
-	static public void Load (BMFont font, string name, byte[] bytes)
+	static public void Load (BMFont2 font, string name, byte[] bytes)
 	{
 		font.Clear();
 
 		if (bytes != null)
 		{
-			ByteReader reader = new ByteReader(bytes);
+			ByteReader2 reader = new ByteReader2(bytes);
 			char[] separator = new char[] { ' ' };
 
 			while (reader.canRead)
@@ -77,7 +77,7 @@ static public class BMFontReader
 					if (len > 8)
 					{
 						int id = GetInt(split[1]);
-						BMGlyph glyph = font.GetGlyph(id, true);
+						BMGlyph2 glyph = font.GetGlyph(id, true);
 
 						if (glyph != null)
 						{
@@ -109,7 +109,7 @@ static public class BMFontReader
 						int second = GetInt(split[2]);
 						int amount = GetInt(split[3]);
 
-						BMGlyph glyph = font.GetGlyph(second, true);
+						BMGlyph2 glyph = font.GetGlyph(second, true);
 						if (glyph != null) glyph.SetKerning(first, amount);
 					}
 					else

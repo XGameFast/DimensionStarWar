@@ -169,7 +169,7 @@ public abstract class UIRect : MonoBehaviour
 
 	[System.NonSerialized] protected GameObject mGo;
 	[System.NonSerialized] protected Transform mTrans;
-	[System.NonSerialized] protected BetterList<UIRect> mChildren = new BetterList<UIRect>();
+	[System.NonSerialized] protected BetterList2<UIRect> mChildren = new BetterList2<UIRect>();
 	[System.NonSerialized] protected bool mChanged = true;
 	[System.NonSerialized] protected bool mParentFound = false;
 	[System.NonSerialized] bool mUpdateAnchors = true;

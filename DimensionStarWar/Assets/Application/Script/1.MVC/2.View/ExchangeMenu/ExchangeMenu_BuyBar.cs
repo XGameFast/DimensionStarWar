@@ -13,6 +13,8 @@ public class ExchangeMenu_BuyBar : UIBasic2 {
 
     public Text itemDate;//有效期
 
+    public Text itemCount;//数量
+
     public Text coinCountLabelForOnly;
     public Text dimondCountLabelForOnly;
 
@@ -63,6 +65,7 @@ public class ExchangeMenu_BuyBar : UIBasic2 {
         string iName = _value.coupon.title;//赋值物件名字
         string iDescription = _value.coupon.description; //赋值物件描述
 
+        itemCount.text = "x" + _value.couponCount;
         SetDate(shijianchuo);
         SetItemName(iName);
         SetDescription(iDescription);
@@ -133,6 +136,7 @@ public class ExchangeMenu_BuyBar : UIBasic2 {
                 SetDate(shijianchuo2);
                 SetItemName(iName2);
                 SetDescription(iDescription2);
+                itemCount.text = "x" + exchangeObject.objectCount;
                 SetImage(AndaDataManager.Instance.GetMonsterIconSprite(exchangeObject.objectID.ToString()));
                 break;
             case 40000://出售的游戏内消耗品
@@ -144,7 +148,7 @@ public class ExchangeMenu_BuyBar : UIBasic2 {
                 SetDate(shijianchuo3);
                 SetItemName(iName3);
                 SetDescription(iDescription3);
-
+                itemCount.text = "x"+ exchangeObject.objectCount;
                 SetImage(AndaDataManager.Instance.GetConsumableSprite(exchangeObject.objectID.ToString()));
                 break;
 

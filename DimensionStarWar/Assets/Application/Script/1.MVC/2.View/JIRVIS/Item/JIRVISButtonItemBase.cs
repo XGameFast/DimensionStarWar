@@ -5,7 +5,8 @@ using UnityEngine;
 public class JIRVISButtonItemBase : AndaObjectBasic {
 
     private AndaObjectBasic btnFadeInReward;
-    public System.Action<Vector3,GameObject> clickBackoutBtnPose;
+    public System.Action<Vector3,GameObject , int > clickBackoutBtnPose;
+    private int btnType ;
     public override void OnDispawn()
     {
         if(btnFadeInReward!=null)
@@ -19,23 +20,40 @@ public class JIRVISButtonItemBase : AndaObjectBasic {
     {
        
         base.OnSpawn();
-        SetFadeInEffect();
+       // SetFadeInEffect();
     }
 
-    public virtual void SetFadeInEffect()
+
+    public virtual void SetType(int type)
     {
-        btnFadeInReward = AndaDataManager.Instance.InstantiateOtherObj<AndaObjectBasic>(ONAME.RewardFadeInEffect);
+        btnType = type;
+    }
+
+    public virtual void SetFadeInEffect(int type)
+    {
+        switch(type)
+        {
+            case 0:
+                btnFadeInReward = AndaDataManager.Instance.InstantiateOtherObj<AndaObjectBasic>(ONAME.JIRVISBtnFadeInEffect);
+                break;
+            case 1:
+                btnFadeInReward = AndaDataManager.Instance.InstantiateOtherObj<AndaObjectBasic>(ONAME.JIRVISBtnFadeInEffect_01);
+                break;
+            case 2:
+                btnFadeInReward = AndaDataManager.Instance.InstantiateOtherObj<AndaObjectBasic>(ONAME.JIRVISBtnFadeInEffect_02);
+                break;
+        }
+       
         btnFadeInReward.transform.GetChild(0).gameObject.SetActive(true);
         btnFadeInReward.SetInto(transform);
+        //btnFadeInReward.transform.position = transform.position;
     }
 
     public virtual void ClickItem()
     {
         if(clickBackoutBtnPose!=null)
         {
-            clickBackoutBtnPose(transform.position,gameObject);
+            clickBackoutBtnPose(transform.position, gameObject,btnType);
         }
     }
-
-
 }

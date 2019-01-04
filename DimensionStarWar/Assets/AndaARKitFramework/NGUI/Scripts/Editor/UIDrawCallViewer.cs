@@ -39,7 +39,7 @@ public class UIDrawCallViewer : EditorWindow
 
 	void OnGUI ()
 	{
-		BetterList<UIDrawCall> dcs = UIDrawCall.activeList;
+		BetterList2<UIDrawCall> dcs = UIDrawCall.activeList;
 
 		dcs.Sort(delegate(UIDrawCall a, UIDrawCall b)
 		{

@@ -5,6 +5,22 @@ using System.Linq;
 using UnityEngine.UI;
 public class ExchangeMenu : UIBasic2 {
 
+    public enum TableType
+    {
+        buy = 0,
+        sell = 1,
+    }
+
+    public enum ItemType
+    {
+        comsuable =0,
+        card = 1 ,
+    }
+
+
+    public Toggle[] tableBtn;
+    public Toggle[] typeTableBtn;
+
     public Text exchangeName;
     public Text exchangeDescription;
     public Image userImage;
@@ -29,21 +45,23 @@ public class ExchangeMenu : UIBasic2 {
     private int detialType = 0;
     private int lastSellingDetailType =-1;
     private int lastBuyDetailType =-1;
-
+    private Button lastTableBtn;
+    private Button lastTypeBtn;
     public override void OnSpawn()
     {
         base.OnSpawn();
-        exchangeMenu_BuyBar.ClickCallBackForExObj += CallBackBuyItem;
-        exchangeMenu_BuyBar.ClickCallBackForExBscoupon += CallBackBuyItemForExbsCoupon;
-        exchangeMenu_BuyBar.ClickCloseCallBack += CallBackCloseBuyBar;
-        exchangeMenu_SellBar.CallBackUploadSellingItem += FinishUploadSellingItem;
-        exchangeMenu_SellBar.CallBackUploadSellingItemForExchangeBussinessCoupon+=FinishUploadSellingItemForBSCoupon;
-        exchangeMenu_SellBar.ClickCloseBar += CallBackCloseBuyBar;
+        //exchangeMenu_BuyBar.ClickCallBackForExObj += CallBackBuyItem;
+        //exchangeMenu_BuyBar.ClickCallBackForExBscoupon += CallBackBuyItemForExbsCoupon;
+        //exchangeMenu_BuyBar.ClickCloseCallBack += CallBackCloseBuyBar;
+       
     }
 
     public override void OnDispawn()
     {
+        RemoveSellBar();
+        RemoveBuyBar();
 
+        targetCamera = null;
         wantTo = 0;
         detialType = 0;
         lastBuyDetailType = -1;
@@ -56,13 +74,33 @@ public class ExchangeMenu : UIBasic2 {
         if(exDataList_SellingBSCoupon!=null) exDataList_SellingBSCoupon.Clear();
         ClearBuyItem();
         ClearSellItem();
-        exchangeMenu_BuyBar.ClickCallBackForExObj -= CallBackBuyItem;
-        exchangeMenu_BuyBar.ClickCallBackForExBscoupon -= CallBackBuyItemForExbsCoupon;
-        exchangeMenu_BuyBar.ClickCloseCallBack -= CallBackCloseBuyBar;
-        exchangeMenu_SellBar.CallBackUploadSellingItem -= FinishUploadSellingItem;
-        exchangeMenu_SellBar.CallBackUploadSellingItemForExchangeBussinessCoupon -= FinishUploadSellingItemForBSCoupon;
-        exchangeMenu_SellBar.ClickCloseBar -= CallBackCloseBuyBar;
+       
+
         base.OnDispawn();
+    }
+
+    private void RemoveSellBar()
+    {
+        if(exchangeMenu_SellBar!=null)
+        {
+            exchangeMenu_SellBar.CallBackUploadSellingItem -= FinishUploadSellingItem;
+            exchangeMenu_SellBar.CallBackUploadSellingItemForExchangeBussinessCoupon -= FinishUploadSellingItemForBSCoupon;
+            exchangeMenu_SellBar.ClickCloseBar -= CallBackCloseBuyBar;
+            AndaDataManager.Instance.RecieveItem(exchangeMenu_SellBar);
+            exchangeMenu_SellBar = null;
+        }
+    } 
+
+    private void RemoveBuyBar()
+    {
+        if(exchangeMenu_BuyBar!=null)
+        {
+            exchangeMenu_BuyBar.ClickCallBackForExObj -= CallBackBuyItem;
+            exchangeMenu_BuyBar.ClickCallBackForExBscoupon -= CallBackBuyItemForExbsCoupon;
+            exchangeMenu_BuyBar.ClickCloseCallBack -= CallBackCloseBuyBar;
+            AndaDataManager.Instance.RecieveItem(exchangeMenu_BuyBar);
+            exchangeMenu_BuyBar = null;
+        }
     }
 
     private void ClearBuyItem()
@@ -124,8 +162,11 @@ public class ExchangeMenu : UIBasic2 {
         ConverterMineCouponToExbussinessCoupon();
 
 
-        ClickWanttoBuy();
+        tableBtn[(int)TableType.buy].isOn = true;
+
+      
     }
+
     /// <summary>
     /// 把传进来的 物品列表进行转换赋值 , 优惠券无需转换
     /// </summary>
@@ -453,8 +494,6 @@ public class ExchangeMenu : UIBasic2 {
 
     private void BackToWanttoBuy()
     {
-        // ----------  -//
-
         switch(detialType)
         {
             case 0:
@@ -469,7 +508,7 @@ public class ExchangeMenu : UIBasic2 {
                         }
                         else
                         {
-                            detialType =2;
+                            detialType = 2;
                         }
                     }else
                     {
@@ -534,34 +573,79 @@ public class ExchangeMenu : UIBasic2 {
         ClickWanttoBuy();
     }
 
+
+    public void ChangeToTypeBtn()
+    {
+        int count = typeTableBtn.Length;
+        for(int i = 0 ; i < count; i++)
+        {
+            if (typeTableBtn[i].isOn)
+            {
+
+                switch (i)
+                {
+                    case 0:
+                        ClickConsumable();
+                        break;
+                    case 1:
+                        ClickActivityCard();
+                        break;
+                }
+            }
+        }
+    }
+
+
+    public void ChangeTableBtn()
+    {
+
+        int count = tableBtn.Length;
+        for(int i = 0 ; i < count; i++)
+        {
+            if(tableBtn[i].isOn)
+            {
+               
+                switch(i)
+                {
+                    case 0:
+                        ClickWanttoBuy();
+                        break;
+                    case 1:
+                        ClickWantoSell();
+                        break;
+                }
+            }
+        }
+    }
+
     /// <summary>
     /// 想要购买
     /// </summary>
-    private void ClickWanttoBuy()
+    public void ClickWanttoBuy()
     {
 
         lastBuyDetailType =-1;
         ClearSellItem();
         wantTo =  0;
-        BuildJIRVISBtn();
+        //BuildJIRVISBtn();
         JumpToTargetDetailClass();
 
     }
 
-    private void ClickToSellWithConsumabl()
+    public void ClickToSellWithConsumabl()
     {
         detialType = 0;
         ClickWantoSell();
        
     }
-    private void ClickToSellWithMonster()
+    public void ClickToSellWithMonster()
     {
         detialType =1;
         ClickWantoSell();
        
     }
 
-    private void ClickToSellWithBussinessCoupon()
+    public void ClickToSellWithBussinessCoupon()
     {
         detialType = 2;
         ClickWantoSell();
@@ -570,7 +654,7 @@ public class ExchangeMenu : UIBasic2 {
     /// <summary>
     /// 想要寄售
     /// </summary>
-    private void ClickWantoSell()
+    public void ClickWantoSell()
     {
         lastSellingDetailType =-1;
         JIRVIS.Instance.CloseTips();
@@ -579,7 +663,7 @@ public class ExchangeMenu : UIBasic2 {
 
         wantTo = 1;
 
-        BuildJIRVISBtn();
+      //  BuildJIRVISBtn();
 
         JumpToTargetDetailClass();
        
@@ -594,7 +678,7 @@ public class ExchangeMenu : UIBasic2 {
     /// <summary>
     /// 点击消耗品
     /// </summary>
-    private void ClickConsumable()
+    public void ClickConsumable()
     {
         if(wantTo == 0) //购买模式
         {
@@ -602,7 +686,7 @@ public class ExchangeMenu : UIBasic2 {
           
             if (exDataList_BuyConsumable == null || exDataList_BuyConsumable.Count == 0)
             {
-                JIRVIS.Instance.PlayTipsForchoose("这个交易所暂时没什么东西可以出售的，你可以将自己暂时不需要的物品在这里寄售", OTYPE.TipsType.chooseTips, "寄售", "离开", ClickToSellWithConsumabl, ClickLevelOut);
+                JIRVIS.Instance.PlayTips("这个交易所暂时没什么东西可以出售的，您可以点击出售，将自己暂时不需要的物品在这里寄售");
             }
             else
             {
@@ -638,7 +722,7 @@ public class ExchangeMenu : UIBasic2 {
     /// <summary>
     /// 构建玩家所有的自由宠物，用于交易
     /// </summary>
-    private void ClickMonsterIcon()
+    public void ClickMonsterIcon()
     {
         if(wantTo == 0)
         {
@@ -681,7 +765,7 @@ public class ExchangeMenu : UIBasic2 {
     /// <summary>
     /// 构建完加的所有卡券，用于交易
     /// </summary>
-    private void ClickActivityCard()
+    public void ClickActivityCard()
     {
       
         if(wantTo == 0)
@@ -690,7 +774,7 @@ public class ExchangeMenu : UIBasic2 {
             if (exDataLIst_BuyBSCoupon == null || exDataLIst_BuyBSCoupon.Count == 0)
             {
                 ClearSellItem();
-                JIRVIS.Instance.PlayTipsForchoose("这个交易所暂时没有可以出售的商品优惠券，你可以将自己暂时不需要的商品优惠券放在这里寄售", OTYPE.TipsType.chooseTips, "寄售", "不了", ClickToSellWithBussinessCoupon, JIRVIS.Instance.CloseTips);
+                JIRVIS.Instance.PlayTips("这个交易所暂时没有可以出售的商品优惠券，您可以点击出售，将自己暂时不需要的商品优惠券放在这里寄售");
             }
             else
             {
@@ -760,7 +844,22 @@ public class ExchangeMenu : UIBasic2 {
     /// </summary>
     private void OpenBuyBar(ExchangeObject exchangeObject , ExchangeBusinessCoupon exchangeBusinessCoupon)
     {
-        exchangeMenu_BuyBar.gameObject.SetTargetActiveOnce(true);
+
+
+        if (exchangeMenu_BuyBar == null)
+        {
+            exchangeMenu_BuyBar = AndaDataManager.Instance.InstantiateMenu<ExchangeMenu_BuyBar>("Exchange_BuyBar");
+            exchangeMenu_BuyBar.ClickCallBackForExObj += CallBackBuyItem;
+            exchangeMenu_BuyBar.ClickCallBackForExBscoupon += CallBackBuyItemForExbsCoupon;
+            exchangeMenu_BuyBar.ClickCloseCallBack += CallBackCloseBuyBar;
+            exchangeMenu_BuyBar.SetInto(AndaUIManager.Instance.jirvis_top);
+            exchangeMenu_BuyBar.FadeIn();
+        }
+        else
+        {
+            exchangeMenu_BuyBar.gameObject.SetTargetActiveOnce(true);
+        }
+        exchangeMenu_BuyBar.GetComponent<Animator>().Play("FadeIn");
         switch (detialType)
         {
             case 0:
@@ -780,7 +879,20 @@ public class ExchangeMenu : UIBasic2 {
     private void OpenSellBar(ExchangeObject exchangeObject , ExchangeBusinessCoupon exchangeBusinessCoupon)
     {
         JIRVIS.Instance.RemoveCurrentBtnList();
-        exchangeMenu_SellBar.gameObject.SetTargetActiveOnce(true);
+
+        if(exchangeMenu_SellBar == null)
+        {
+            exchangeMenu_SellBar = AndaDataManager.Instance.InstantiateMenu<ExchangeMenu_SellBar>("ExchangeMenu_SellBar");
+            exchangeMenu_SellBar.CallBackUploadSellingItem += FinishUploadSellingItem;
+            exchangeMenu_SellBar.CallBackUploadSellingItemForExchangeBussinessCoupon += FinishUploadSellingItemForBSCoupon;
+            exchangeMenu_SellBar.ClickCloseBar += CallBackCloseBuyBar;
+            exchangeMenu_SellBar.SetInto(AndaUIManager.Instance.uicenter);
+            exchangeMenu_SellBar.FadeIn();
+        }
+        else
+        {
+            exchangeMenu_SellBar.gameObject.SetTargetActiveOnce(true);
+        }
         switch (detialType)
         {
             case 0:
@@ -793,6 +905,17 @@ public class ExchangeMenu : UIBasic2 {
         }
       
       
+    }
+
+    private void CallSuceAboutBuy(int payType)
+    {
+        switch(payType)
+        {
+            case 0:
+                break;
+            case 1:
+                break;
+        }
     }
 
     /// <summary>
@@ -832,7 +955,7 @@ public class ExchangeMenu : UIBasic2 {
 
     private void CallBackCloseBuyBar()
     {
-        BuildJIRVISBtn();
+       // BuildJIRVISBtn();
     }
 
     /// <summary>
@@ -908,6 +1031,11 @@ public class ExchangeMenu : UIBasic2 {
         //BuildItem(exchangeInfo.exchangeObjects);
     }
 
+    public void ClickOutMenu()
+    {
+        ClickLevelOut();
+    }
+
     private void JumpToTargetDetailClass()
     {
         switch(detialType)
@@ -953,6 +1081,32 @@ public class ExchangeMenu : UIBasic2 {
                 case 2:
                     title.text = "我的奖励券";
                     break;
+            }
+        }
+    }
+    private Vector3 targetWoraldPose;
+    private Camera targetCamera;
+    private float baseScaleDistance =  1800;
+    public void SetFollowInfo(Vector3 _targetWP, Camera _targetCamera)
+    {
+        targetWoraldPose = _targetWP;
+        targetCamera = _targetCamera;
+    }
+
+    public void Update()
+    {
+        if(isActive)
+        {
+            if(targetCamera!=null)
+            {
+               
+                Vector2 vector2 = targetCamera.WorldToScreenPoint(targetWoraldPose);
+                Vector3 screenPoint = ARMonsterSceneDataManager.Instance.UICamera.ScreenToWorldPoint(new Vector3(vector2.x, vector2.y, 90));
+                transform.position = screenPoint;
+
+               // float scale = baseScaleDistance / Vector3.Distance(targetWoraldPose, targetCamera.transform.position);
+               // scale = (float)Mathf.Clamp(scale, 0.3f, 2.5f);
+               // transform.localScale = Vector3.one * scale;
             }
         }
     }

@@ -9,32 +9,19 @@ public class LoginController : BaseController {
     public override void StartController()
     {
         base.StartController();
-
-      
-
-       // callbackFinishController(ONAME.FISHCONTROLLER);
-     //   return ;
-
-
-       
-        //
         BuildLoginCtrData();
         loginCtrData.BuildMenu(ONAME.LoginMenu2);
-
-
         loginCtrData.GetLoginMenu.PreloadUserAccountAndPassword();
-
-        ARMonsterSceneDataManager.Instance.aRWorld.OpenLoginMenuBackground(true);
-        Invoke("InvokeFadeInMenu" ,1.65f);
-
-        AndaObjectBasic andaObjectBasic = AndaDataManager.Instance.InstantiateOtherObj("GameLogo");
-        andaObjectBasic.SetInto(AndaUIManager.Instance.canvasRoot);
-
+    }
+    public override void EndController()
+    {
+        loginCtrData.InitValue();
+        base.EndController();
     }
 
     private void InvokeFadeInMenu()
     {
-        loginCtrData.getm_Menu.FadeIn();
+       // loginCtrData.getm_Menu.FadeIn();
     }
 
     private void BuildLoginCtrData()
@@ -47,21 +34,13 @@ public class LoginController : BaseController {
         loginCtrData.BuildData(this);
     }
 
-    public override void EndController()
-    {
-      
-        if(loginCtrData != null)
-        loginCtrData.getm_Menu.OnDispawn();
-        ARMonsterSceneDataManager.Instance.aRWorld.OpenLoginMenuBackground(false);
-        base.EndController();
-    }
+  
     #region SMSCode
     public void SendCode(System.Action<bool> _callBack,string phone )
     {
         AndaDataManager.Instance.SendSmsCode(_callBack, phone);
 
     }
-   
     #endregion
 
 
@@ -94,6 +73,55 @@ public class LoginController : BaseController {
         }
     }
 
+    public void PhoneLogin(string phoneNumber, string eicode)
+    {
+        AndaDataManager.Instance.PhoneLogin(PhoneLoginResult, phoneNumber, eicode);
+    }
+
+    public void PhoneLoginResult(bool isSuccess)
+    {
+        if(isSuccess)
+        {
+            PlayerPrefs.SetString("LastLogin", "Phone");
+            PlayerPrefs.SetString("DefualtPhoneAccount", loginCtrData.GetLoginMenu.inputAccount.text);
+            PlayerPrefs.SetString("DefualtPhoneSerect" , AndaDataManager.Instance.userData.phoneSecret );
+            LoginFinish(isSuccess);
+        }
+    }
+
+    public void WexinLoginResult(bool isSuccess)
+    {
+        if(isSuccess)
+        {
+            PlayerPrefs.SetString("LastLogin", "Wechat");
+            LoginFinish(isSuccess);
+        }
+    }
+
+    public void QQLoginResult(bool isSuccess)
+    {
+        if(isSuccess)
+        {
+            PlayerPrefs.SetString("LastLogin" ,"QQ");
+            LoginFinish(isSuccess);
+        }
+    }
+
+
+    public void LoginFinish(bool isLoginSuccess)
+    {
+        if(!isLoginSuccess)return;
+        if (!AndaDataManager.Instance.PlayerHasMonster())//第一次
+        {
+            callbackFinishController(ONAME.SEARCHCONTROLLER);
+        }
+        else
+        {
+            callbackFinishController(ONAME.MAPCONCTROLLER);
+        }
+    }
+
+
     public void CheckLoginSuccess(System.Action<int> callback_login)
     {
         callback_login(loginCtrData.curLoginState);
@@ -110,7 +138,7 @@ public class LoginController : BaseController {
             }
             else
             {
-                callbackFinishController(ONAME.BUILDDIMENSIONROOMCONTROLLER);
+                callbackFinishController(ONAME.MAPCONCTROLLER);
             }
 
         }

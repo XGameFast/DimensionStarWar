@@ -13,8 +13,8 @@ static public class NGUISnap
 {
 	const float SNAP_THRESHOLD = 10f;
 
-	static BetterList<Vector3> mSnapCenter = new BetterList<Vector3>();
-	static BetterList<Vector3> mSnapCorners = new BetterList<Vector3>();
+	static BetterList2<Vector3> mSnapCenter = new BetterList2<Vector3>();
+	static BetterList2<Vector3> mSnapCorners = new BetterList2<Vector3>();
 
 	static int mSnapping = -1;
 

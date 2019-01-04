@@ -37,8 +37,9 @@ public class MonsterIcon_levelboard_Item : JIRVISButtonItemBase {
         float per  = (float)pma.monsterMaxPower / limit;
       //  Debug.Log("per" + per) ;
         monsterPor = AndaDataManager.Instance.InstantiateMenu<MonsterPorItem>("ShporMonsterPorItem");
-     
-       
+        monsterPor.gameObject.SetTargetActiveOnce(false);
+
+
         monsterPor.transform.SetUIInto(transform);
        
         Debug.Log("getLevel" + getLevel);
@@ -47,6 +48,17 @@ public class MonsterIcon_levelboard_Item : JIRVISButtonItemBase {
         monsterPor.boardButton.onClick.AddListener(ClickItem);
         monsterNickName.text = pma.monsterNickName;
         monsterNickName.transform.SetAsLastSibling();
+    }
+
+    public override void SetFadeInEffect(int type)
+    {
+        base.SetFadeInEffect(type);
+        Invoke("InvokeOpenItem" ,0.2f);
+
+    }
+    private void InvokeOpenItem()
+    {
+        monsterPor.gameObject.SetTargetActiveOnce(true);
     }
 
     public override void ClickItem()

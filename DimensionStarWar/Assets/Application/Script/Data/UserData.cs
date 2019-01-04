@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Linq;
 public class UserDataScirpt:UserDataBaseScript {
     public string token = "andatoken";
-
+    public string phoneSecret;
     public PlayerData playerdata;
     public PlayerStrongholdAttribute defaultPlayerStrongholdAttribute;
 

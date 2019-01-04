@@ -471,7 +471,7 @@ public class UIFontMaker : EditorWindow
 		else if (create == Create.Bitmap)
 		{
 			// Create the bitmap font
-			BMFont bmFont;
+			BMFont2 bmFont;
 			Texture2D tex;
 
 			if (FreeType.CreateFont(

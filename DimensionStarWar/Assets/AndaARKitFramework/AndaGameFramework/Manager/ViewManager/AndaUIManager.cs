@@ -16,28 +16,12 @@ public class AndaUIManager  {
             return _instance;
         }
     }
-    private Transform _uiroot;
-    public Transform uiroot
-    {
-        get
-        {
-            if (_uiroot == null)
-            {
-                _uiroot = GameObject.Find("UI Root").transform;
-            }
-            return _uiroot;
-        }
-    }
-
-    private Transform _canvasRoot = null;
+   
+     private Transform _canvasRoot = null;
     private int siblingIndex = 2;
     private Transform jIRVISBar ;
-    public Canvas canvas 
-    {
-        get{
-            return canvasRoot.GetComponent<Canvas>();
-        }
-    }
+    public Canvas canvas { get { return canvasRoot.GetComponent<Canvas>(); } }
+
     public RectTransform getCanvasRect
     {
         get {return canvasRoot.GetComponent<RectTransform>() ;}
@@ -53,13 +37,27 @@ public class AndaUIManager  {
             return _canvasRoot;
         }
     }
+
+    private Transform _uicenter =null;
+    public Transform uicenter
+    {
+        get 
+        {
+            if(_uicenter == null)
+            {
+                _uicenter = canvasRoot.Find("center").transform;
+            }
+            return _uicenter;
+        }
+    }
+
     private Transform _jirvisRoot = null;
     public Transform jirvisRoot
     {
         get { 
             if(_jirvisRoot == null)
             {
-                _jirvisRoot = canvasRoot.Find("JIRVISRoot").transform;
+                _jirvisRoot = canvasRoot.Find("jirvis-top-right").transform;
             }
             return _jirvisRoot;
         }
@@ -73,34 +71,45 @@ public class AndaUIManager  {
         {
             if(_JIRVISEditorRoot == null)
             {
-                _JIRVISEditorRoot = canvasRoot.Find("EditorboardPoint").transform;
+                _JIRVISEditorRoot = canvasRoot.Find("jirvis-top/EditorboardPoint").transform;
             }
 
             return _JIRVISEditorRoot;
         }
     }
+    private Transform _jirvis_top = null;
+    public Transform jirvis_top
+    {
+        get 
+        {
+            if(_jirvis_top == null)
+            {
+                _jirvis_top = canvasRoot.Find("jirvis-top").transform;
+            }
+
+            return _jirvis_top;
+        }
+    }
 
     public WaitBoardBar _waitBoard = null;
-
+    public JIRVISContent_QuicklyPayBar jIRVISContent_QuicklyPay;
     public AndaObjectBasic PopMenu2(string menu_name)
     {
 
 
         AndaObjectBasic menu = AndaDataManager.Instance.InstantiateMenu(menu_name);
-        siblingIndex = canvasRoot.transform.childCount;
-       
-       
+        //siblingIndex = canvasRoot.transform.childCount;
         if (menu_name == ONAME.JirvisBarName)
         {
             jIRVISBar = menu.transform;
             menu.transform.SetUIInto(jirvisRoot);
         }else
         {
-            menu.transform.SetUIInto(canvasRoot.transform);
+            menu.transform.SetUIInto(uicenter.transform);
         }
 
         //  menu.transform.SetUIInto(canvasRoot.transform);
-        if (jirvisEditorRoot != null)
+      /*  if (jirvisEditorRoot != null)
         {
             jirvisEditorRoot.SetSiblingIndex(siblingIndex);
         }
@@ -109,7 +118,7 @@ public class AndaUIManager  {
         {
             jirvisRoot.SetSiblingIndex(siblingIndex+1);
         }
-
+*/
       /*  */
         //JIRVIS.Instance.SetBarIndex(siblingIndex+1);
 
@@ -136,7 +145,7 @@ public class AndaUIManager  {
             if (mallBar != null) return mallBar;
         }
         AndaObjectBasic menu = AndaDataManager.Instance.InstantiateMenu(menu_name);
-        menu.transform.SetParent(uiroot.transform);
+        //menu.transform.SetParent(uiroot.transform);
         menu.self.ResetTran();
         return menu;
     }
@@ -210,6 +219,26 @@ public class AndaUIManager  {
         }
     }
 
+
+    public void OpenQuicklyPayBar(Sprite _sp, string _name, string itemDescription, List<int> payPrice, System.Action<int> callback)
+    {
+        if(jIRVISContent_QuicklyPay == null) jIRVISContent_QuicklyPay = PopingMenu2<JIRVISContent_QuicklyPayBar>("JIRVISContent_QuicklyPayBar");
+        jIRVISContent_QuicklyPay.transform.SetUIInto(jirvis_top);//.set(jirvis_top);
+        jIRVISContent_QuicklyPay.SetInfo(_sp,_name,itemDescription,payPrice,callback);
+    }
+
+    public void OpenQuicklyPayBar(string imgPath,int _shIndex, string _name, string itemDescription, List<int> payPrice, System.Action<int> callback)
+    {
+        if (jIRVISContent_QuicklyPay == null) jIRVISContent_QuicklyPay = PopingMenu2<JIRVISContent_QuicklyPayBar>("JIRVISContent_QuicklyPayBar");
+        jIRVISContent_QuicklyPay.transform.SetUIInto(jirvis_top);//.set(jirvis_top);
+        jIRVISContent_QuicklyPay.SetInfo(imgPath, _shIndex,_name, itemDescription, payPrice, callback);
+    }
+
+    public void RemoveQuilickPayBar()
+    {
+        if(jIRVISContent_QuicklyPay!=null)AndaDataManager.Instance.RecieveItem(jIRVISContent_QuicklyPay);
+        jIRVISContent_QuicklyPay = null;
+    }
 
 
     public MallBar mallBar;

@@ -605,9 +605,9 @@ public class AndaDataManager {
         naetdataManager.TestLoginOnce(callback, name);
     }
 
-    public void TestLogin(System.Action<bool> callBack, string name, string password)
+    public void RealLogin(System.Action<bool> callBack, string name, string password)
     {
-        naetdataManager.TestLogin(callBack, name, password);
+        naetdataManager.RealLogin(callBack, name, password);
     }
     public void PhoneLogin(System.Action<bool> callBack, string phone, string code)
     {

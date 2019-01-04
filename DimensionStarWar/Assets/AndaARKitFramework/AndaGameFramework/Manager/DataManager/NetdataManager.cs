@@ -156,7 +156,7 @@ public class NetdataManager : ManagerBase {
 
 
     //[这个是真的 登录接口]
-    public void TestLogin(System.Action<bool> callBack, string name, string password)
+    public void RealLogin(System.Action<bool> callBack, string name, string password)
     {
 
 
@@ -187,8 +187,13 @@ public class NetdataManager : ManagerBase {
             {
                 AndaDataManager.Instance.SetUserData(data.PlayerData);
                 AndaDataManager.Instance.SetUserToken(data.token);
+                AndaDataManager.Instance.userData.phoneSecret = data.phoneSecrect;
+                callBack(true);
+            }else
+            {
+                callBack(false);
             }
-            callBack(data.code == "200");
+           
         }
         AndaUIManager.Instance.CloseWaitBoard();
     }
@@ -210,16 +215,17 @@ public class NetdataManager : ManagerBase {
 
     private IEnumerator SendSmsCodePost(string _url, WWWForm _wForm, System.Action<bool> callBack)
     {
-
+        AndaUIManager.Instance.OpenWaitBoard("正在验证");
         WWW postData = new WWW(_url, _wForm);
         yield return postData;
-
+        AndaUIManager.Instance.CloseWaitBoard();
         if (postData.error != null)
         {
             Debug.Log(postData.error);
         }
         else
         {
+           
             var data = JsonMapper.ToObject<Result>(postData.text);
             callBack(data.code == "200");
         }
@@ -1544,8 +1550,11 @@ public class NetdataManager : ManagerBase {
         _wForm.AddField("acc", Code);
         StartCoroutine(SendLoginPost(networkAdress2 + "QQLogin", _wForm, callBack));
     }
+
     #endregion
 
+
+   
 
     #region 获取据点精粹
 

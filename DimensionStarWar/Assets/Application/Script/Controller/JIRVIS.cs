@@ -48,6 +48,8 @@ public class JIRVIS {
         return jIRVIS;
     }
 
+   
+
     public void PlayTips(OTYPE.Tipscontent tipsType)
     {
         jIRVISData.getJIRVISBar.DisplayTips(MonsterGameData.GetTipsContent(tipsType),1);
@@ -56,6 +58,11 @@ public class JIRVIS {
     public void PlayTips(string tipsContent , bool autoClose =true)
     {
         jIRVISData.getJIRVISBar.DisplayTips(tipsContent, 1 ,autoClose);
+    }
+
+    public void PlaySingleTips(string content ,float duration = 4f )
+    {
+        jIRVISData.getJIRVISBar.DisplaySingleTips(content,duration);
     }
 
 
@@ -82,7 +89,7 @@ public class JIRVIS {
     public void BuildCurrentDimensionRoomMonsterBtn(System.Action<PlayerMonsterAttribute> callback,System.Action finish_callback=null)
     {
         List<PlayerMonsterAttribute> tmp = AndaDataManager.Instance.GetPlayerMonsterAttributeBelongThisStronghold(jIRVISData.getCurMineStrongholdIndex);
-        jIRVISData.getJIRVISBar.BuildMonsterListBtn(tmp,callback,finish_callback);
+        jIRVISData.getJIRVISBar.BuildMonsterListBtn(5,tmp,callback,finish_callback,true);
     }
 
     public void BuildMineStrongholdListBtn(System.Action<int> callbcak)
@@ -91,9 +98,9 @@ public class JIRVIS {
         BuildDimensionRoomBtnList(tmp,callbcak);
     }
 
-    public void BuildMonsterBtnList(List<PlayerMonsterAttribute> pmaList,System.Action<PlayerMonsterAttribute> click_callback ,System.Action finishload_callback=null , bool replace = true)
+    public void BuildMonsterBtnList(List<PlayerMonsterAttribute> pmaList,System.Action<PlayerMonsterAttribute> click_callback ,System.Action finishload_callback=null , bool replace = true , int monsterType = 5)
     {
-        jIRVISData.getJIRVISBar.BuildMonsterListBtn(pmaList, click_callback,finishload_callback);
+        jIRVISData.getJIRVISBar.BuildMonsterListBtn(monsterType,pmaList, click_callback,finishload_callback,replace);
     }
     public void BuildDimensionRoomBtnList(List<PlayerStrongholdAttribute> list, System.Action<int> click_callback ,System.Action finish = null,bool replace = true)
     {
@@ -159,10 +166,18 @@ public class JIRVIS {
 
     public void RemoveCurrentBtnList()
     {
-        if(jIRVISData.getItemList.Count == 0)return;
+        if(jIRVISData.getItemList.Count != 0)
+        {
+            jIRVISData.InitBtnList();
+            jIRVISData.getJIRVISBar.RemoveCurrentBtnList();
+        }
+       
+        if(jIRVISData.getItemListHori.Count !=0)
+        {
+            jIRVISData.InitBtnListForHoriz();
+            jIRVISData.getJIRVISBar.RemoveCurrentBtnListHoriz();
+        }
       
-        jIRVISData.InitBtnList();
-        jIRVISData.getJIRVISBar.RemoveCurrentBtnList();
     }
 
     public void ClickDeafultBtn()
@@ -328,6 +343,7 @@ public class JIRVISFuncBtnStruct
 {
     public string btnName{get;set;}
     public string btnIconKey{get;set;}
+    public int btnType {get;set;} // 默认为0 ， = 1的时候，是个打开 列表的按钮，
     public System.Action clickCallBack{get;set;}
     public System.Action<int> clickCallBackForItemID{get;set;}
 }

@@ -132,11 +132,11 @@ public class MapCtrData : ControllerData {
     private MapMenu mapMenu;
     private MapController mapController;
 
-    private List<PlayerStrongholdAttribute> otherPlayerStrongholdAttributes;
-    private List<BusinessStrongholdAttribute> bussinessStrongholdAttributes;
-    private List<PlayerStrongholdAttribute> selfPlayerStrongholdAttributes;
-    private List<Exchange> mineExchagnesAttributes;
-    private List<Exchange> otherExchangeAttributes;
+    private List<PlayerStrongholdAttribute> otherPlayerStrongholdAttributes = new List<PlayerStrongholdAttribute>();
+    private List<BusinessStrongholdAttribute> bussinessStrongholdAttributes = new List<BusinessStrongholdAttribute>();
+    private List<PlayerStrongholdAttribute> selfPlayerStrongholdAttributes = new List<PlayerStrongholdAttribute>();
+    private List<Exchange> mineExchagnesAttributes = new List<Exchange>();
+    private List<Exchange> otherExchangeAttributes = new List<Exchange>();
 
 
     private List<MapUIItem_icon_lvBoard_Name> otherPlayerStrongholdItems = new List<MapUIItem_icon_lvBoard_Name>();
@@ -179,6 +179,9 @@ public class MapCtrData : ControllerData {
     public ExchangeUIItem_TmpSet tmpExchangeItem;
     public bool setMapType = true;//true = vv  false = ar
     private float mapItemObjScale =180f;
+
+    public int targetSHAttributeIndex;//要跳转 目标SH index;
+     
      
 
     public override void BuildData(BaseController _baseController)
@@ -230,6 +233,33 @@ public class MapCtrData : ControllerData {
 
         RemoveExchangeTmpItem();
     }
+
+
+    public void RemoveMapItem()
+    {
+       
+        RemoveAllMineStronghold();
+        selfPlayerStrongholdAttributes.Clear();
+
+        RemoveAllOtherPlayerStronghold();
+        otherPlayerStrongholdAttributes.Clear();
+
+        RemoveAllBussinessStronghold();
+        bussinessStrongholdAttributes.Clear();
+
+
+
+        RemoveAllMineExchangeSH();
+        mineExchagnesAttributes.Clear();
+        mineExchangeSHWorldPose.Clear();
+
+        RemoveAllOtherExchagneSH();
+        otherExchangeAttributes.Clear();
+        otherExchangeSHWorldPose.Clear();
+
+       
+    }
+
 
     public void RemoveExchangeTmpItem()
     {
@@ -396,7 +426,7 @@ public class MapCtrData : ControllerData {
         if(currentLocationPointUIItem!=null) AndaDataManager.Instance.RecieveItem(currentLocationPointUIItem);
         currentLocationPointUIItem = AndaDataManager.Instance.InstantiateMenu<MapUIItem_icon_UserPor>(ONAME.MapUIItemShboard_LocationPoint);
         currentLocationPointUIItem.SetInto(mapMenu.itemBox);
-
+        currentLocationPointUIItem.SetInfo(GetCurrentLocationInMapPostion,mapController);
        // PlayerMonsterAttribute _pma =AndaDataManager.Instance.GetUserPlayerMonstesrList()[0];
       //  MonsterBasic monsterBasic = AndaDataManager.Instance.InstantiateMonster<MonsterBasic>(_pma.monsterID.ToString());
 
@@ -437,11 +467,15 @@ public class MapCtrData : ControllerData {
                 if(otherPlayerStrongholdAttributes == null)  otherPlayerStrongholdAttributes =new List<PlayerStrongholdAttribute>();
                 otherPlayerStrongholdAttributes.Add(playerStrongholdAttribute);
             }
-          
         }
-
+        //判断是否需要交换玩家粘性的排位顺序
+        if (currentChooseDiplaySHType == 1) ExchangePoseWithPlayerAtt();
+      
         if(mineExchagnesAttributes!=null)mineExchagnesAttributes.Clear();
+        mineExchangeSHWorldPose.Clear();
         if(otherExchangeAttributes!=null)otherExchangeAttributes.Clear();
+        otherExchangeSHWorldPose.Clear();
+
         if(_exchangesItem!=null)
         {
             count = _exchangesItem.Count;
@@ -466,9 +500,13 @@ public class MapCtrData : ControllerData {
             }
 
         }
+        //判断是否需要交换玩家交易所的排位顺序
+        if (currentChooseDiplaySHType == 2 )
+        {
+            ExchangePoseWitExchangeAttr();
+        }
 
         if (bussinessStrongholdAttributes!=null) bussinessStrongholdAttributes.Clear();
-         
         bussinessStrongholdAttributes = bsalist;
         count = bussinessStrongholdAttributes.Count;
         for(int i = 0; i < count;i ++)
@@ -477,109 +515,488 @@ public class MapCtrData : ControllerData {
             bussinessStrongholdAttributes[i].strongholdInMapPosition = AndaMap.Instance.ConvertGeopointToGameworldpoint(vector2D);
         }
 
+        if(currentChooseDiplaySHType == 3)
+        {
+            ExchangePoseWitBussinessAttr();
+        }
+
+
+
         Vector2d locationV2d  = AndaLocaltion.Instance.currentLocation.LatitudeLongitude;
         curLocationInMapPostion = AndaMap.Instance.ConvertGeopointToGameworldpoint(locationV2d);
     }
 
-    public void BuildMineSHUI()
+    #region 构建地图物件
+
+    public IEnumerator BuildMineSHUI(int type)
     {
-        RemoveAllMineStronghold();
-        int count = selfPlayerStrongholdAttributes.Count;
-        for(int i = 0 ; i < count; i ++ )
+        int count = 0;
+        MapUIItem_icon_lvBoard_Name _item = null;
+        PlayerStrongholdAttribute p = null;
+        switch (type)
         {
-            PlayerStrongholdAttribute p = selfPlayerStrongholdAttributes[i];
-            MapUIItem_icon_lvBoard_Name _item = AndaDataManager.Instance.InstantiateMenu<MapUIItem_icon_lvBoard_Name>(ONAME.MapUIItemShboard_PlayerSH);
-            _item.transform.SetInto(mapMenu.itemBox);
-            _item.SetInfo(p);
-            _item.RegisterClickCallBack(mapController.ClickSelectMapItem);
-            if (minePlayerStrongholdItems == null) minePlayerStrongholdItems = new List<MapUIItem_icon_lvBoard_Name>();
-            minePlayerStrongholdItems.Add(_item);
+            case 0:
+                RemoveAllMineStronghold();
+                p = selfPlayerStrongholdAttributes[0];
+                _item = AndaDataManager.Instance.InstantiateMenu<MapUIItem_icon_lvBoard_Name>(ONAME.MapUIItemShboard_PlayerSH);
+                _item.transform.SetInto(mapMenu.itemBox);
+                _item.SetInfo(p);
+                _item.SetController(mapController);
+                _item.RegisterClickCallBack(mapController.ClickSelectMapItem);
+                if (minePlayerStrongholdItems == null) minePlayerStrongholdItems = new List<MapUIItem_icon_lvBoard_Name>();
+                minePlayerStrongholdItems.Add(_item);
+                _item.GetComponent<Animator>().Play("FadeIn");
+                _item.transform.localScale = Vector3.one*1.5f;
+                yield return new WaitForSeconds(0.5f);
+                break;
+            case 1:
+                count = selfPlayerStrongholdAttributes.Count;
+                for (int i = 1; i < count; i++)
+                {
+                    p = selfPlayerStrongholdAttributes[i];
+                    _item = AndaDataManager.Instance.InstantiateMenu<MapUIItem_icon_lvBoard_Name>(ONAME.MapUIItemShboard_PlayerSH);
+                    _item.transform.SetInto(mapMenu.itemBox);
+                    _item.SetInfo(p);
+                    _item.SetController(mapController);
+                    _item.RegisterClickCallBack(mapController.ClickSelectMapItem);
+                    if (minePlayerStrongholdItems == null) minePlayerStrongholdItems = new List<MapUIItem_icon_lvBoard_Name>();
+                    minePlayerStrongholdItems.Add(_item);
+                    yield return new WaitForSeconds(0.1f);
+                }
+                break;
+            case 2:
+                RemoveAllMineStronghold();
+                count = selfPlayerStrongholdAttributes.Count;
+                for (int i = 0; i < count; i++)
+                {
+                    p = selfPlayerStrongholdAttributes[i];
+                    _item = AndaDataManager.Instance.InstantiateMenu<MapUIItem_icon_lvBoard_Name>(ONAME.MapUIItemShboard_PlayerSH);
+                    _item.transform.SetInto(mapMenu.itemBox);
+                    _item.SetInfo(p);
+                    _item.SetController(mapController);
+                    _item.RegisterClickCallBack(mapController.ClickSelectMapItem);
+                    if (minePlayerStrongholdItems == null) minePlayerStrongholdItems = new List<MapUIItem_icon_lvBoard_Name>();
+                    minePlayerStrongholdItems.Add(_item);
+                    yield return new WaitForSeconds(0.1f);
+                }
+                break;
         }
     }
 
-    public void BuildAnotherPlayerSHUI()
+    public IEnumerator BuildAnotherPlayerSHUI(int type)
     {
-        RemoveAllOtherPlayerStronghold();
-        int count = otherPlayerStrongholdAttributes.Count;
-        for (int i = 0; i < count; i++)
+        int count = 0;
+        MapUIItem_icon_lvBoard_Name _item = null;
+        PlayerStrongholdAttribute p = null;
+        switch (type)
         {
-            PlayerStrongholdAttribute p = otherPlayerStrongholdAttributes[i];
-            MapUIItem_icon_lvBoard_Name _item = AndaDataManager.Instance.InstantiateMenu<MapUIItem_icon_lvBoard_Name>(ONAME.MapUIItemShboard_PlayerSH);
-            _item.transform.SetInto(mapMenu.itemBox);
-            _item.SetInfo(p);
-            _item.RegisterClickCallBack(mapController.ClickSelectMapItem);
-            if (otherPlayerStrongholdItems == null) otherPlayerStrongholdItems = new List<MapUIItem_icon_lvBoard_Name>();
-            otherPlayerStrongholdItems.Add(_item);
+            case 0:
+                RemoveAllOtherPlayerStronghold();
+                p = otherPlayerStrongholdAttributes[0];
+                _item = AndaDataManager.Instance.InstantiateMenu<MapUIItem_icon_lvBoard_Name>(ONAME.MapUIItemShboard_PlayerSH);
+                _item.transform.SetInto(mapMenu.itemBox);
+                _item.SetInfo(p);
+                _item.SetController(mapController);
+                _item.RegisterClickCallBack(mapController.ClickSelectMapItem);
+                if (otherPlayerStrongholdItems == null) otherPlayerStrongholdItems = new List<MapUIItem_icon_lvBoard_Name>();
+                otherPlayerStrongholdItems.Add(_item);
+                _item.GetComponent<Animator>().Play("FadeIn");
+                _item.transform.localScale = Vector3.one * 1.5f;
+                yield return new WaitForSeconds(0.5f);
+                break;
+            case 1:
+                count = otherPlayerStrongholdAttributes.Count;
+                for (int i = 1; i < count; i++)
+                {
+                    p = otherPlayerStrongholdAttributes[i];
+                    _item = AndaDataManager.Instance.InstantiateMenu<MapUIItem_icon_lvBoard_Name>(ONAME.MapUIItemShboard_PlayerSH);
+                    _item.transform.SetInto(mapMenu.itemBox);
+                    _item.SetInfo(p);
+                    _item.SetController(mapController);
+                    _item.RegisterClickCallBack(mapController.ClickSelectMapItem);
+                    if (otherPlayerStrongholdItems == null) otherPlayerStrongholdItems = new List<MapUIItem_icon_lvBoard_Name>();
+                    otherPlayerStrongholdItems.Add(_item);
+                    _item.GetComponent<Animator>().Play("FadeIn");
+                    yield return new WaitForSeconds(0.1f);
+                }
+                break;
+            case 2:
+                RemoveAllOtherPlayerStronghold();
+                count = otherPlayerStrongholdAttributes.Count;
+                for (int i = 0; i < count; i++)
+                {
+
+                    p = otherPlayerStrongholdAttributes[i];
+                    _item = AndaDataManager.Instance.InstantiateMenu<MapUIItem_icon_lvBoard_Name>(ONAME.MapUIItemShboard_PlayerSH);
+                    _item.transform.SetInto(mapMenu.itemBox);
+                    _item.SetInfo(p);
+                    _item.SetController(mapController);
+                    _item.RegisterClickCallBack(mapController.ClickSelectMapItem);
+                    if (otherPlayerStrongholdItems == null) otherPlayerStrongholdItems = new List<MapUIItem_icon_lvBoard_Name>();
+                    otherPlayerStrongholdItems.Add(_item);
+                    _item.GetComponent<Animator>().Play("FadeIn");
+                    yield return new WaitForSeconds(0.1f);
+                }
+                break;
         }
     }
 
-
-    public void BuildMineExchangeSHUI()
+    public IEnumerator BuildMineExchangeSHUI(int type)
     {
-        RemoveAllMineExchangeSH();
-        int count = mineExchagnesAttributes.Count;
-        for (int i = 0; i < count; i++)
+        int count = 0;
+        Exchange p = null;
+        MapUIItem_icon_lvBoard_Name _item = null;
+        AndaObjectBasic minObj = null;
+        switch (type)
         {
-            Exchange p = mineExchagnesAttributes[i];
-            MapUIItem_icon_lvBoard_Name  _item = AndaDataManager.Instance.InstantiateMenu<MapUIItem_icon_lvBoard_Name>(ONAME.MapUIItemShboard_exchangeSH);
-            _item.transform.SetInto(mapMenu.itemBox);
-            _item.SetInfo(p);
-            _item.RegisterClickCallBack(mapController.OpenExchangeStrongholdInformation);
-            if (mineExchangeStrongholdItems == null) mineExchangeStrongholdItems = new List<MapUIItem_icon_lvBoard_Name>();
-            mineExchangeStrongholdItems.Add(_item);
-            AndaObjectBasic minObj = AndaDataManager.Instance.InstantiateOtherObj<AndaObjectBasic>("MapItem_ExchagneObj");
-            minObj.SetInto(AndaMap.Instance.andaMapController.abstractMap.transform);
-            minObj.transform.position = mineExchangeSHWorldPose[i];
-            minObj.transform.localScale = Vector3.one * mapItemObjScale;
-            mineExchagneStrongholdItem_obj.Add(minObj);
+            case 0:
+                RemoveAllMineExchangeSH();
+                p = mineExchagnesAttributes[0];
+                _item = AndaDataManager.Instance.InstantiateMenu<MapUIItem_icon_lvBoard_Name>(ONAME.MapUIItemShboard_exchangeSH);
+                _item.transform.SetInto(mapMenu.itemBox);
+                _item.SetInfo(p,mineExchangeSHWorldPose[0]);
+                _item.SetController(mapController);
+                _item.RegisterClickCallBack(mapController.OpenExchangeStrongholdInformation);
+                if (mineExchangeStrongholdItems == null) mineExchangeStrongholdItems = new List<MapUIItem_icon_lvBoard_Name>();
+                mineExchangeStrongholdItems.Add(_item);
+                minObj = AndaDataManager.Instance.InstantiateOtherObj<AndaObjectBasic>("MapItem_ExchagneObj");
+                minObj.SetInto(AndaMap.Instance.andaMapController.abstractMap.transform);
+                minObj.transform.position = mineExchangeSHWorldPose[0];
+                minObj.transform.localScale = Vector3.one * mapItemObjScale;
+                mineExchagneStrongholdItem_obj.Add(minObj);
+                minObj.transform.localScale *= 1.2f;
+                minObj.GetComponent<Animator>().Play("FadeIn");
+                yield return new WaitForSeconds(0.5f);
+                break;
+            case 1:
+                count = mineExchagnesAttributes.Count;
+                for (int i = 1; i < count; i++)
+                {
+                    p = mineExchagnesAttributes[i];
+                    _item = AndaDataManager.Instance.InstantiateMenu<MapUIItem_icon_lvBoard_Name>(ONAME.MapUIItemShboard_exchangeSH);
+                    _item.transform.SetInto(mapMenu.itemBox);
+                    _item.SetInfo(p,mineExchangeSHWorldPose[i]);
+                    _item.SetController(mapController);
+                    _item.RegisterClickCallBack(mapController.OpenExchangeStrongholdInformation);
+                    if (mineExchangeStrongholdItems == null) mineExchangeStrongholdItems = new List<MapUIItem_icon_lvBoard_Name>();
+                    mineExchangeStrongholdItems.Add(_item);
+                    minObj = AndaDataManager.Instance.InstantiateOtherObj<AndaObjectBasic>("MapItem_ExchagneObj");
+                    minObj.SetInto(AndaMap.Instance.andaMapController.abstractMap.transform);
+                    minObj.transform.position = mineExchangeSHWorldPose[i];
+                    minObj.transform.localScale = Vector3.one * mapItemObjScale;
+                    mineExchagneStrongholdItem_obj.Add(minObj);
+                    minObj.GetComponent<Animator>().Play("FadeIn");
+                    yield return new WaitForSeconds(0.1f);
+                }
+                break;
+            case 2:
+
+                RemoveAllMineExchangeSH();
+                count = mineExchagnesAttributes.Count;
+                for (int i = 0; i < count; i++)
+                {
+                    p = mineExchagnesAttributes[i];
+                    _item = AndaDataManager.Instance.InstantiateMenu<MapUIItem_icon_lvBoard_Name>(ONAME.MapUIItemShboard_exchangeSH);
+                    _item.transform.SetInto(mapMenu.itemBox);
+                    _item.SetInfo(p, mineExchangeSHWorldPose[i]);
+                    _item.SetController(mapController);
+                    _item.RegisterClickCallBack(mapController.OpenExchangeStrongholdInformation);
+                    if (mineExchangeStrongholdItems == null) mineExchangeStrongholdItems = new List<MapUIItem_icon_lvBoard_Name>();
+                    mineExchangeStrongholdItems.Add(_item);
+                    minObj = AndaDataManager.Instance.InstantiateOtherObj<AndaObjectBasic>("MapItem_ExchagneObj");
+                    minObj.SetInto(AndaMap.Instance.andaMapController.abstractMap.transform);
+                    minObj.transform.position = mineExchangeSHWorldPose[i];
+                    minObj.transform.localScale = Vector3.one * mapItemObjScale;
+                    mineExchagneStrongholdItem_obj.Add(minObj);
+                    minObj.GetComponent<Animator>().Play("FadeIn");
+                    yield return new WaitForSeconds(0.1f);
+                }
+                break;
         }
     }
 
-    public void BuildOtherExchangeUI()
+    public IEnumerator BuildOtherExchangeUI(int type)
     {
-        RemoveAllOtherExchagneSH();
-        int count = otherExchangeAttributes.Count;
-        for (int i = 0; i < count; i++)
+        int count = 0;
+        Exchange p = null;
+        MapUIItem_icon_lvBoard_Name _item = null;
+        AndaObjectBasic otheObj = null;
+        switch (type)
         {
-            Exchange p = otherExchangeAttributes[i];
-            MapUIItem_icon_lvBoard_Name _item = AndaDataManager.Instance.InstantiateMenu<MapUIItem_icon_lvBoard_Name>(ONAME.MapUIItemShboard_exchangeSH);
-            _item.transform.SetInto(mapMenu.itemBox);
-            _item.SetInfo(p);
-            _item.RegisterClickCallBack(mapController.OpenExchangeStrongholdInformation);
-            if (OtherExchangeStrongholdItems == null) OtherExchangeStrongholdItems = new List<MapUIItem_icon_lvBoard_Name>();
-            OtherExchangeStrongholdItems.Add(_item);
-            AndaObjectBasic otheObj = AndaDataManager.Instance.InstantiateOtherObj<AndaObjectBasic>("MapItem_ExchagneObj");
-            otheObj.SetInto(AndaMap.Instance.andaMapController.abstractMap.transform);
-            otheObj.transform.position = otherExchangeSHWorldPose[i];
-            otheObj.transform.localScale = Vector3.one * mapItemObjScale;
-            otherExcangeStrongholdItem_obj.Add(otheObj);
+            case 0:
+                RemoveAllOtherExchagneSH();
+                p = otherExchangeAttributes[0];
+                _item = AndaDataManager.Instance.InstantiateMenu<MapUIItem_icon_lvBoard_Name>(ONAME.MapUIItemShboard_exchangeSH);
+                _item.transform.SetInto(mapMenu.itemBox);
+                _item.SetInfo(p, otherExchangeSHWorldPose[0]);
+                _item.SetController(mapController);
+                _item.RegisterClickCallBack(mapController.OpenExchangeStrongholdInformation);
+                if (OtherExchangeStrongholdItems == null) OtherExchangeStrongholdItems = new List<MapUIItem_icon_lvBoard_Name>();
+                OtherExchangeStrongholdItems.Add(_item);
+                otheObj = AndaDataManager.Instance.InstantiateOtherObj<AndaObjectBasic>("MapItem_ExchagneObj");
+                otheObj.SetInto(AndaMap.Instance.andaMapController.abstractMap.transform);
+                otheObj.transform.position = otherExchangeSHWorldPose[0];
+                otheObj.transform.localScale = Vector3.one * mapItemObjScale;
+                otherExcangeStrongholdItem_obj.Add(otheObj);
+                otheObj.transform.localScale *= 1.2f;
+                otheObj.GetComponent<Animator>().Play("FadeIn");
+                yield return new WaitForSeconds(0.5f);
+                break;
+            case 1:
+                count = otherExchangeAttributes.Count;
+                for (int i = 1; i < count; i++)
+                {
+                    p = otherExchangeAttributes[i];
+                    _item = AndaDataManager.Instance.InstantiateMenu<MapUIItem_icon_lvBoard_Name>(ONAME.MapUIItemShboard_exchangeSH);
+                    _item.transform.SetInto(mapMenu.itemBox);
+                    _item.SetInfo(p, otherExchangeSHWorldPose[i]);
+                    _item.SetController(mapController);
+                    _item.RegisterClickCallBack(mapController.OpenExchangeStrongholdInformation);
+                    if (OtherExchangeStrongholdItems == null) OtherExchangeStrongholdItems = new List<MapUIItem_icon_lvBoard_Name>();
+                    OtherExchangeStrongholdItems.Add(_item);
+                    otheObj = AndaDataManager.Instance.InstantiateOtherObj<AndaObjectBasic>("MapItem_ExchagneObj");
+                    otheObj.SetInto(AndaMap.Instance.andaMapController.abstractMap.transform);
+                    otheObj.transform.position = otherExchangeSHWorldPose[i];
+                    otheObj.transform.localScale = Vector3.one * mapItemObjScale;
+                    otherExcangeStrongholdItem_obj.Add(otheObj);
+                    otheObj.GetComponent<Animator>().Play("FadeIn");
+                    yield return new WaitForSeconds(0.1f);
+                }
+                break;
+            case 2:
+                RemoveAllOtherExchagneSH();
+                count = otherExchangeAttributes.Count;
+                for (int i = 0; i < count; i++)
+                {
+                    p = otherExchangeAttributes[i];
+                    _item = AndaDataManager.Instance.InstantiateMenu<MapUIItem_icon_lvBoard_Name>(ONAME.MapUIItemShboard_exchangeSH);
+                    _item.transform.SetInto(mapMenu.itemBox);
+                    _item.SetInfo(p, otherExchangeSHWorldPose[i]);
+                    _item.SetController(mapController);
+                    _item.RegisterClickCallBack(mapController.OpenExchangeStrongholdInformation);
+                    if (OtherExchangeStrongholdItems == null) OtherExchangeStrongholdItems = new List<MapUIItem_icon_lvBoard_Name>();
+                    OtherExchangeStrongholdItems.Add(_item);
+                    otheObj = AndaDataManager.Instance.InstantiateOtherObj<AndaObjectBasic>("MapItem_ExchagneObj");
+                    otheObj.SetInto(AndaMap.Instance.andaMapController.abstractMap.transform);
+                    otheObj.transform.position = otherExchangeSHWorldPose[i];
+                    otheObj.transform.localScale = Vector3.one * mapItemObjScale;
+                    otherExcangeStrongholdItem_obj.Add(otheObj);
+                    otheObj.GetComponent<Animator>().Play("FadeIn");
+                    yield return new WaitForSeconds(0.1f);
+                }
+                break;
         }
     }
 
-
-    public void BuildAllRangeBussinessStrongholdItems()
+    public IEnumerator BuildAllRangeBussinessStrongholdItems(int type)
     {
-        RemoveAllBussinessStronghold();
-        int count = bussinessStrongholdAttributes.Count;
-        for(int i = 0 ; i < count; i++)
+        int count = 0;
+        BusinessStrongholdAttribute p = null;
+        MapUIItem_icon_lvBoard_Name _item;
+        AndaObjectBasic andaObjectBasic;
+        Sprite imgPor = null;
+        Sprite levelBoard = null;
+        switch (type)
         {
-            BusinessStrongholdAttribute p = bussinessStrongholdAttributes[i];
-            MapUIItem_icon_lvBoard_Name _item = AndaDataManager.Instance.InstantiateMenu<MapUIItem_icon_lvBoard_Name>(ONAME.MapUIItemShboard_BussinesssSH);
-            _item.transform.SetInto(mapMenu.itemBox);
-            Sprite imgPor = AndaDataManager.Instance.GetStrongholdPorSprite(p.statueID.ToString());
-            Sprite levelBoard = AndaDataManager.Instance.objdataManager.GetBussinessStrongholdLevelSprite(p.strongholdLevel);
-            _item.SetInfo(p);
-            _item.RegisterClickCallBack(mapController.ClickSelectMapItem);
-            if (businessStrongholdItems == null) businessStrongholdItems = new List<MapUIItem_icon_lvBoard_Name>();
-            businessStrongholdItems.Add(_item);
-            AndaObjectBasic andaObjectBasic = AndaDataManager.Instance.InstantiateTower<AndaObjectBasic>((20001+p.strongholdLevel).ToString());
-            andaObjectBasic.SetInto(AndaMap.Instance.andaMapController.abstractMap.transform);
-            andaObjectBasic.transform.position = bussinessStrongholdAttributes[i].strongholdInMapPosition;
-            andaObjectBasic.transform.localScale = Vector3.one * mapItemObjScale;
-            bussinessStrongholdItems_obj.Add(andaObjectBasic);
+            case 0:
+                RemoveAllBussinessStronghold();
+                p = bussinessStrongholdAttributes[0];
+                _item = AndaDataManager.Instance.InstantiateMenu<MapUIItem_icon_lvBoard_Name>(ONAME.MapUIItemShboard_BussinesssSH);
+                _item.transform.SetInto(mapMenu.itemBox);
+                imgPor = AndaDataManager.Instance.GetStrongholdPorSprite(p.statueID.ToString());
+                levelBoard = AndaDataManager.Instance.objdataManager.GetBussinessStrongholdLevelSprite(p.strongholdLevel);
+                _item.SetInfo(p);
+                _item.SetController(mapController);
+                _item.RegisterClickCallBack(mapController.ClickSelectMapItem);
+                if (businessStrongholdItems == null) businessStrongholdItems = new List<MapUIItem_icon_lvBoard_Name>();
+                businessStrongholdItems.Add(_item);
+                andaObjectBasic = AndaDataManager.Instance.InstantiateTower<AndaObjectBasic>((20001 + p.strongholdLevel).ToString());
+                andaObjectBasic.SetInto(AndaMap.Instance.andaMapController.abstractMap.transform);
+                andaObjectBasic.transform.position = bussinessStrongholdAttributes[0].strongholdInMapPosition;
+                andaObjectBasic.transform.localScale = Vector3.one * mapItemObjScale;
+                bussinessStrongholdItems_obj.Add(andaObjectBasic);
+                andaObjectBasic.transform.localScale *= 1.5f;
+
+                yield return new WaitForSeconds(0.5f);
+                break;
+            case 1:
+                count = bussinessStrongholdAttributes.Count;
+                for (int i = 1; i < count; i++)
+                {
+                    p = bussinessStrongholdAttributes[i];
+                    _item = AndaDataManager.Instance.InstantiateMenu<MapUIItem_icon_lvBoard_Name>(ONAME.MapUIItemShboard_BussinesssSH);
+                    _item.transform.SetInto(mapMenu.itemBox);
+                    imgPor = AndaDataManager.Instance.GetStrongholdPorSprite(p.statueID.ToString());
+                    levelBoard = AndaDataManager.Instance.objdataManager.GetBussinessStrongholdLevelSprite(p.strongholdLevel);
+                    _item.SetInfo(p);
+                    _item.SetController(mapController);
+                    _item.RegisterClickCallBack(mapController.ClickSelectMapItem);
+                    if (businessStrongholdItems == null) businessStrongholdItems = new List<MapUIItem_icon_lvBoard_Name>();
+                    businessStrongholdItems.Add(_item);
+                    andaObjectBasic = AndaDataManager.Instance.InstantiateTower<AndaObjectBasic>((20001 + p.strongholdLevel).ToString());
+                    andaObjectBasic.SetInto(AndaMap.Instance.andaMapController.abstractMap.transform);
+                    andaObjectBasic.transform.position = bussinessStrongholdAttributes[i].strongholdInMapPosition;
+                    andaObjectBasic.transform.localScale = Vector3.one * mapItemObjScale;
+                    bussinessStrongholdItems_obj.Add(andaObjectBasic);
+                    yield return new WaitForSeconds(0.1f);
+                }
+                mapController.StartCoroutine(CheckBussinessSHPortol());
+                break;
+            case 2:
+                RemoveAllBussinessStronghold();
+                count = bussinessStrongholdAttributes.Count;
+                for (int i = 0; i < count; i++)
+                {
+                     p = bussinessStrongholdAttributes[i];
+                     _item = AndaDataManager.Instance.InstantiateMenu<MapUIItem_icon_lvBoard_Name>(ONAME.MapUIItemShboard_BussinesssSH);
+                    _item.transform.SetInto(mapMenu.itemBox);
+                     imgPor = AndaDataManager.Instance.GetStrongholdPorSprite(p.statueID.ToString());
+                     levelBoard = AndaDataManager.Instance.objdataManager.GetBussinessStrongholdLevelSprite(p.strongholdLevel);
+                    _item.SetInfo(p);
+                    _item.SetController(mapController);
+                    _item.RegisterClickCallBack(mapController.ClickSelectMapItem);
+                    if (businessStrongholdItems == null) businessStrongholdItems = new List<MapUIItem_icon_lvBoard_Name>();
+                    businessStrongholdItems.Add(_item);
+                    andaObjectBasic = AndaDataManager.Instance.InstantiateTower<AndaObjectBasic>((20001 + p.strongholdLevel).ToString());
+                    andaObjectBasic.SetInto(AndaMap.Instance.andaMapController.abstractMap.transform);
+                    andaObjectBasic.transform.position = bussinessStrongholdAttributes[i].strongholdInMapPosition;
+                    andaObjectBasic.transform.localScale = Vector3.one * mapItemObjScale;
+                    bussinessStrongholdItems_obj.Add(andaObjectBasic);
+                    yield return new WaitForSeconds(0.1f);
+                }
+                mapController.StartCoroutine(CheckBussinessSHPortol());
+                break;
         }
-        mapController.StartCoroutine(CheckBussinessSHPortol());
     }
+
+    #endregion
+
+    #region 交换位置
+    //交换占星庭的顺序
+    private void ExchangePoseWithPlayerAtt()
+    {
+        int psaCount = selfPlayerStrongholdAttributes.Count;
+        bool isReset = false;
+        for (int i = 0; i < psaCount; i++)
+        {
+            if (selfPlayerStrongholdAttributes[i].strongholdIndex == targetSHAttributeIndex)
+            {
+                if (i == 0)
+                {
+                    isReset = true;
+                    break;
+                }
+                PlayerStrongholdAttribute _psa = selfPlayerStrongholdAttributes[i];
+                selfPlayerStrongholdAttributes[i] = selfPlayerStrongholdAttributes[0];
+                selfPlayerStrongholdAttributes[0] = _psa;
+                isReset = true;
+                break;
+            }
+        }
+        if (!isReset)
+        {
+            psaCount = otherPlayerStrongholdAttributes.Count;
+            for (int i = 0; i < psaCount; i++)
+            {
+                if (otherPlayerStrongholdAttributes[i].strongholdIndex == targetSHAttributeIndex)
+                {
+                    if (i == 0)
+                    {
+                        isReset = true;
+                        break;
+                    }
+
+                    PlayerStrongholdAttribute _psa = otherPlayerStrongholdAttributes[i];
+                    otherPlayerStrongholdAttributes[i] = otherPlayerStrongholdAttributes[0];
+                    otherPlayerStrongholdAttributes[0] = _psa;
+                    isReset = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    //交换交易所的顺序
+    private void ExchangePoseWitExchangeAttr()
+    {
+        int psaCount = mineExchagnesAttributes.Count;
+        bool isReset = false;
+        for (int i = 0; i < psaCount; i++)
+        {
+            if (mineExchagnesAttributes[i].exchangeIndex == targetSHAttributeIndex)
+            {
+                if (i == 0)
+                {
+                    isReset = true;
+                    break;
+                }
+                Exchange _psa = mineExchagnesAttributes[i];
+                Vector3 _v = mineExchangeSHWorldPose[i];
+                mineExchagnesAttributes[i] = mineExchagnesAttributes[0];
+                mineExchagnesAttributes[0] = _psa;
+                mineExchangeSHWorldPose[i] = mineExchangeSHWorldPose[0];
+                mineExchangeSHWorldPose[0] = _v;
+                isReset = true;
+                break;
+            }
+        }
+        if (!isReset)
+        {
+            psaCount = otherExchangeAttributes.Count;
+            for (int i = 0; i < psaCount; i++)
+            {
+                if (otherExchangeAttributes[i].exchangeIndex == targetSHAttributeIndex)
+                {
+                    if (i == 0)
+                    {
+                        isReset = true;
+                        break;
+                    }
+
+                    Exchange _psa = otherExchangeAttributes[i];
+                    Vector3 _v = otherExchangeSHWorldPose[i];
+                    otherExchangeAttributes[i] = otherExchangeAttributes[0];
+                    otherExchangeAttributes[0] = _psa;
+                    otherExchangeSHWorldPose[i] = otherExchangeSHWorldPose[0];
+                    otherExchangeSHWorldPose[0] = _v;
+                    isReset = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    //交换商家据点的顺序
+    private void ExchangePoseWitBussinessAttr()
+    {
+        int psaCount = bussinessStrongholdAttributes.Count;
+       // bool isReset = false;
+        for (int i = 0; i < psaCount; i++)
+        {
+            if (bussinessStrongholdAttributes[i].strongholdIndex == targetSHAttributeIndex)
+            {
+                if (i == 0)
+                {
+                  //  isReset = true;
+                    break;
+                }
+                BusinessStrongholdAttribute _psa = bussinessStrongholdAttributes[i];
+                bussinessStrongholdAttributes[i] = bussinessStrongholdAttributes[0];
+                bussinessStrongholdAttributes[0] = _psa;
+               // isReset = true;
+                break;
+            }
+        
+    }
+    
+    }
+    #endregion
+
+
+   
+
+
+
 
     private IEnumerator CheckBussinessSHPortol()
     {
@@ -670,7 +1087,7 @@ public class MapCtrData : ControllerData {
         mineExchangeSHWorldPose.Add(v3d);
         MapUIItem_icon_lvBoard_Name _item = AndaDataManager.Instance.InstantiateMenu<MapUIItem_icon_lvBoard_Name>(ONAME.MapUIItemShboard_exchangeSH);
         _item.transform.SetInto(mapMenu.itemBox);
-        _item.SetInfo(_exchange);
+        _item.SetInfo(_exchange,Vector3.zero);
         if(minePlayerStrongholdItems == null) minePlayerStrongholdItems = new List<MapUIItem_icon_lvBoard_Name>();
         mineExchangeStrongholdItems.Add(_item);
 
@@ -700,6 +1117,22 @@ public class MapCtrData : ControllerData {
         if(jIRVISContent_ChanllengeGameStronghold == null)return;
         AndaDataManager.Instance.RecieveItem(jIRVISContent_ChanllengeGameStronghold);
         jIRVISContent_ChanllengeGameStronghold = null;
+    }
+
+    public void BuildMinePlayerStrongholdInfomation(PlayerStrongholdAttribute _psa)
+    {
+        MapBar_MineStrongholdInformationBar mapBar_MineStrongholdInformationBar = 
+            AndaDataManager.Instance.InstantiateMenu<MapBar_MineStrongholdInformationBar>(ONAME.MapBar_MineStrongholdInformationBar);
+        mapBar_MineStrongholdInformationBar.SetInto(AndaUIManager.Instance.jirvis_top);
+        mapBar_MineStrongholdInformationBar.SetInfo(_psa);
+    }
+    public void BuildOtherPlayerStrongholdInformation(PlayerStrongholdAttribute _psa ,PlayerMonsterAttribute _pma, System.Action<bool> PlayerComfirmGame, System.Action callbackClose)
+    {
+        JIRVISContent_ChanllengeGameStrongholdInfo other = AndaDataManager.Instance.InstantiateMenu<JIRVISContent_ChanllengeGameStrongholdInfo>(ONAME.JIRVISEditorBar_ChanllengeGameStrongholdInfo);
+        other.transform.SetUIInto(JIRVIS.Instance.jIRVISData.getJIRVISBar.EditorboardPoint.transform);
+        other.SetInfo(_pma, _psa);
+        other.CallBackResult = PlayerComfirmGame;
+        other.callbackClose = callbackClose;
     }
 
     public void SelectStrongholdDrawItem(int ID)
@@ -782,6 +1215,34 @@ public class MapCtrData : ControllerData {
         float x = Random.Range(-30,30);
         float z = Random.Range(-30,30);
 */
+    }
+
+    public Vector3 ExchangeWolrdPose(Exchange exchange)
+    {
+        if(exchange.userIndex == AndaDataManager.Instance.userData.userIndex)
+        {
+            int count = mineExchagnesAttributes.Count;
+            for(int i = 0; i < count; i++)
+            {
+                if(mineExchagnesAttributes[i].exchangeIndex == exchange.exchangeIndex)
+                {
+                    return mineExchangeSHWorldPose[i];
+                }
+            }
+           
+        }else
+        {
+            int count = otherExchangeAttributes.Count;
+            for (int i = 0; i < count; i++)
+            {
+                if (otherExchangeAttributes[i].exchangeIndex == exchange.exchangeIndex)
+                {
+                    return otherExchangeSHWorldPose[i];
+                }
+            }
+        }
+
+        return Vector3.zero;
     }
 
 }

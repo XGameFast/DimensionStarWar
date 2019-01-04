@@ -70,7 +70,7 @@ public class SpriteSelector : ScriptableWizard
 				return;
 			}
 
-			BetterList<string> sprites = atlas.GetListOfSprites(NGUISettings.partialSprite);
+			BetterList2<string> sprites = atlas.GetListOfSprites(NGUISettings.partialSprite);
 			
 			float size = 80f;
 			float padded = size + 10f;

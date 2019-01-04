@@ -15,7 +15,7 @@ using UnityEngine;
 [AddComponentMenu("NGUI/Interaction/Scroll View")]
 public class UIScrollView : MonoBehaviour
 {
-	static public BetterList<UIScrollView> list = new BetterList<UIScrollView>();
+	static public BetterList2<UIScrollView> list = new BetterList2<UIScrollView>();
 
 	public enum Movement
 	{

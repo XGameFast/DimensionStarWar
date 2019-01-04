@@ -69,19 +69,10 @@ public class BuildDimensionRoomController : BaseController {
     #region 打开 和 关闭 jirvis面板上的 我的据点
     private void OpenJIRVISStrongholdBtnForMine()
     {
-        JIRVIS.Instance.BuildDimensionRoomBtnList(data.getPlayerSHAData, ClickJIRVISDimensionBtn, FinishBuildDmsionbtn);
+        JIRVIS.Instance.BuildDimensionRoomBtnList(data.getPlayerSHAData, ClickJIRVISDimensionBtn);
        
     }
-    private void FinishBuildDmsionbtn()
-    {
-        JIRVISFuncBtnStruct jIRVISFuncBtnStruct = new JIRVISFuncBtnStruct
-        {
-            btnName = "返回",
-            btnIconKey = ONAME.BackStep,
-            clickCallBack = CloseJIRVISStrongholdBtnForMine
-        };
-        JIRVIS.Instance.AddFunctionBtn(jIRVISFuncBtnStruct);
-    }
+
 
     private void CloseJIRVISStrongholdBtnForMine()
     {
@@ -652,12 +643,7 @@ public class BuildDimensionRoomController : BaseController {
     private void ClickJIRVISOpenFreeMonsters()
     {
         List<PlayerMonsterAttribute> monsterAttributes = AndaDataManager.Instance.GetUserFreesMonster();
-        JIRVIS.Instance.BuildMonsterBtnList(monsterAttributes, ClickAddNewMonsterToThisStronghold, FinishJIRVISMonsterBtn);
-    }
-    private void FinishJIRVISMonsterBtn()
-    {
-        JIRVIS.Instance.AddFunctionBtn(new JIRVISFuncBtnStruct { btnName = "backstep", btnIconKey = ONAME.BackStep, clickCallBack = ClickCancelSetMonster });
-
+        JIRVIS.Instance.BuildMonsterBtnList(monsterAttributes, ClickAddNewMonsterToThisStronghold, null , true, 6 );
     }
 
     private void ClickCancelSetMonster()
@@ -781,7 +767,7 @@ public class BuildDimensionRoomController : BaseController {
 
                 List<JIRVISFuncBtnStruct> tmp2 = new List<JIRVISFuncBtnStruct>
                 {
-                    new JIRVISFuncBtnStruct{ btnName = "我的据点" , btnIconKey = ONAME.minePlayerSH, clickCallBack = OpenJIRVISStrongholdBtnForMine },
+                    new JIRVISFuncBtnStruct{ btnName = "我的据点" , btnIconKey = ONAME.minePlayerSH, btnType = 1 , clickCallBack = OpenJIRVISStrongholdBtnForMine },
                     new JIRVISFuncBtnStruct{ btnName = "星域",btnIconKey = ONAME.MapIcon, clickCallBack = EnterStarmap /*JIRVIS.Instance.aRMonsterMainController.EnterStarspace */},
                     new JIRVISFuncBtnStruct{ btnName = "探索",btnIconKey = ONAME.TrvalIcon,   clickCallBack = CallBackEnterSearch },
                      new JIRVISFuncBtnStruct{ btnName = "商城",btnIconKey = ONAME.MallIcon,  clickCallBack = CallBackEnterMall/*JIRVIS.Instance.aRMonsterMainController.EnterMall*/},
@@ -1063,12 +1049,7 @@ public class BuildDimensionRoomController : BaseController {
 
     private void CallBackClickJIRVISOpenMonsterListBtn()
     {
-        JIRVIS.Instance.BuildMonsterBtnList(data.getPlayerMonsters,CallBackClickJIRVISMonsterBtn, AddBackSetupBtnWithCallBackClickJIRVISOpenMonsterListBtn);
-    }
-    private void AddBackSetupBtnWithCallBackClickJIRVISOpenMonsterListBtn()
-    {
-        JIRVIS.Instance.AddFunctionBtn(new JIRVISFuncBtnStruct { btnName = "", btnIconKey = ONAME.BackStep, clickCallBack = CallBackClickJIRVISCloseMineMonsterListBtn });
-
+        JIRVIS.Instance.BuildMonsterBtnList(data.getPlayerMonsters,CallBackClickJIRVISMonsterBtn);
     }
 
     //[在占星庭界面点了回退按钮，关闭我的宠物列表]

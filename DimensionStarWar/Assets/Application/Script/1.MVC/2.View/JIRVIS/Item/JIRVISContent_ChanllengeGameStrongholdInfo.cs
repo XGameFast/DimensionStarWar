@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 public class JIRVISContent_ChanllengeGameStrongholdInfo : UIBasic2 {
 
+
+    public Text strongholdLevelText;
+    public Slider strongholdLevelSlider;
     public Text strongholdMedalName;
     public Text strongholdName;
     public Text strongholdMonsterNickname;
@@ -12,6 +15,7 @@ public class JIRVISContent_ChanllengeGameStrongholdInfo : UIBasic2 {
     private MonsterPorItem fightMonster;
     private TowerMonster1002 medalBasic;
     private bool canControl =false;
+    private PlayerStrongholdAttribute playerStrongholdAttribute;
     private PlayerMonsterAttribute playerMonsterAttribute;
     private bool isOpenSkillBar =false;
 
@@ -34,12 +38,15 @@ public class JIRVISContent_ChanllengeGameStrongholdInfo : UIBasic2 {
     public Text monsterSpecialSkillValue;
     public Image monsterSpecialSliderImage;
     public System.Action<bool> CallBackResult;
+    public System.Action callbackClose;
     public override void OnDispawn()
     {
         if(medalBasic!=null)
         {
             medalBasic.gameObject.RemoveComponemont<MonsterItemTouchEvent>();
         }
+        callbackClose = null;
+        CallBackResult = null;
         isOpenSkillBar =false;
         canControl =false;
        // FingerEvent.HoriDragGetSpeed -= ControlMedalRotate;
@@ -57,12 +64,13 @@ public class JIRVISContent_ChanllengeGameStrongholdInfo : UIBasic2 {
         base.OnDispawn();
     }
 
-    public void SetInfo(PlayerMonsterAttribute playerMonster , PlayerStrongholdAttribute playerStrongholdAttribute)
+    public void SetInfo(PlayerMonsterAttribute playerMonster , PlayerStrongholdAttribute _playerStrongholdAttribute)
     {
-       //AndaGameExtension.ChangeTextColorToYellow("勋章");
-
+        //AndaGameExtension.ChangeTextColorToYellow("勋章");
+        baseGroup.alpha =1 ;
+        playerStrongholdAttribute = _playerStrongholdAttribute;
         playerMonsterAttribute = playerMonster;
-        strongholdMedalName.text =  "可得:" +  AndaGameExtension.ChangeTextColorToYellow(playerStrongholdAttribute.strongholdNickName) + "[勋章]";
+        /*strongholdMedalName.text =  "可得:" +  AndaGameExtension.ChangeTextColorToYellow(playerStrongholdAttribute.strongholdNickName) + "[勋章]";
         strongholdName.text = playerStrongholdAttribute.strongholdNickName;
         strongholdMonsterNickname.text = playerMonster.monsterNickName;
         BuildMonster(playerMonster);
@@ -71,14 +79,37 @@ public class JIRVISContent_ChanllengeGameStrongholdInfo : UIBasic2 {
       //  FingerEvent.clickSelectItemEvent+= TabMonster;
         canControl=true;
 
+        PlayTips();*/
         PlayTips();
+        SetLevelSlider();
+    }
+
+    public void SetLevelSlider()
+    {
+        StartCoroutine(ExcuteSHLevelSlider());
+    }
+
+    private IEnumerator ExcuteSHLevelSlider()
+    {
+        yield return new WaitForSeconds(1f);
+        float t = 0;
+        while(t < 1)
+        {
+            t += Time.deltaTime ;
+            t = Mathf.Clamp01(t);
+            int maxGlory = MonsterGameData.GetStrongBasedAttribute().playerStrongholdGrowUpExp[playerStrongholdAttribute.strongholdLevel];
+            float per = (float)playerStrongholdAttribute.currentExp / maxGlory;
+            strongholdLevelSlider.value = t * per;
+            strongholdLevelText.text = ((int)(playerStrongholdAttribute.currentExp * t)).ToString();
+            yield return null;
+        }
     }
 
     public void PlayTips()
     {
         OTYPE.Tipscontent tipscontent = OTYPE.Tipscontent.challegeStronghold;
-        string content = "是否立刻对[" + AndaGameExtension.ChangeTextColorToYellow(JIRVIS.Instance.jIRVISData.getCurChallengeStrongholdAttr.strongholdNickName) + "]" + MonsterGameData.GetTipsContent(tipscontent);
-        JIRVIS.Instance.PlayTipsForchoose(content, OTYPE.TipsType.chooseTips, "挑战", "不挑战", Comfirm, Cancel);
+        string content = "是否立刻对[" + AndaGameExtension.ChangeTextColorToYellow(JIRVIS.Instance.jIRVISData.getCurChallengeStrongholdAttr.strongholdNickName) + "]" + MonsterGameData.GetTipsContent(tipscontent) + "您也可以选择偷偷潜入，当然您也可以点击空白区域放弃挑战";
+        JIRVIS.Instance.PlayTipsForchoose(content, OTYPE.TipsType.chooseTips, "直接挑战", "偷偷潜入", Comfirm, Cancel);
     }
 
     private void Comfirm()
@@ -98,6 +129,12 @@ public class JIRVISContent_ChanllengeGameStrongholdInfo : UIBasic2 {
         {
             CallBackResult(false);
         }
+        JIRVIS.Instance.CloseTips();
+        AndaDataManager.Instance.RecieveItem(this);
+    }
+
+    public void ClickCloseItem()
+    {
         JIRVIS.Instance.CloseTips();
         AndaDataManager.Instance.RecieveItem(this);
     }
@@ -312,12 +349,15 @@ public class JIRVISContent_ChanllengeGameStrongholdInfo : UIBasic2 {
 
     public void Update()
     {
-        if(!canControl)return;
+       /* if(!canControl)return;
         if(medalBasic!=null)
         {
             medalBasic.GetComponent<MonsterItemTouchEvent>().OnUpdate();
-        }
+        }*/
 
     }
+
+
+
 
 }

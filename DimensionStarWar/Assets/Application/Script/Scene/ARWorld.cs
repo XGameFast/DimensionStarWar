@@ -135,12 +135,20 @@ public class  ARWorld : AndaObjectBasic
 
     public void OpenBlur()
     {
-        blurItem.gameObject.SetTargetActiveOnce(true);
-        blurItem.GetComponent<Animator>().Play("FadeIn");
+        if(blurItem!=null)
+        {
+            blurItem.gameObject.SetTargetActiveOnce(true);
+            blurItem.GetComponent<Animator>().Play("FadeIn");
+        }
+      
     }
     public void CloseBlur()
     {
-        blurItem.gameObject.SetTargetActiveOnce(false);
+        if(blurItem!=null)
+        {
+            blurItem.gameObject.SetTargetActiveOnce(false);
+        }
+      
     }
 
     public void OpenBackgroundVV(System.Action callbcak =null)

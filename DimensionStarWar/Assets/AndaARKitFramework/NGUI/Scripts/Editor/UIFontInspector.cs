@@ -480,7 +480,7 @@ public class UIFontInspector : Editor
 
 	void ApplyEffect (Effect effect, Color foreground, Color background)
 	{
-		BMFont bf = mFont.bmFont;
+		BMFont2 bf = mFont.bmFont;
 		int offsetX = 0;
 		int offsetY = 0;
 
@@ -497,12 +497,12 @@ public class UIFontInspector : Editor
 		Color32[] atlas = bfTex.GetPixels32();
 
 		// First we need to extract textures for all the glyphs, making them bigger in the process
-		List<BMGlyph> glyphs = bf.glyphs;
+		List<BMGlyph2> glyphs = bf.glyphs;
 		List<Texture2D> glyphTextures = new List<Texture2D>(glyphs.Count);
 
 		for (int i = 0, imax = glyphs.Count; i < imax; ++i)
 		{
-			BMGlyph glyph = glyphs[i];
+			BMGlyph2 glyph = glyphs[i];
 			if (glyph.width < 1 || glyph.height < 1) continue;
 
 			int width = glyph.width;
@@ -620,7 +620,7 @@ public class UIFontInspector : Editor
 
 		for (int i = 0, imax = glyphs.Count; i < imax; ++i)
 		{
-			BMGlyph glyph = glyphs[i];
+			BMGlyph2 glyph = glyphs[i];
 			if (glyph.width < 1 || glyph.height < 1) continue;
 
 			Rect rect = rects[index++];
