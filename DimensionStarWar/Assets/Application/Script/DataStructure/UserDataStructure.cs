@@ -29,7 +29,33 @@ public class UserBaseData
     public List<SkillGrowupAttribute> skillList { get; set; }
 
     public List<SD_Pag4U> playerObjects { get; set; }
+
+    public List<UserAddress> AddressList{get;set;}
 }
+
+public class UserAddress
+{
+    public int userAddressIndex { get; set; }
+    //玩家索引Index
+    public int userIndex { get; set; }
+    //玩家名字
+    public string userName { get; set; }
+    //省
+    public string province { get; set; }
+    //市
+    public string city { get; set; }
+    //县、区
+    public string area { get; set; }
+    //街道
+    public string street { get; set; }
+    //详细地址
+    public string address { get; set; }
+    //联系电话
+    public string phone { get; set; }
+    //联系人姓名
+    public string contacts { get; set; }
+}
+
 //玩家数据
 public class PlayerData :UserBaseData
 {

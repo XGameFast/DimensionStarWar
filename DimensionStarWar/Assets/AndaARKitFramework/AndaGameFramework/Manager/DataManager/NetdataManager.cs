@@ -896,7 +896,9 @@ public class NetdataManager : ManagerBase {
     private IEnumerator ExcuteUpFinishSearchresutl(string _url, WWWForm _wForm, System.Action<bool, string> callback)
     {
         WWW postData = new WWW(_url, _wForm);
+        AndaUIManager.Instance.OpenWaitBoard("请稍等");
         yield return postData;
+        AndaUIManager.Instance.CloseWaitBoard();
         if (postData.error != null)
         {
             Debug.Log(postData.error);
@@ -904,7 +906,9 @@ public class NetdataManager : ManagerBase {
         }
         else
         {
+            #if UNITY_EDITOR
             Debug.Log("postData.text" + postData.text);
+            #endif
             string s = postData.text;
             MonsterSearch res = JsonMapper.ToObject<MonsterSearch>(postData.text);
             if (res.code == "200")
@@ -931,9 +935,12 @@ public class NetdataManager : ManagerBase {
                 }
                 JIRVIS.Instance.jIRVISData.SetNormalRewardList(datalist);
                 JIRVIS.Instance.CheckNormalReward();
-                
+                callback(true, res.ImageUrl);
+            }else
+            {
+                callback(false, null);
             }
-            callback(res.code == "200", res.ImageUrl);
+           
         }
     }
 
@@ -1133,8 +1140,10 @@ public class NetdataManager : ManagerBase {
     private IEnumerator ExcuteCallServerUploadSetMonstertoStronghold(string _url, WWWForm wWWForm , System.Action<bool> callback,int monsterIndex, int strongholdIndex)
     {
         WWW postData = new WWW(_url, wWWForm);
+        AndaUIManager.Instance.OpenWaitBoard("请稍等");
         yield return postData;
-        if(postData.error!=null)
+        AndaUIManager.Instance.CloseWaitBoard();
+        if (postData.error!=null)
         {
             callback(false);
         }else

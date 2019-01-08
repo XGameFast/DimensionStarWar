@@ -153,6 +153,8 @@ public static class ONAME
 
     public static string MapBar_MineStrongholdInformationBar = "MapBar_MineStrongholdInformationBar";
 
+    public static string DimensionRoomItem_tableItemInfo = "DimensionRoomItem_tableItemInfo";
+
     #endregion
 
     #region UI物件
