@@ -865,6 +865,22 @@ public class AndaDataManager {
     }
 
 
+
+    #region 优惠卷
+    public void PlayerCouponUp(int playerCouponIndex, System.Action<bool> callBack)
+    {
+        naetdataManager.PlayerCouponUp(playerCouponIndex,callBack);
+    }
+    #endregion
+
+
+    #region 服务器消息获取
+    public void GetServerMessage(System.Action<ServerMessageRequest> callback)
+    {
+        naetdataManager.GetServerMessage(callback);
+    }
+    #endregion
+
     #region 获取玩家的相关数据
 
     public List<PlayerMonsterAttribute> GetUserFreesMonster()
