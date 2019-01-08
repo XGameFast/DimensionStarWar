@@ -78,7 +78,33 @@ public class PlayerCouponsRequest : Result
     public List<PlayerCoupon> data { get; set; }
 }
 
+public class ServerMessageRequest : Result
+{
+    public List<ServerMessage> serverMessageList { get; set; }
+}
 
+public class ServerMessage
+{
+    public int serverMessageIndex { get; set; }
+    public string serverMessageTitle { get; set; }
+    public string serverMessageText { get; set; }
+    public List<ServerMessageObject> objectList { get; set; }
+    public int hostIndex { get; set; }
+    public int sendTime { get; set; }
+    public int receiveTime { get; set; }
+}
+
+public class ServerMessageObject
+{
+    public int hostIndex { get; set; }
+    public int id { get; set; }
+    public int count { get; set; }
+    public int index { get; set; }
+    public int type { get; set; }
+    public MonsterGrowUpAttribute monsterGrowUpAttribute { get; set; }
+    public SD_Pag4U sD_Pag4U { get; set; }
+    public PlayerCoupon playerCoupon { get; set; }
+}
 public class ResultMonster : Result
 {
     public MonsterGrowUpAttribute MonsterGrowUpAttribute{get;set;}
