@@ -175,6 +175,19 @@ public static class MonsterGameData
         }
     }
 
+    private static MonsterSearchConfig _monsterSearchConfig = null;
+    public static MonsterSearchConfig monsterSearchConfig
+    {
+        get 
+        {
+            if(_monsterSearchConfig == null)
+            {
+                _monsterSearchConfig = JsonMapper.ToObject<MonsterSearchConfig>(PlayerPrefs.GetString(ONAME.MonsterSearchConfigFileName));
+            }
+            return _monsterSearchConfig;
+        }
+    }
+
     //模拟玩家数据
     private static PlayerData _playerdata = null;
     public static PlayerData playerdata

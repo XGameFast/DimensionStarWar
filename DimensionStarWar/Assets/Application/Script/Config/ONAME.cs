@@ -368,6 +368,12 @@ public static class ONAME
     public static string StarConfigFileName = "StarConfig.txt";
     public static string SkillArchievementValueFileName = "SkillArchievementValue.txt";
 
+    //public static string Event.txt
+    public static string SearchConfigFileName = "SearchConfig.txt";
+  
+    public static string MonsterSearchConfigFileName = "MonsterSearchConfig.txt";
+
+    public static string MonsterluckyObjectConfigFileName = "MonsterluckyObjectConfig.txt";
 
     public static string ServerMessage = "ServerMessage.txt";
     #endregion

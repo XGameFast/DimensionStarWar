@@ -503,12 +503,9 @@ public class AndaDataManager {
         userData.AddConsuambleItem(odb);
     }
     //【减少物件，即使用了某个物件  使用的是物件的ID】。这个接口模式是使用一个的。并且是默认从后往前使用
-    public void ReducePlayerConsumableList(int itemID , int itemCount = 1)
+    public void ReducePlayerConsumableList(int itemID , int itemCount = 1 ,int givalue = 0)
     {
-        int typeID = GetObjTypeID(itemID);
-        List<LD_Objs> lD_s = userData.userObjs[typeID].FirstOrDefault(s => s.id == itemID).lD_Objs;
-        int _itemIndex = lD_s[lD_s.Count-1].objIndex;
-        userData.ReduceConsumableItem(_itemIndex,itemID, itemCount);
+        userData.ReduceConsumableItemWithGiveValue(itemID, itemCount, givalue);
     }
 
     public void UpdateMonsterStrengthValue(int monsterIndex, int playerIndex, int playerType, int value)
@@ -529,6 +526,10 @@ public class AndaDataManager {
     public void UpdateMonsterPowerValue(int monsterIndex, int value)
     {
         userData.UpdateMonsterPower(monsterIndex, value);
+    }
+    public void UpdateMonsterFinishSearchValue(int monsterIndex, int value)
+    {
+        userData.UpdateMonsterFinishSearchTime(monsterIndex, value);
     }
     /// <summary>
     /// 战斗结束后，更新我方的宠物 技能 的相关数据
@@ -809,9 +810,9 @@ public class AndaDataManager {
         naetdataManager.UpRecovery(monsterIndex, objectIndex, count, callback);
     }
 
-    public void CallUpStartSearch(int monsterIndex ,int recoveryObjectIndex, int searchIndex, int luckyObjectIndex, System.Action<bool> callback)
+    public void CallUpStartSearch(int monsterIndex ,LD_Objs recoveryObjectIndex, LD_Objs searchIndex, LD_Objs luckyObjectIndex, System.Action<int> callback)
     {
-        naetdataManager.UpStartSearch(monsterIndex, recoveryObjectIndex, searchIndex, luckyObjectIndex,  callback);
+        naetdataManager.UpStartSearch(monsterIndex, recoveryObjectIndex,searchIndex, luckyObjectIndex,  callback);
     }
 
     public void CallUpFinishSearch(int monsterIndex, System.Action<bool, string> callback)

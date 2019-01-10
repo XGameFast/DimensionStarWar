@@ -12,8 +12,6 @@ public class UserDataScirpt:UserDataBaseScript {
     public List<LD_Objs> ld_obj4U_list;
     public List<LD_Objs> powerBlockList;//这是在游戏过程中能够使用的精粹药水。大中小
     public List<LD_Objs> BottleList;//储存瓶子
-
-
     public List<LD_Objs> powerExpblock;
 
 
@@ -135,6 +133,10 @@ public class UserDataScirpt:UserDataBaseScript {
     //[添加物品]
     /// <summary>
     /// 物件盒子，如果givevalue == 0， 那么他们会堆叠，只在count 上做变化，，如果不为0 ，会添加在同种列列表里增加物件，并且物件数量也会增加。
+    /// userObjBox的数据结构是为了更清晰的将 同种物品，由于提供不童的数值 区分开。
+    /// dictionary <int , list<userobjbox>> int = 物件的idtype ， list<userobjbox> = 这个类别下 所有的物品， 他们被添加在统一的集合当中，
+    /// 当然他们也有自己的个性，list 中每个 userobjbox 都是单独一个小类，小类里面有一个 <list type=<ld_obj> 是物件的数据，
+    /// 只要提供的的数据不等于0，那么会就代表是会使用配置文件的默认，并且会默认展开堆叠， 如果，多个物件他们的提供的数值不等于0，但这多个物件的提供的数值相同，他们也会被堆
     /// </summary>
     /// <param name="sD_Pag4U">S d pag4 u.</param>
     public virtual void AddConsuambleItem(SD_Pag4U sD_Pag4U)
@@ -143,67 +145,45 @@ public class UserDataScirpt:UserDataBaseScript {
         //种类列表已经包好这个种类
         if(userObjs.Keys.Contains(lD_Objs.objectType))
         {
-            //再判断一下这个种类 是否已经饱和这个小分类了
+            //再判断一下这个种类 是否已经饱和这个小分类了 , userobjsbox 已经具体某一个物件了
             UserObjsBox tmp = userObjs[lD_Objs.objectType].FirstOrDefault(s=>s.id == lD_Objs.objID);
             if(tmp!=null) //包含！
             {
-                if (tmp.lD_Objs == null)
-                    tmp.lD_Objs = new List<LD_Objs>();
+                if (tmp.lD_Objs == null) tmp.lD_Objs = new List<LD_Objs>();
 
-                if (lD_Objs.giveValue > 0) 
-                {
-                    tmp.count+=1;
-                    tmp.lD_Objs.Add(lD_Objs);
+                tmp.count += lD_Objs.lessCount;
+                int itemslength = tmp.lD_Objs.Count;
 
-                }else 
+                for (int i = 0; i < itemslength; i++)
                 {
-                    int count =  lD_Objs.lessCount;
-                    tmp.count+=count;
-                    int listLength = tmp.lD_Objs.Count;
-                    for (int i = 0; i < listLength; i++)
+                    //寻找数量相投的物品堆叠
+                    if (tmp.lD_Objs[i].giveValue.Equals(lD_Objs.giveValue))
                     {
-                        //编辑寻找是否已经有相同的物件了,必须用index 判断
-                        if(tmp.lD_Objs[i].objIndex == lD_Objs.objIndex)
-                        {
-                            return;
-                        }
+                        tmp.lD_Objs[i].lessCount += lD_Objs.lessCount;
+                        return;
                     }
-
-                    //如果没有，那么添加一个
-                    tmp.lD_Objs.Add(lD_Objs);
-
                 }
-            }else //不包含
+
+                tmp.lD_Objs.Add(lD_Objs);
+
+            }else //不包含 
             {
                 tmp = new UserObjsBox()
                 {
                     id = lD_Objs.objID,
                     idType = lD_Objs.objectType,
-                    count = 0,
+                    count = lD_Objs.lessCount,
                     lD_Objs = new List<LD_Objs>(),
                 };
-                //如果传入这个这个物件的 giveValue 大于 0 ，说明分开堆叠
-                if (lD_Objs.giveValue > 0)
-                {
-                    //总数量一次只+1，因为他们的index都是不同的
-                    tmp.count += 1;
-                    //把物件数据添加进列表
-                    tmp.lD_Objs.Add(lD_Objs);
-                }
-                else  // 如果传入这个这个物件的 giveValue <=0  ，合并堆叠
-                {
-                    //总数量直接堆叠lessCount
-                    tmp.count += lD_Objs.lessCount;
 
-                    tmp.lD_Objs.Add(lD_Objs);
-                }
+                tmp.lD_Objs.Add(lD_Objs);
 
                 userObjs[lD_Objs.objectType].Add(tmp);
             }
            
            
 
-        }else //当前box 不包含这个种类， 新建一个 种类的集合 ，例如42030 （42030，42031，42032）
+        }else //当前box 不包含这个种类， 新建一个 种类的集合 ，例如42030 （42030，42031，42032）《= 指的的 中等类
         {
 
             List<UserObjsBox> _userObjsBoxes = new List<UserObjsBox>();
@@ -211,24 +191,9 @@ public class UserDataScirpt:UserDataBaseScript {
             {
                 id = lD_Objs.objID,
                 idType = lD_Objs.objectType,
-                count = 0,
-                lD_Objs = new List<LD_Objs>(),
+                count = lD_Objs.lessCount,
+                lD_Objs = new List<LD_Objs>(){ lD_Objs }
             };
-            //如果传入这个这个物件的 giveValue 大于 0 ，说明分开堆叠
-            if (lD_Objs.giveValue > 0) 
-            {
-                //总数量一次只+1，因为他们的index都是不同的
-                _userObjsBox.count += 1;
-                //把物件数据添加进列表
-                _userObjsBox.lD_Objs.Add(lD_Objs);
-            }
-            else  // 如果传入这个这个物件的 giveValue <=0  ，合并堆叠
-            {   
-                 //总数量直接堆叠lessCount
-                _userObjsBox.count += lD_Objs.lessCount;
-
-                _userObjsBox.lD_Objs.Add(lD_Objs);
-            }
             //种类列表 添加该种类
             _userObjsBoxes.Add(_userObjsBox);
             //把种类列表添加进总列表
@@ -246,7 +211,7 @@ public class UserDataScirpt:UserDataBaseScript {
             if(_userBox!=null)
             {
                 _userBox.lD_Objs.RemoveAt(_userBox.count - 1);
-                _userBox.count-=1;
+                _userBox.count -=1;
                 if(_userBox.lD_Objs.Count <= 0)
                 {
                     userObjs[idType].Remove(_userBox);
@@ -254,6 +219,7 @@ public class UserDataScirpt:UserDataBaseScript {
             }
         }
     }
+
 
     public virtual void ReduceCoin(int itemCount)
     {
@@ -268,57 +234,46 @@ public class UserDataScirpt:UserDataBaseScript {
         userObjs[42030].FirstOrDefault(s => s.id == 42032).count -= itemCount;
     }
 
-
-    public virtual void ReduceConsumableItem(int itemIndex ,int itemID , int itemCount)
+    public virtual void ReduceConsumableItemWithGiveValue(int itemID, int itemCount , int itemGivevalue/*这个值很重要，用来决定是哪个堆物品*/ )
     {
-        //先插叙IDType
+        //现根据 物品 id 获取id typ
         int idType = AndaDataManager.Instance.GetObjTypeID(itemID);
-        //如果有这个种类组
-        if(userObjs.Keys.Contains(idType))
+        if (userObjs.Keys.Contains(idType)) //找到这个物件的组
         {
-            //从这个组里拿出找到index 相同的物件
-            int count = userObjs[idType].Count;
-            //找出这个物件所在的小组
-            for(int i = 0 ; i<count; i++)
+            List<UserObjsBox> userObjsBoxes = userObjs[idType];
+            int count = userObjsBoxes.Count;
+            for(int i = 0 ; i< count ; i ++)
             {
-                if(userObjs[idType][i].id == itemID)
+                if(userObjsBoxes[i].id == itemID) //找到这个物件
                 {
-                    int ldLength = userObjs[idType][i].lD_Objs.Count;
-                    for(int j = 0 ; j < ldLength; j++)
+                    int ldLength = userObjsBoxes[i].lD_Objs.Count;
+                    for(int j = 0; j < ldLength; j++)
                     {
-                        //找到这个物件
-                        if(userObjs[idType][i].lD_Objs[j].objIndex == itemIndex)
+                        if(userObjsBoxes[i].lD_Objs[j].giveValue.Equals(itemGivevalue))
                         {
-                            if(userObjs[idType][i].lD_Objs[j].lessCount > 0)
+                            if(userObjsBoxes[i].lD_Objs[j].lessCount>= itemCount)
                             {
-                                userObjs[idType][i].count -=1;
-                                userObjs[idType][i].lD_Objs.RemoveAt(j);
-                                return;
+                                userObjsBoxes[i].lD_Objs[j].lessCount-= itemCount;
+                                userObjsBoxes[i].count -= itemCount;
+                            
+                            }else
+                            {
+                                int tmpCount =  userObjsBoxes[i].lD_Objs[j].lessCount ;
+                                userObjsBoxes[i].lD_Objs[j].lessCount = 0;
+                                userObjsBoxes[i].count -= tmpCount;
                             }
-                            else
-                            {
-                                int lessCount = userObjs[idType][i].lD_Objs[j].lessCount;
-                                int removeCount = itemCount> lessCount ? lessCount  : itemCount;
-                                //如果减去的数量是整个obj量，那么就直接移除，在总数上减一下
-                                if(removeCount == lessCount)
-                                {
-                                    userObjs[idType][i].count -= removeCount;
-                                    userObjs[idType][i].lD_Objs.RemoveAt(j);
-                                }else //减去数量即可
-                                {
-                                    userObjs[idType][i].count -= removeCount;
-                                }
 
-                                return;
+                            if(userObjsBoxes[i].lD_Objs[j].lessCount.Equals(0))
+                            {
+                                userObjsBoxes[i].lD_Objs.RemoveAt(j);
                             }
+                            return;
                         }
                     }
                 }
             }
-
         }
     }
-
 
     public void ReduceBussinesCoupon(int couponIndex)
     {
@@ -612,7 +567,6 @@ public class UserDataScirpt:UserDataBaseScript {
                     AndaDataManager.Instance.AddTreasureTimeData(go.monsterIndex, go.finishTreasureTime);
                     break;
                 case (int)OTYPE.MonsterStateType.fight:
-
                     break;
                 case (int)OTYPE.MonsterStateType.leisure:
                     AndaDataManager.Instance.AddRecoveryStrengthTimeData(go.monsterIndex, go.monsterRecoveryTime);

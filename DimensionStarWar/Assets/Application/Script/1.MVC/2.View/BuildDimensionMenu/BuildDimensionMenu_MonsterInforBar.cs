@@ -13,7 +13,7 @@ public class BuildDimensionMenu_MonsterInforBar : MonoBehaviour {
     public Button btn5;//空闲
     public Button btn6;//移除
 
-
+    public Animator monsterInfoAnimator; 
     public Animator monsterStateGroup;
     public Animator propGroup;
     public Table_SelectItemToSearch Table_SelectItemToSearch;
@@ -48,6 +48,9 @@ public class BuildDimensionMenu_MonsterInforBar : MonoBehaviour {
     private PlayerMonsterAttribute pma;
     private GameObject monsterBaseNameObj;
 
+
+
+
     public bool isOpenSkillBar = false;
     public int childBarIndex = -1;
 
@@ -78,11 +81,21 @@ public class BuildDimensionMenu_MonsterInforBar : MonoBehaviour {
     private bool isEndSearchByUser = false;//玩家是否主动吊起结束探索
     public void SetInfo(PlayerMonsterAttribute _playerMonsterAttribute )
     {
+        Table_SelectItemToSearch.callbackStartSearch = StartSearchCallBack;
         childBarIndex = -1;
         pma = _playerMonsterAttribute;
         monsterNickName.text = pma.monsterNickName;
+        levelText.text = "Lv" + (pma.monsterLevel + 1);
         StartCoroutine(ExcuteMonsterPower());
-        StartCoroutine(ExcuteSkillSlider());
+        if (pma.currentStateType == 2)
+        {
+            StartCoroutine(BuildMonsterSearchInfo());
+        }else
+        {
+            StartCoroutine(ExcuteSkillSlider());
+        }
+      
+     
         BuildMonsterBaseName();
        
     }
@@ -129,6 +142,10 @@ public class BuildDimensionMenu_MonsterInforBar : MonoBehaviour {
     {
         if (success)
         {
+            PlayerMonsterAttribute _p = AndaDataManager.Instance.userData.userMonsterList.FirstOrDefault(s => s.monsterIndex == pma.monsterIndex);
+
+            pma.mosterPower = _p.mosterPower;
+
             List<UserObjsBox> objectList = AndaDataManager.Instance.userData.GetRecoveryList();
             if (objectList == null)
                 return;
@@ -193,7 +210,6 @@ public class BuildDimensionMenu_MonsterInforBar : MonoBehaviour {
             yield return null;
         }
 
-        monsterSkillBtn.gameObject.SetTargetActiveOnce(true);
     }
 
     private void BuildMonsterBaseName()
@@ -300,6 +316,19 @@ public class BuildDimensionMenu_MonsterInforBar : MonoBehaviour {
 
     public void OpenTable()
     {
+        if (pma.currentStateType == 2)
+        {
+            JIRVIS.Instance.PlayTips("星宿已出发！");
+            return;
+        }
+       
+        if (pma.currentStateType != 0)
+        {
+            JIRVIS.Instance.PlayTips("该星宿正忙！无法出去探索");
+        }
+
+        Table_SelectItemToSearch.SetMonsterIndex(pma);
+
         Table_SelectItemToSearch.gameObject.SetTargetActiveOnce(true);
 
         Table_SelectItemToSearch.SetInfo();
@@ -397,62 +426,19 @@ public class BuildDimensionMenu_MonsterInforBar : MonoBehaviour {
         }
     }
 
-
-    public void StartSearch()
-    {
-        if (pma.currentStateType == 2)
-        {
-          
-            JIRVIS.Instance.PlayTips("星宿已出发！");
-            return;
-        }
-        if (pma.mosterPower <= 0)
-        {
-           
-            JIRVIS.Instance.PlayTips("星宿的意志力无法支撑它去探索，请为它恢复意志力");
-            return;
-        }
-
-        if (pma.currentStateType != 0)
-        {
-            JIRVIS.Instance.PlayTips("该星宿正忙！无法出去探索");
-        }
-
-        AndaDataManager.Instance.CallUpStartSearch(pma.monsterIndex, object1.GetComponent<ObjectSelect>().selectObjectIndex, object2.GetComponent<ObjectSelect>().selectObjectIndex, object3.GetComponent<ObjectSelect>().selectObjectIndex, StartSearchCallBack);
-    }
-
     public void FinishSearche()
     {
         isEndSearchByUser = true;//主动结束探索 ,
     }
 
-    private IEnumerator ExcuteCalculLessTimes()
+
+
+    public void StartSearchCallBack()
     {
-        var dis = pma.finishTreasureTime - ToolByGjp.GetTimestamp();
-        while (gameObject.activeSelf && dis >= 0 && !isEndSearchByUser)
-        {
-            searchTimeText.text = ToolByGjp.GetDisTime(dis);
-            yield return null;
-        }
-
-        AndaDataManager.Instance.CallUpFinishSearch(pma.monsterIndex, FinishiSearchCallBack);
-    }
-
-
-    public void StartSearchCallBack(bool success)
-    {
-        if (success)
-        {
-            pma.currentStateType = 2;
-            SetMonsterStateBtn();
-        }
-        else
-        {
-            JIRVIS.Instance.PlayTips("无法探索，请检查网络，再次尝试");
-            //searchTimePanel.SetTargetActiveOnce(false);
-            //pma.currentStateType = 0;
-        }
-
+        isEndSearchByUser = false;
+        ClickOpenChildBar(0);//这里管关闭
+        pma.currentStateType = 2;
+        StartCoroutine(BuildMonsterSearchInfo());
     }
     /// <summary>
     /// 结束探索的回调
@@ -463,9 +449,10 @@ public class BuildDimensionMenu_MonsterInforBar : MonoBehaviour {
     {
         if (success)
         {
-            ClickOpenChildBar(0);//结束探索成功后，关闭面板，并且发出提示，星宿回归，并且带回了一些礼物，
+            //ClickOpenChildBar(0);//结束探索成功后，关闭面板，并且发出提示，星宿回归，并且带回了一些礼物，
             pma.currentStateType = 0;
-            //StartCoroutine(ExcuteMonsterPower());
+            StartCoroutine(ExcuteMonsterPower());
+            StartCoroutine(ExcuteSkillSlider());
             /*if (imageBase64 != null)
             {
                 imageShowButton.gameObject.SetTargetActiveOnce(true);
@@ -485,13 +472,27 @@ public class BuildDimensionMenu_MonsterInforBar : MonoBehaviour {
     #endregion
 
 
+    private IEnumerator BuildMonsterSearchInfo()
+    {
+        monsterInfoAnimator.Play("SearchFadeIn");
+        var dis = pma.finishTreasureTime - ToolByGjp.GetTimestamp();
+        while (pma.currentStateType == 2 && gameObject.activeSelf && dis >= 0 && !isEndSearchByUser)
+        {
+            dis = pma.finishTreasureTime - ToolByGjp.GetTimestamp();
+            searchTimeText.text = ToolByGjp.GetDisTime(dis);
+            yield return null;
+        }
+       
+        AndaDataManager.Instance.CallUpFinishSearch(pma.monsterIndex, FinishiSearchCallBack);
+      }
+
+
     private IEnumerator ExcuteSkillSlider()
     {
+        monsterInfoAnimator.Play("FadeIn");
         yield return new WaitForSeconds(1f);
 
         float t =  0;
-
-        levelText.text = "Lv" + (pma.monsterLevel+1);
 
         monsterNormalAttackSlider.gameObject.SetTargetActiveOnce(true);
         monsterDefenseSkillSlider.gameObject.SetTargetActiveOnce(true);
@@ -563,6 +564,7 @@ public class BuildDimensionMenu_MonsterInforBar : MonoBehaviour {
             switch(pma.currentStateType)
             {
                 case 0: //空闲状态
+                  
                     btn1.SetBtnActive(true);
                     btn2.gameObject.SetTargetActiveOnce(true);//保卫按钮
                     btn2.SetBtnActive(true);
@@ -574,6 +576,7 @@ public class BuildDimensionMenu_MonsterInforBar : MonoBehaviour {
                     btn6.SetBtnActive(true);
                     break;
                 case 1: //保卫张泰
+                  
                     btn1.SetBtnActive(true);
                     btn2.gameObject.SetTargetActiveOnce(false);//保卫按钮
                     btn5.gameObject.SetTargetActiveOnce(true);//空闲按钮
@@ -587,6 +590,7 @@ public class BuildDimensionMenu_MonsterInforBar : MonoBehaviour {
                     btn6.SetBtnActive(false);//保卫状态不能移除
                     break;
                 case 2: //探索去了
+                   
                     btn1.SetBtnActive(false);//寻宝状态不能补充体力
                     btn2.gameObject.SetTargetActiveOnce(true);//保卫按钮
                     btn2.SetBtnActive(false);//正在寻宝，不能设置为保卫状态
@@ -596,7 +600,7 @@ public class BuildDimensionMenu_MonsterInforBar : MonoBehaviour {
                     btn4.SetBtnActive(true);
                     btn6.gameObject.SetTargetActiveOnce(true);//移除按钮
                     btn6.SetBtnActive(false);//寻宝状态不能移除
-                    StartCoroutine(ExcuteCalculLessTimes());//开始计算时间
+                   
                     break;
                 case 3:
                     break;
@@ -604,6 +608,33 @@ public class BuildDimensionMenu_MonsterInforBar : MonoBehaviour {
         }
     }
     #endregion
+
+    private void SetFuncitonBarState()
+    {
+        if(pma.currentStateType == 2)
+        {
+
+        }else
+        {
+
+        }
+    }
+
+    List<string> missTips = new List<string>()
+    {
+        "我已经感应到您的想念，正在飞奔回来的路上",
+        "原来您这么想我，我正在路上！",
+        "我鞋子跑丢了，我正在回来路上",
+        "刚才打不车，我用传送门可以吗？？？？我正在来的路上！不要激动",
+        "天青色等烟雨，刚才隔壁老王亢宿它—……",
+    };
+    private int tipsIndex =0;
+    public void ClickMissStarBaby()
+    {
+        string content = missTips[tipsIndex];
+        tipsIndex = tipsIndex >= missTips.Count - 1 ? 0 : tipsIndex + 1;
+        JIRVIS.Instance.PlaySingleTips(pma.monsterNickName + ":"+ content);
+    }
 
  
 }

@@ -84,6 +84,10 @@ public class UserDataBaseScript{
     {
          GetMonsterAttribute(monsterIndex).mosterPower = value;
     }
+    public void UpdateMonsterFinishSearchTime(int monsterIndex, int value)
+    {
+        GetMonsterAttribute(monsterIndex).finishTreasureTime = value;
+    }
     public void UpdateMonsterStronghold(MonsterGrowUpAttribute monsterGrowUpAttribute)
     {
         PlayerMonsterAttribute playerMonsterAttribute = ConvertTool.ConvertToPlayerMonsterAttribute(monsterGrowUpAttribute);
