@@ -101,6 +101,7 @@ public class ServerMessageObject
     public int count { get; set; }
     public int index { get; set; }
     public int type { get; set; }
+    public int status { get; set; }
     public MonsterGrowUpAttribute monsterGrowUpAttribute { get; set; }
     public SD_Pag4U sD_Pag4U { get; set; }
     public PlayerCoupon playerCoupon { get; set; }

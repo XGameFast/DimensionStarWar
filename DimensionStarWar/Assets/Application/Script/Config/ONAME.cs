@@ -148,6 +148,7 @@ public static class ONAME
 
     public static string PlayerPowerShotBar = "PlayerPowerShotBar";
 
+    public static string ServerItem = "ServerItem";
 
     public static string ExchangeMenu ="ExchangeMenu";
 

@@ -1619,6 +1619,32 @@ public class NetdataManager : ManagerBase {
             callback(res.code == "200");
         }
     }
+
+    public void GetPlayerCoupon(System.Action<PlayerCouponsRequest> callback)
+    {
+        var _wForm = new WWWForm();
+        _wForm.AddField("token", AndaDataManager.Instance.userData.token);
+        string path = networkAdress2 + "PlayerCoupon/BusinessGetPlayerCoupons";
+        //string path = "http://localhost:57789/api/PlayerCoupon/BusinessGetPlayerCoupons";
+        StartCoroutine(ExcuteGetPlayerCoupon(path, _wForm, callback));
+    }
+
+    private IEnumerator ExcuteGetPlayerCoupon(string _url, WWWForm _wForm, System.Action<PlayerCouponsRequest> callback)
+    {
+        WWW postData = new WWW(_url, _wForm);
+        yield return postData;
+
+        if (postData.error != null)
+        {
+            Debug.Log(postData.error);
+        }
+        else
+        {
+            PlayerCouponsRequest result = JsonMapper.ToObject<PlayerCouponsRequest>(postData.text);
+            Debug.Log(postData.text);
+            callback(result);
+        }
+    }
     #endregion
 
     #region 服务器消息获取
