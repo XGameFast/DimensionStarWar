@@ -206,8 +206,8 @@ public static class ConvertTool{
         objAttribute.objID = odb.objectID;
         objAttribute.objectType = idType;
         objAttribute.lessCount = odb.objectCount;
-        objAttribute.giveValue = odb.objectValue;
         int smallID = odb.objectID - idType;
+        objAttribute.giveValue = odb.objectValue == 0? cd_data.values[smallID] : odb.objectValue;
         objAttribute.objSmallID = smallID;
         objAttribute.objDescription = cd_data.objectDescription[smallID];
         objAttribute.objName = cd_data.objectName[smallID];
@@ -580,4 +580,7 @@ public static class ConvertTool{
         return start.AddSeconds(timestamp);
     }
     #endregion
+
+
+
 }

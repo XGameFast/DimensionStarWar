@@ -48,7 +48,7 @@ public class JIRVISBar : UIBasic2 {
     public GameObject mask;
 
     public Slider tipsSlider;
-    public Slider btnSlider;
+    public Animator btnSlider;
     public Slider btnSliderHori;
     public Text tipsLabel;
     public GridLayoutGroup btnGrid;
@@ -57,6 +57,7 @@ public class JIRVISBar : UIBasic2 {
 
     public CanvasGroup canvasGroups;
     public CanvasGroup btnGroupHori;
+    public CanvasGroup jirvisMask;
 
     public ScrollRect btnScrollView;
     public ScrollRect btnScrollViewHori;
@@ -100,12 +101,17 @@ public class JIRVISBar : UIBasic2 {
 
     private List<string> messageQue;
 
+    private List<AndaObjectBasic> jirvisSingleTips;
+    private List<AndaObjectBasic> jirvisChooseTips;
+
 
     public void DisplaySingleTips(string content , float duration )
     {
         JIRVISTips_SingleTips jIRVISTips_SingleTips = AndaDataManager.Instance.InstantiateMenu<JIRVISTips_SingleTips>(ONAME.JIRVISTips_SingleTips);
         jIRVISTips_SingleTips.SetInto(AndaUIManager.Instance.jirvis_top);
         jIRVISTips_SingleTips.SetInfo(content, duration);
+        if (jirvisSingleTips == null) jirvisSingleTips = new List<AndaObjectBasic>();
+        jirvisSingleTips.Add(jIRVISTips_SingleTips);
     }
 
     public void DisplayTips(string content, int messageLevel , bool autoClose = true)
@@ -114,6 +120,8 @@ public class JIRVISBar : UIBasic2 {
         JIRVISTips_SingleTips jIRVISTips_SingleTips = AndaDataManager.Instance.InstantiateMenu<JIRVISTips_SingleTips>(ONAME.JIRVISTips_SingleTips);
         jIRVISTips_SingleTips.SetInto(AndaUIManager.Instance.jirvis_top);
         jIRVISTips_SingleTips.SetInfo(content ,4f);
+        if(jirvisSingleTips==null) jirvisSingleTips =new List<AndaObjectBasic>();
+        jirvisSingleTips.Add(jIRVISTips_SingleTips);
         /*
         tmpContent = content;
 
@@ -154,6 +162,8 @@ public class JIRVISBar : UIBasic2 {
         iRVISTips_ChooseTIps.SetInfo(tipsContent, tipsType, yesBtnTitle, noBtnTitle);
         iRVISTips_ChooseTIps.clickComfirmCallBack = chooseYES;
         iRVISTips_ChooseTIps.clickCancelCallBack = chooseNO;
+        if(jirvisChooseTips == null) jirvisChooseTips = new List<AndaObjectBasic>();
+        jirvisChooseTips.Add(iRVISTips_ChooseTIps);
        // StartCoroutine(Readchoosetips(tipsContent, 0.05f, finishTips));
         /*if(currentTipsType <= OTYPE.TipsType.chooseTips)
         {
@@ -167,21 +177,31 @@ public class JIRVISBar : UIBasic2 {
 
     public void CloseTips()
     {
-        switch(currentTipsType)
+        if (jirvisSingleTips != null)
         {
-            case OTYPE.TipsType.chooseTips:
-            case OTYPE.TipsType.onlyOneChooseTips:
-                //StartCoroutine(CloseTipsforchooseBoard());
-                tipsForChooseGroup.alpha = 0;
-                tipsForChooseGroup.blocksRaycasts = false;
-                mask.gameObject.SetTargetActiveOnce(false);
-                break;
-            case OTYPE.TipsType.normalTips:
-                StartCoroutine(CloseTipsBoard(tipsSlider));
-                break;
+            int count = jirvisSingleTips.Count;
+            for (int i = 0; i < count; i++)
+            {
+                AndaDataManager.Instance.RecieveItem(jirvisSingleTips[i]);
+            }
+
+            jirvisSingleTips.Clear();
         }
-      // currentTipsType = OTYPE.TipsType.none;
+
+        if (jirvisChooseTips != null)
+        {
+            int count = jirvisChooseTips.Count;
+            for (int i = 0; i < count; i++)
+            {
+                AndaDataManager.Instance.RecieveItem(jirvisChooseTips[i]);
+            }
+            jirvisChooseTips.Clear();
+        }
     }
+
+   
+
+
 
     #region 纯文本读取信息
 
@@ -445,12 +465,14 @@ public class JIRVISBar : UIBasic2 {
             _jirvisFunBtn.SetType(_data[i].btnType);
             _jirvisFunBtn.gameObject.SetTargetActiveOnce(true);
             _jirvisFunBtn.transform.SetUIInto(btnGrid.transform);
-            _jirvisFunBtn.SetInfo(_data[i].btnName, _data[i].btnIconKey, _data[i].clickCallBack);
+            int c =JIRVIS.Instance.jIRVISData.getItemList.Count;
+            _jirvisFunBtn.SetInfo(c+1, _data[i].btnName, _data[i].btnIconKey, _data[i].clickCallBack);
             JIRVIS.Instance.jIRVISData.AddItem(_jirvisFunBtn);
             _jirvisFunBtn.clickBackoutBtnPose = ClickBtnOutBtnPose;
             _jirvisFunBtn.SetFadeInEffect(0);
             yield return null;
         }
+
         ReUIScrollViewPose();
         if (finishload_callback != null) finishload_callback();
     }
@@ -461,18 +483,20 @@ public class JIRVISBar : UIBasic2 {
 
     public void AddtionFuncButtons(List<JIRVISFuncBtnStruct> _data , System.Action finishAddtion_callback)
     {
-        foreach(var go in _data)
+        int count = _data.Count;
+        for(int i = 0; i < count; i++)
         {
-            JIRVIS_FUNCBtn _jirvisFunBtn =  AndaDataManager.Instance.InstantiateMenu<JIRVIS_FUNCBtn>(ONAME.JIRVISButtonItem_FunBtnItem);
+            JIRVISFuncBtnStruct go = _data[i];
+            JIRVIS_FUNCBtn _jirvisFunBtn = AndaDataManager.Instance.InstantiateMenu<JIRVIS_FUNCBtn>(ONAME.JIRVISButtonItem_FunBtnItem);
             _jirvisFunBtn.SetType(go.btnType);
             _jirvisFunBtn.gameObject.SetTargetActiveOnce(true);
             _jirvisFunBtn.transform.SetUIInto(btnGrid.transform);
-            _jirvisFunBtn.SetInfo(go.btnName, go.btnIconKey, go.clickCallBack);
+            int c = JIRVIS.Instance.jIRVISData.getItemList.Count;
+            _jirvisFunBtn.SetInfo(c + 1,go.btnName, go.btnIconKey, go.clickCallBack);
             JIRVIS.Instance.jIRVISData.AddItem(_jirvisFunBtn);
             _jirvisFunBtn.clickBackoutBtnPose = ClickBtnOutBtnPose;
             _jirvisFunBtn.SetFadeInEffect(0);
         }
-
         ReUIScrollViewPose();
         if(finishAddtion_callback!=null)finishAddtion_callback();
     }
@@ -483,7 +507,8 @@ public class JIRVISBar : UIBasic2 {
         _jirvisFunBtn.SetType(data.btnType);
         _jirvisFunBtn.gameObject.SetTargetActiveOnce(true);
         _jirvisFunBtn.transform.SetUIInto(btnGrid.transform);
-        _jirvisFunBtn.SetInfo(data.btnName, data.btnIconKey, data.clickCallBack);
+        int c = JIRVIS.Instance.jIRVISData.getItemList.Count;
+        _jirvisFunBtn.SetInfo(c+1, data.btnName, data.btnIconKey, data.clickCallBack);
         JIRVIS.Instance.jIRVISData.AddItem(_jirvisFunBtn);
         _jirvisFunBtn.SetFadeInEffect(0);
         ReUIScrollViewPose();
@@ -500,7 +525,8 @@ public class JIRVISBar : UIBasic2 {
     {
         JIRVIS_FUNCBtn btnStruct = JIRVIS.Instance.jIRVISData.getItemList.FirstOrDefault(s=>s.transform.name == key) as JIRVIS_FUNCBtn;
         btnStruct.SetType(_btnStruct.btnType);
-        btnStruct.SetInfo(_btnStruct.btnName,_btnStruct.btnIconKey,_btnStruct.clickCallBack);
+        int c = JIRVIS.Instance.jIRVISData.getItemList.Count;
+        btnStruct.SetInfo(c+1,_btnStruct.btnName,_btnStruct.btnIconKey,_btnStruct.clickCallBack);
         btnStruct.clickBackoutBtnPose = ClickBtnOutBtnPose;
         SetBtnEffectPosition(btnStruct.transform.position);
         btnStruct.SetFadeInEffect(0);
@@ -512,7 +538,8 @@ public class JIRVISBar : UIBasic2 {
         {
             JIRVIS_FUNCBtn btnStruct = JIRVIS.Instance.jIRVISData.getItemList.FirstOrDefault(s=>s.transform.name == keys[i]) as JIRVIS_FUNCBtn;
             btnStruct.SetType(_btnStrucks[i].btnType);
-            btnStruct.SetInfo(_btnStrucks[i].btnName,_btnStrucks[i].btnIconKey,_btnStrucks[i].clickCallBack);
+            int c = JIRVIS.Instance.jIRVISData.getItemList.Count;
+            btnStruct.SetInfo(c+1,_btnStrucks[i].btnName,_btnStrucks[i].btnIconKey,_btnStrucks[i].clickCallBack);
             btnStruct.clickBackoutBtnPose = ClickBtnOutBtnPose;
             btnStruct.SetFadeInEffect(0);
         }
@@ -525,7 +552,8 @@ public class JIRVISBar : UIBasic2 {
         {
             JIRVIS_FUNCBtn btnStruct = JIRVIS.Instance.jIRVISData.getItemList.FirstOrDefault(s => s.transform.name == keys[i]) as JIRVIS_FUNCBtn;
             btnStruct.SetType(_btnStrucks[i].btnType);
-            btnStruct.SetInfo(_btnStrucks[i].btnName, _btnStrucks[i].btnIconKey, _btnStrucks[i].clickCallBack);
+            int c = JIRVIS.Instance.jIRVISData.getItemList.Count;
+            btnStruct.SetInfo(c + 1,_btnStrucks[i].btnName, _btnStrucks[i].btnIconKey, _btnStrucks[i].clickCallBack);
             SetBtnEffectPosition(btnStruct.transform.position);
             btnStruct.clickBackoutBtnPose = ClickBtnOutBtnPose;
             btnStruct.SetFadeInEffect(0);
@@ -657,6 +685,7 @@ public class JIRVISBar : UIBasic2 {
             Vector3 t = btnScrollViewHori.transform.position;
             t.y = curClickBtn.transform.position.y;
             btnScrollViewHori.transform.position = t;
+
             curClickBtn.GetComponentInChildren<TweenRotation>().PlayForward();
             lastClickBtn = curClickBtn;
             JIRVIS.Instance.jIRVISData.InitBtnListForHoriz();//清理
@@ -919,7 +948,6 @@ public class JIRVISBar : UIBasic2 {
 
     public void SetBtnBarState(bool isOpen)
     {
-        //Debug.Log("state"+ isOpen);
         if(isOpen)
         {
             if(!btnBarIsOpen)
@@ -962,12 +990,14 @@ public class JIRVISBar : UIBasic2 {
 
     private IEnumerator OpenBtnBar()
     {
+        btnSlider.gameObject.SetTargetActiveOnce(true);
         btnScrollView.gameObject.SetTargetActiveOnce(true);
+        btnSlider.Play("FadeIn");
         float tmp = 0 ;
         while (tmp<1 && btnBarIsOpen)
         {
             tmp+=Time.deltaTime;
-            btnSlider.value = Mathf.Lerp(0,1, tmp*2f);
+            //btnSlider.value = Mathf.Lerp(0,1, tmp*2f);
             canvasGroups.alpha = Mathf.Lerp(0,1,tmp);
             yield return null;
         }
@@ -978,6 +1008,8 @@ public class JIRVISBar : UIBasic2 {
 
     private IEnumerator OpenBtnBarHori()
     {
+        jirvisMask.gameObject.SetTargetActiveOnce(true);
+        btnSliderHori.gameObject.SetTargetActiveOnce(true);
         btnScrollViewHori.gameObject.SetTargetActiveOnce(true);
         float tmp = 0;
         while (tmp < 1 && btnBarIsOpenHori)
@@ -985,8 +1017,10 @@ public class JIRVISBar : UIBasic2 {
             tmp += Time.deltaTime;
             btnSliderHori.value = Mathf.Lerp(0, 1, tmp * 4f);
             btnGroupHori.alpha = Mathf.Lerp(0, 1, tmp);
+            jirvisMask.alpha = Mathf.Lerp(0, 1, tmp);
             yield return null;
         }
+
         btnGroupHori.blocksRaycasts = true;
     }
 
@@ -995,15 +1029,17 @@ public class JIRVISBar : UIBasic2 {
     private IEnumerator CloseBtnBar()
     {
         float tmp = 0;
+        btnSlider.Play("FadeOut");
         while (tmp <1 && !btnBarIsOpen)
         {
             //Debug.Log("excuteclose");
             tmp+=Time.deltaTime;
             float t = Mathf.Lerp(1,0,tmp*2f);
-            btnSlider.value = t;
+          
             canvasGroups.alpha = t;
             yield return null;
         }
+        btnSlider.gameObject.SetTargetActiveOnce(false);
         canvasGroups.blocksRaycasts = false;
         btnScrollView.gameObject.SetTargetActiveOnce(false);
     }
@@ -1018,10 +1054,13 @@ public class JIRVISBar : UIBasic2 {
             float t = Mathf.Lerp(1, 0, tmp * 4f);
             btnSliderHori.value = t;
             btnGroupHori.alpha = t;
+            jirvisMask.alpha = t;
             yield return null;
         }
+        jirvisMask.gameObject.SetTargetActiveOnce(false);
         btnGroupHori.blocksRaycasts = false;
         btnScrollViewHori.gameObject.SetTargetActiveOnce(false);
+        btnSliderHori.gameObject.SetTargetActiveOnce(false);
     }
 
     private void ReUIScrollViewPose()
@@ -1090,4 +1129,16 @@ public class JIRVISBar : UIBasic2 {
             clickBtnPose = pose;
         }*/
     }
+
+
+    public void ClickJIRVISMask()
+    {
+        if(btnBarIsOpenHori)
+        {
+            SetBtnBarStateHori(false);
+            curClickBtn.GetComponentInChildren<TweenRotation>().PlayReverse();
+        }
+    }
+
+
 }

@@ -31,6 +31,9 @@ public class MapBar_MineStrongholdInformationBar : UIBasic2 {
 
     private PlayerStrongholdAttribute psa;
 
+    private System.Action clickComfrim;
+    private System.Action clickCancel;
+
     public override void OnDispawn()
     {
         //---
@@ -53,8 +56,13 @@ public class MapBar_MineStrongholdInformationBar : UIBasic2 {
     }
 
 
-    public void SetInfo(PlayerStrongholdAttribute _psa)
+    public void SetInfo(PlayerStrongholdAttribute _psa , System.Action _clickComfirm, System.Action _clickCancel)
     {
+        clickComfrim = _clickComfirm;
+        clickCancel = _clickCancel;
+
+
+        JIRVIS.Instance.PlayTipsForchoose("立即进入占星庭", OTYPE.TipsType.chooseTips, "进入", "路过", ClickComfrimBtn, ClickCancel);
         curAnimator.Play("FadeIn");
         psa = _psa;
         StartCoroutine(ExcuteSetInfo());
@@ -102,4 +110,21 @@ public class MapBar_MineStrongholdInformationBar : UIBasic2 {
     {
         sh_Image.sprite = _sp;
     }
+
+
+    private void ClickComfrimBtn()
+    {
+        clickComfrim();
+        AndaDataManager.Instance.RecieveItem(this);
+        JIRVIS.Instance.CloseTips();
+    }
+
+    private void ClickCancel()
+    {
+        clickCancel();
+        AndaDataManager.Instance.RecieveItem(this);
+        JIRVIS.Instance.CloseTips();
+    }
+
+
 }

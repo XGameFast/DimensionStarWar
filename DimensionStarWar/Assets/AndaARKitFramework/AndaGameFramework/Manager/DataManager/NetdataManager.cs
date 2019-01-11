@@ -836,50 +836,62 @@ public class NetdataManager : ManagerBase {
        
     }
 
-    public void UpStartSearch(int monsterIndex, int recoveryObjectIndex,int searchObjectIndex, int luckyObjectIndex, System.Action<bool> callback)
+    public void UpStartSearch(int monsterIndex, LD_Objs recoveryObjectIndex, LD_Objs searchObjectIndex, LD_Objs luckyObjectIndex, System.Action<int> callback)
     {
         var _wForm = new WWWForm();
         _wForm.AddField("token", AndaDataManager.Instance.userData.token);
         _wForm.AddField("MonsterIndex", monsterIndex);
-        _wForm.AddField("luckyObjectIndex", luckyObjectIndex);
-        _wForm.AddField("recoveryObjectIndex", recoveryObjectIndex);
-        _wForm.AddField("searchObjectIndex", searchObjectIndex);
+        _wForm.AddField("luckyObjectIndex", luckyObjectIndex == null? 0: luckyObjectIndex.objIndex);
+        _wForm.AddField("recoveryObjectIndex", recoveryObjectIndex == null ? 0 : recoveryObjectIndex.objIndex);
+        _wForm.AddField("searchObjectIndex", searchObjectIndex == null? 0 : searchObjectIndex.objIndex);
         string path = networkAdress2 + "Monster/StartTreasure";
         //string path = "http://localhost:57789/api/" + "Monster/StartTreasure";
-        StartCoroutine(ExcuteUpStartSearchresutl(path, _wForm, callback));
+        StartCoroutine(ExcuteUpStartSearchresutl(recoveryObjectIndex, searchObjectIndex, luckyObjectIndex, path, _wForm, callback));
     }
 
-    private IEnumerator ExcuteUpStartSearchresutl(string _url, WWWForm _wForm, System.Action<bool> callback)
+    private IEnumerator ExcuteUpStartSearchresutl(LD_Objs recoveryObjectIndex, LD_Objs searchObjectIndex, LD_Objs luckyObjectIndex,string _url, WWWForm _wForm, System.Action<int> callback)
     {
         WWW postData = new WWW(_url, _wForm);
+        AndaUIManager.Instance.OpenWaitBoard("请稍等");
         yield return postData;
+        AndaUIManager.Instance.CloseWaitBoard();
         if (postData.error != null)
         {
+            # if UNITY_EDITOR
             Debug.Log(postData.error);
-            //callback(false);
+            #endif
+            callback(-1);
         }
         else
         {
+#if UNITY_EDITOR
             Debug.Log("postData.text" + postData.text);
+#endif
+
             string s = postData.text;
             MonsterSearch res = JsonMapper.ToObject<MonsterSearch>(postData.text);
             if (res.code == "200")
             {
-                foreach (var m in res.objectList)
+                if (recoveryObjectIndex != null)
                 {
-                    AndaDataManager.Instance.UpdateUserConsumableItemForADD(new SD_Pag4U()
-                    {
-                        hostIndex = res.monsterGrowUpAttribute.playerIndex,
-                        objectCount = m.addCount,
-                        objectID = m.objectId,
-                        objectIndex = m.objectIndex,
-                        objectValue = 0
-                    });
+                    AndaDataManager.Instance.ReducePlayerConsumableList(recoveryObjectIndex.objID, 1, recoveryObjectIndex.giveValue);
                 }
-                //AndaDataManager.Instance.ReducePlayerConsumableList(res.SD_Pag4U.objectID);
-                AndaDataManager.Instance.UpdateMonsterToStronghold(res.monsterGrowUpAttribute);
+                if (searchObjectIndex != null)
+                {
+                    AndaDataManager.Instance.ReducePlayerConsumableList(searchObjectIndex.objID, 1, searchObjectIndex.giveValue);
+
+                }
+                if (luckyObjectIndex != null)
+                {
+                    AndaDataManager.Instance.ReducePlayerConsumableList(luckyObjectIndex.objID, 1, luckyObjectIndex.giveValue);
+
+                }
+                //更新宠物完成探索的时间
+                AndaDataManager.Instance.UpdateMonsterFinishSearchValue(res.monsterGrowUpAttribute.monsterIndex, res.monsterGrowUpAttribute.finishTreasureTime);
+
+                callback(res.monsterGrowUpAttribute.finishTreasureTime);
             }
-            callback(res.code == "200");
+
         }
     }
 
@@ -896,7 +908,9 @@ public class NetdataManager : ManagerBase {
     private IEnumerator ExcuteUpFinishSearchresutl(string _url, WWWForm _wForm, System.Action<bool, string> callback)
     {
         WWW postData = new WWW(_url, _wForm);
+        AndaUIManager.Instance.OpenWaitBoard("请稍等");
         yield return postData;
+        AndaUIManager.Instance.CloseWaitBoard();
         if (postData.error != null)
         {
             Debug.Log(postData.error);
@@ -904,7 +918,9 @@ public class NetdataManager : ManagerBase {
         }
         else
         {
+            #if UNITY_EDITOR
             Debug.Log("postData.text" + postData.text);
+            #endif
             string s = postData.text;
             MonsterSearch res = JsonMapper.ToObject<MonsterSearch>(postData.text);
             if (res.code == "200")
@@ -931,9 +947,12 @@ public class NetdataManager : ManagerBase {
                 }
                 JIRVIS.Instance.jIRVISData.SetNormalRewardList(datalist);
                 JIRVIS.Instance.CheckNormalReward();
-                
+                callback(true, res.ImageUrl);
+            }else
+            {
+                callback(false, null);
             }
-            callback(res.code == "200", res.ImageUrl);
+           
         }
     }
 
@@ -1060,7 +1079,7 @@ public class NetdataManager : ManagerBase {
             if (result.code == "200")
             {
                 ExchangeObject exchangeObject = result.exchangeObjectInfo;
-                AndaDataManager.Instance.userData.ReduceConsumableItem(exchangeObject.objectIndex, exchangeObject.objectID,exchangeObject.objectCount);
+                AndaDataManager.Instance.ReducePlayerConsumableList(exchangeObject.objectID,exchangeObject.objectCount,exchangeObject.objectValue);
                 callback(exchangeObject);
             }
             else
@@ -1133,8 +1152,10 @@ public class NetdataManager : ManagerBase {
     private IEnumerator ExcuteCallServerUploadSetMonstertoStronghold(string _url, WWWForm wWWForm , System.Action<bool> callback,int monsterIndex, int strongholdIndex)
     {
         WWW postData = new WWW(_url, wWWForm);
+        AndaUIManager.Instance.OpenWaitBoard("请稍等");
         yield return postData;
-        if(postData.error!=null)
+        AndaUIManager.Instance.CloseWaitBoard();
+        if (postData.error!=null)
         {
             callback(false);
         }else

@@ -173,6 +173,7 @@ public class BuildDimensionRoomData :ControllerData {
     {
         base.BuildMenu(menuname);
         buildDimensionRoomMenu = m_Menu as BuildDimensionRoomMenu;
+        buildDimensionRoomMenu.GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width, Screen.height);
         buildDimensionRoomMenu.FadeIn();
     }
 

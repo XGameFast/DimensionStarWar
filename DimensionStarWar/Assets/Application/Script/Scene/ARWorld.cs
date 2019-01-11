@@ -153,7 +153,6 @@ public class  ARWorld : AndaObjectBasic
 
     public void OpenBackgroundVV(System.Action callbcak =null)
     {
-      
         callback_finishLoadBackground = callbcak;
         StartCoroutine(Openbackground());
         if(callbcak!=null)
@@ -349,7 +348,7 @@ public class  ARWorld : AndaObjectBasic
         //ARMonsterSceneDataManager.Instance.uar.ClickDisplay();
         //虚拟场景消失
         vrCamera.CopyFrom(mainCamera);
-        //  float value = dimensionScene.dissolveThreshold;
+        //float value = dimensionScene.dissolveThreshold;
 
         switch (tranlateType)
         {

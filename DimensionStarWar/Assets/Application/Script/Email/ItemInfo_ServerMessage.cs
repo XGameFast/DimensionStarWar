@@ -53,6 +53,8 @@ public class ItemInfo_ServerMessage :  AndaObjectBasic,  IPointerClickHandler{
     public void OnPointerClick(PointerEventData eventData)
     {
         Debug.Log("打开面板");
+        if (serverMessageView.selectServerItem == this)
+            return;
         if (!Read.activeSelf)
         {
             Read.SetActive(true);
@@ -78,17 +80,10 @@ public class ItemInfo_ServerMessage :  AndaObjectBasic,  IPointerClickHandler{
             {
                 if (m.type == 3)
                 {
-                    if (m.status == 1)
-                    {
-                        serverMessageView.confirmButton.SetActive(true);
-                        serverMessageView.confirmButton.GetComponent<Button>().enabled = true;
-                        serverMessageView.confirmButton.transform.GetChild(0).GetComponent<Text>().text = "确认";
-                    }
-                    else {
-                        serverMessageView.confirmButton.SetActive(true);
-                        serverMessageView.confirmButton.GetComponent<Button>().enabled = false;
-                        serverMessageView.confirmButton.transform.GetChild(0).GetComponent<Text>().text = "已处理";
-                    }
+                    serverMessageView.confirmButton.SetActive(true);
+                }
+                else {
+                    serverMessageView.confirmButton.SetActive(false);
                 }
             }
         }

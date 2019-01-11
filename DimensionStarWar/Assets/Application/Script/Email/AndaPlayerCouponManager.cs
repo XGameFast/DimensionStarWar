@@ -23,12 +23,32 @@ public class AndaPlayerCouponManager  {
 
     public List<PlayerCoupon> PlayerCouponData;
 
-    public PlayerCoupon selectPlayerCoupon;
+    public  PlayerCoupon selectPlayerCoupon;
+
+
+    public  PlayerCouponDetail playerCouponDetail;
+
+
+
+
+    public  void SetPlayerDetail(PlayerCoupon _selectPlayerCoupon)
+    {
+        selectPlayerCoupon = _selectPlayerCoupon;
+        if (playerCouponDetail == null)
+        {
+            playerCouponDetail = AndaDataManager.Instance.InstantiateMenu<PlayerCouponDetail>(ONAME.PlayerCouponDetail);
+            playerCouponDetail.SetInto(AndaUIManager.Instance.jirvis_top);
+        }
+        playerCouponDetail.Open(selectPlayerCoupon);
+    }
+
+
 
     public void SetPlayerCoupon()
     {
         AndaDataManager.Instance.GetPlayerCoupon(GetPlayerCouponBack);
     }
+
     public void GetPlayerCouponBack(PlayerCouponsRequest res)
     {
         Debug.Log("获取优惠卷列表");

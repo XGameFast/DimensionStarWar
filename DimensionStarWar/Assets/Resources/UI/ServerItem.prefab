@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 224327484109143436}
   - component: {fileID: 222553665535535114}
   - component: {fileID: 114819262926374018}
-  - component: {fileID: 114685282213378778}
+  - component: {fileID: 114275656956088214}
   m_Layer: 5
   m_Name: ServerItem
   m_TagString: Untagged
@@ -158,6 +158,44 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114275656956088214
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1698596836974094}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33a52f5ffa0a7f24e94baa9efca05764, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autohide: 0
+  lifeLength: 0
+  reusable: 0
+  inactiveTime: 0
+  canClone: 0
+  topHeight: 0
+  realityScale: {x: 0, y: 0, z: 0}
+  scalePercent: 1
+  topPoint: {fileID: 0}
+  centerPoint: {fileID: 0}
+  botPoint: {fileID: 0}
+  leftPoint: {fileID: 0}
+  rightPoint: {fileID: 0}
+  index: 0
+  objType: 0
+  objectID: 
+  initializationScale: 1
+  isActive: 0
+  TitleTxt: 
+  ContentTxt: 
+  serverMessageView: {fileID: 0}
+  Title: {fileID: 114657144171683348}
+  Read: {fileID: 1800205940023494}
+  UnRead: {fileID: 1567051236519392}
+  normalImage: {fileID: 1271072245125670}
+  openImage: {fileID: 1669815380350276}
+  openBgImage: {fileID: 1609450974481206}
 --- !u!114 &114369258819346420
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -205,7 +243,7 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 75c2ff53a059e4c5fb27070dd56d9495, type: 3}
+    m_Font: {fileID: 12800000, guid: 107355acd2822a64fb30410649985237, type: 3}
     m_FontSize: 60
     m_FontStyle: 0
     m_BestFit: 1
@@ -218,26 +256,6 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: New Text
---- !u!114 &114685282213378778
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1698596836974094}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da0318a4508454940a63494656c9f385, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TitleTxt: 
-  ContentTxt: 
-  serverMessageView: {fileID: 0}
-  Title: {fileID: 114657144171683348}
-  Read: {fileID: 1800205940023494}
-  UnRead: {fileID: 1567051236519392}
-  normalImage: {fileID: 1271072245125670}
-  openImage: {fileID: 1669815380350276}
-  openBgImage: {fileID: 1609450974481206}
 --- !u!114 &114690520130923198
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -475,7 +493,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -394.00006, y: -0.000027656555}
+  m_AnchoredPosition: {x: -330, y: -0.000027656555}
   m_SizeDelta: {x: 120, y: 108}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224494895323080946
@@ -512,7 +530,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1144, y: 168}
+  m_SizeDelta: {x: 983, y: 168}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224953069990139820
 RectTransform:
@@ -529,6 +547,6 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -394, y: 0}
+  m_AnchoredPosition: {x: -330.7, y: -15.7}
   m_SizeDelta: {x: 163, y: 130}
   m_Pivot: {x: 0.5, y: 0.5}

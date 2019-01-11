@@ -1119,17 +1119,17 @@ public class MapCtrData : ControllerData {
         jIRVISContent_ChanllengeGameStronghold = null;
     }
 
-    public void BuildMinePlayerStrongholdInfomation(PlayerStrongholdAttribute _psa)
+    public void BuildMinePlayerStrongholdInfomation(PlayerStrongholdAttribute _psa, System.Action clickComfirm, System.Action clickCancel)
     {
         MapBar_MineStrongholdInformationBar mapBar_MineStrongholdInformationBar = 
             AndaDataManager.Instance.InstantiateMenu<MapBar_MineStrongholdInformationBar>(ONAME.MapBar_MineStrongholdInformationBar);
-        mapBar_MineStrongholdInformationBar.SetInto(AndaUIManager.Instance.jirvis_top);
-        mapBar_MineStrongholdInformationBar.SetInfo(_psa);
+        mapBar_MineStrongholdInformationBar.SetInto(AndaUIManager.Instance.uicenter);
+        mapBar_MineStrongholdInformationBar.SetInfo(_psa, clickComfirm,clickCancel);
     }
     public void BuildOtherPlayerStrongholdInformation(PlayerStrongholdAttribute _psa ,PlayerMonsterAttribute _pma, System.Action<bool> PlayerComfirmGame, System.Action callbackClose)
     {
         JIRVISContent_ChanllengeGameStrongholdInfo other = AndaDataManager.Instance.InstantiateMenu<JIRVISContent_ChanllengeGameStrongholdInfo>(ONAME.JIRVISEditorBar_ChanllengeGameStrongholdInfo);
-        other.transform.SetUIInto(JIRVIS.Instance.jIRVISData.getJIRVISBar.EditorboardPoint.transform);
+        other.transform.SetUIInto(AndaUIManager.Instance.uicenter);
         other.SetInfo(_pma, _psa);
         other.CallBackResult = PlayerComfirmGame;
         other.callbackClose = callbackClose;

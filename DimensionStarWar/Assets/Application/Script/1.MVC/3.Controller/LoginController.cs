@@ -15,6 +15,7 @@ public class LoginController : BaseController {
     }
     public override void EndController()
     {
+        ARMonsterSceneDataManager.Instance.aRWorld.OpenLoginMenuBackground(false);
         loginCtrData.InitValue();
         base.EndController();
     }
@@ -117,7 +118,7 @@ public class LoginController : BaseController {
         }
         else
         {
-            callbackFinishController(ONAME.MAPCONCTROLLER);
+            callbackFinishController(ONAME.BUILDDIMENSIONROOMCONTROLLER);
         }
     }
 

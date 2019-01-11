@@ -431,6 +431,7 @@ public class Search : Result
 
 public class SearchObject
 {
+    
     public double x { get; set; }
     public double y { get; set; }
     public double z { get; set; }
@@ -440,5 +441,50 @@ public class SearchObject
 
 }
 
+public class MonsterSearchConfig
+{
+    //每阶段消耗的意志力
+    public int consumePower { get; set; }
+    //每阶段需要消耗的时间
+    public int time { get; set; }
+
+    //带上幸运物后添加的幸运值
+    public int addLuckyValue { get; set; }
+
+    //带上不对的幸运物后添加的幸运值
+    public int addHalfLuckyValue { get; set; }
+    public List<MonsterSearchObject> searchObjects { get; set; }
+}
+
+
+public class MonsterLuckyObjectConfig
+{
+    public int monsterID { get; set; }
+    public int LuckyObjectID { get; set; }
+}
+
+public class MonsterSearchObject
+{
+    public int objectID { get; set; }
+    public int type { get; set; }//0宠物 1物品
+
+    //发现该物品需要消耗的ID
+    public string needObject { get; set; }//0宠物 1物品
+
+    public int minCount { get; set; }
+    public int maxCount { get; set; }
+    //掉落概率
+    public double dropProbability { get; set; }
+    public int minValue { get; set; }
+    public int maxValue { get; set; }
+
+    //出现范围
+    public double minX { get; set; }
+    public double minY { get; set; }
+    public double minZ { get; set; }
+    public double maxX { get; set; }
+    public double maxY { get; set; }
+    public double maxZ { get; set; }
+}
 #endregion
 

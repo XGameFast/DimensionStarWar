@@ -6,7 +6,6 @@ using System.Linq;
 
 public class ServerMessageView : MonoBehaviour {
 
-
     public GameObject main;
 
     public GameObject ScrollContent;
@@ -31,12 +30,6 @@ public class ServerMessageView : MonoBehaviour {
         AndaMessageManager.Instance.serverMessageView = this;
         Status = -1;
     }
-    // Use this for initialization
-    void Start()
-    {
-        InstanceContentPanel();
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -72,6 +65,7 @@ public class ServerMessageView : MonoBehaviour {
         }
         if (Status == 2)
             StopCoroutine("TimeChange");
+        InstanceContentPanel();
         Status = 0;
     }
     public void ShowMain()
@@ -107,14 +101,14 @@ public class ServerMessageView : MonoBehaviour {
         {
             foreach (var m in ItemList)
             {
-                m.transform.parent = null;
+                if (m != null)
+                    m.transform.parent = null;
             }
             ItemList.Clear();
         }
         for (int i = 0; i < count; i++)
         {
-            ItemInfo_ServerMessage item = AndaDataManager.Instance.InstantiateMenu<ItemInfo_ServerMessage>(ONAME.StrongholdPorItem);
-            item = Instantiate(item);
+            ItemInfo_ServerMessage item = AndaDataManager.Instance.InstantiateMenu<ItemInfo_ServerMessage>(ONAME.ServerItem);
             item.transform.parent = ScrollContent.transform;
             item.transform.localScale = Vector3.one;
             item.transform.localPosition = Vector3.zero;
@@ -138,7 +132,7 @@ public class ServerMessageView : MonoBehaviour {
       
         for (int i = 0; i < count; i++)
         {
-            ItemInfo_ServerMessage item = AndaDataManager.Instance.InstantiateMenu<ItemInfo_ServerMessage>(ONAME.StrongholdPorItem);
+            ItemInfo_ServerMessage item = AndaDataManager.Instance.InstantiateMenu<ItemInfo_ServerMessage>(ONAME.ServerItem);
             item = Instantiate(item);
             item.transform.parent = ScrollContent.transform;
             item.transform.localScale = Vector3.one;
@@ -147,5 +141,13 @@ public class ServerMessageView : MonoBehaviour {
             item.GetComponent<ItemInfo_ServerMessage>().SetInfo(this,  list[i]);
             ItemList.Add(item.gameObject);
         }
+    }
+
+    public void Confirm()
+    {
+        if (selectServerItem.info.objectList == null || selectServerItem.info.objectList.Count == 0)
+            return;
+        if (selectServerItem.info.objectList[0].type == 3)
+            AndaPlayerCouponManager.Instance.SetPlayerDetail(selectServerItem.info.objectList[0].playerCoupon);
     }
 }

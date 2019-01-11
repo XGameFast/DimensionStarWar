@@ -139,6 +139,8 @@ public class PlayerMonsterAttribute
     public float baseCleanTime{get;set;}
 
     public int belongStrongholdIndex { get; set; }
+
+
     public int currentStateType { get; set; }
 
     public string backgroundDes { get; set; }

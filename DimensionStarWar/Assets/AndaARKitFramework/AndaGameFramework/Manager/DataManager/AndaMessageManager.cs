@@ -38,35 +38,37 @@ public class AndaMessageManager {
                 {
 
                     res.serverMessageList[i].receiveTime = 0;
-                    if (res.serverMessageList[i].objectList.Count > 0)
+                    if (res.serverMessageList[i].objectList!=null&&res.serverMessageList[i].objectList.Count > 0)
                     {
-
-                        switch (res.serverMessageList[i].objectList[i].type)
+                        for (int j = 0; j < res.serverMessageList[i].objectList.Count; j++)
                         {
-                            //物品
-                            case 1:
-                                Debug.Log(LitJson.JsonMapper.ToJson(res.serverMessageList[i].objectList[i].sD_Pag4U));
-                                //res.serverMessageList[i].objectList[i].item;
-                                break;
-                            //宠物
-                            case 2:
-                                Debug.Log(LitJson.JsonMapper.ToJson(res.serverMessageList[i].objectList[i].monsterGrowUpAttribute));
-                                //res.serverMessageList[i].objectList[i].item ;
-                                break;
-                            //优惠卷
-                            case 3:
-                                //Debug.Log();
-                                //var playerCoupon = res.serverMessageList[i].objectList[i].playerCoupon;
-                                //var item= AndaPlayerCouponManager.Instance.PlayerCouponData.FirstOrDefault(o => o.playerCouponIndex == playerCoupon.playerCouponIndex);
-                                //item.status = playerCoupon.status;
-                                //res.serverMessageList[i].objectList[i].item ;
-                                break;
-                            default:
-                                break;
+                            switch (res.serverMessageList[i].objectList[j].type)
+                            {
+                                //物品
+                                case 1:
+                                    Debug.Log(LitJson.JsonMapper.ToJson(res.serverMessageList[i].objectList[i].sD_Pag4U));
+                                    //res.serverMessageList[i].objectList[i].item;
+                                    break;
+                                //宠物
+                                case 2:
+                                    Debug.Log(LitJson.JsonMapper.ToJson(res.serverMessageList[i].objectList[i].monsterGrowUpAttribute));
+                                    //res.serverMessageList[i].objectList[i].item ;
+                                    break;
+                                //优惠卷
+                                case 3:
+                                    //Debug.Log();
+                                    //var playerCoupon = res.serverMessageList[i].objectList[i].playerCoupon;
+                                    //var item= AndaPlayerCouponManager.Instance.PlayerCouponData.FirstOrDefault(o => o.playerCouponIndex == playerCoupon.playerCouponIndex);
+                                    //item.status = playerCoupon.status;
+                                    //res.serverMessageList[i].objectList[i].item ;
+                                    break;
+                                default:
+                                    break;
+                            }
                         }
                     }
-                    serverMessageView.AddContentPanel(res.serverMessageList);
                 }
+                serverMessageView.AddContentPanel(res.serverMessageList);
                 GetSMMData().AddRange(res.serverMessageList);
                 serverMessageView.messageCout.text = GetSMMData().Count(o => o.receiveTime == 0).ToString();
                 //消息列表更新
@@ -82,7 +84,8 @@ public class AndaMessageManager {
             var josn = PlayerPrefs.GetString("ServerMessage");
             if (josn == "")
                 SMMData = new List<ServerMessage>();
-            SMMData = LitJson.JsonMapper.ToObject<List<ServerMessage>>(josn);
+            else
+                SMMData = LitJson.JsonMapper.ToObject<List<ServerMessage>>(josn);
         }
         return SMMData;
     }

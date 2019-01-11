@@ -90,8 +90,6 @@ public class BuildDimensionRoomController : BaseController {
         ARMonsterSceneDataManager.Instance.aRWorld.OpenBackgroundVV();
         data.BuildDimension_RoomInfoBarForVV(CallbackEnterAstrologyScene,ClickAddStrongholdButton,FinishDragCallback);
      
-
-
         Invoke("InvokJump",0.5f);
 
         Invoke("InvokBuildJIRVISBtn",1.5f);
@@ -338,8 +336,6 @@ public class BuildDimensionRoomController : BaseController {
                     case 2:
                         break;
                 }
-
-               
             }
            
         }
@@ -481,7 +477,7 @@ public class BuildDimensionRoomController : BaseController {
 
             }else
             {
-                ClickJIRVISOpenFreeMonsters();
+                //ClickJIRVISOpenFreeMonsters();
                 JIRVIS.Instance.PlayTips("当前占星庭没有星宠，请选择一只星宿放入占星庭" ,false);
             }
         }
@@ -539,13 +535,16 @@ public class BuildDimensionRoomController : BaseController {
     private void SetMonster()
     {
         data.RecieveMonsterItem();//先回收前面的Monster
+
+        data.InvockBuildMonsterItem();
+
         //data.BuildMonsterFadeInEffect();
-        Invoke("InvokeSetMonster" , 0.5f);
+        Invoke("InvokeSetMonster" , 1f);
     }
 
     private void InvokeSetMonster()
     {
-        data.InvockBuildMonsterItem();
+
 
         data.getDimensionMenu.DisplayMonsterInfo(data.getCurMonsterAttribute);
 
@@ -561,15 +560,16 @@ public class BuildDimensionRoomController : BaseController {
     #region 构建jirvis的功能按钮
     private void BuildJIRVISBtnForVVAstrology()
     {
+        //回退按钮
         List<JIRVISFuncBtnStruct> jIRVISFuncBtnStructs = new List<JIRVISFuncBtnStruct>()
         {
-            new JIRVISFuncBtnStruct { btnName = "backup" , btnIconKey = ONAME.BackStep ,clickCallBack = CallBackClickJIRVISOutAstrology}
+            new JIRVISFuncBtnStruct { btnName = "backup" , btnIconKey = ONAME.BackStep ,clickCallBack = CallBackClickJIRVISOutAstrology},
         };
 
         JIRVIS.Instance.BuildFunctionBtn(jIRVISFuncBtnStructs);
 
+        //在这个占星庭的星宿
         int thisShMonsterCount = AndaDataManager.Instance.GetMonsterCountBelongThisStronghold(data.getCurStrongholdAtrrobute.strongholdIndex);
-
         if (thisShMonsterCount <=0)
         {
 
@@ -578,22 +578,18 @@ public class BuildDimensionRoomController : BaseController {
             List<JIRVISFuncBtnStruct> addditon = new List<JIRVISFuncBtnStruct>
             {
                 new JIRVISFuncBtnStruct { btnName = "AR" , btnIconKey = ONAME.ARIcon , clickCallBack = CallBackClickJIRVISARBtnForAstrology },
-                new JIRVISFuncBtnStruct { btnName = "minemonstes" , btnIconKey = ONAME.MonsterIcon , clickCallBack = CallBackClickJIRVISOpenMonsterListBtn ,},
+                new JIRVISFuncBtnStruct { btnName = "minemonstes" , btnIconKey = ONAME.MonsterIcon , clickCallBack = CallBackClickJIRVISOpenMonsterListBtn,btnType = 5},
             };
 
             JIRVIS.Instance.AddFunctionBtns(addditon);
 
         }
+        //自由宠物
         List<PlayerMonsterAttribute> playerMonsterAttributes = AndaDataManager.Instance.GetUserFreesMonster();
         if(playerMonsterAttributes.Count!=0)
         {
-            JIRVIS.Instance.AddFunctionBtn(new JIRVISFuncBtnStruct { btnName = "freeMonsters" , btnIconKey = ONAME.freeMonsters ,clickCallBack = ClickJIRVISOpenFreeMonsters});
+            JIRVIS.Instance.AddFunctionBtn(new JIRVISFuncBtnStruct { btnName = "freeMonsters" , btnIconKey = ONAME.freeMonsters ,clickCallBack = ClickJIRVISOpenFreeMonsters ,btnType =6});
         }
-
-
-        //JIRVIS.Instance.AddFunctionBtn(new JIRVISFuncBtnStruct { btnName = "试炼场", btnIconKey = ONAME.shootingTrainingIcon, clickCallBack = BeginShootingTraning });
-
-        //JIRVIS.Instance.AddFunctionBtn(new JIRVISFuncBtnStruct { btnName = "backup" , btnIconKey = ONAME.BackStep ,clickCallBack = CallBackClickJIRVISOutAstrology});
     }
     private void BeginShootingTraning()
     {
@@ -625,13 +621,14 @@ public class BuildDimensionRoomController : BaseController {
         List<JIRVISFuncBtnStruct> jIRVISFuncBtnStructs = new List<JIRVISFuncBtnStruct>
         {
             new JIRVISFuncBtnStruct { btnName = "VV" , btnIconKey = ONAME.VVIcon , clickCallBack = CallBackClickJIRVISVVBtnForAstrology },
-            new JIRVISFuncBtnStruct { btnName = "minemonstes" , btnIconKey = ONAME.MonsterIcon , clickCallBack = CallBackClickJIRVISOpenMonsterListBtn ,},
+            new JIRVISFuncBtnStruct { btnName = "minemonstes" , btnIconKey = ONAME.MonsterIcon , clickCallBack = CallBackClickJIRVISOpenMonsterListBtn},
         };
 
         JIRVIS.Instance.BuildFunctionBtn(jIRVISFuncBtnStructs);
 
-        List<PlayerMonsterAttribute> playerMonsterAttributes = AndaDataManager.Instance.GetUserFreesMonster();
-        if(playerMonsterAttributes.Count!=0)
+        int freeMonsterCount = AndaDataManager.Instance.GetUserFreesMonster().Count;
+
+        if(freeMonsterCount != 0)
         {
             JIRVIS.Instance.AddFunctionBtn(new JIRVISFuncBtnStruct { btnName = "freeMonsters" , btnIconKey = ONAME.freeMonsters ,clickCallBack = ClickJIRVISOpenFreeMonsters});
         }
@@ -642,8 +639,10 @@ public class BuildDimensionRoomController : BaseController {
     /// </summary>
     private void ClickJIRVISOpenFreeMonsters()
     {
+        //
         List<PlayerMonsterAttribute> monsterAttributes = AndaDataManager.Instance.GetUserFreesMonster();
-        JIRVIS.Instance.BuildMonsterBtnList(monsterAttributes, ClickAddNewMonsterToThisStronghold, null , true, 6 );
+        //
+        JIRVIS.Instance.BuildMonsterBtnList(monsterAttributes, ClickAddNewMonsterToThisStronghold , null , true, 6 );
     }
 
     private void ClickCancelSetMonster()
@@ -663,13 +662,14 @@ public class BuildDimensionRoomController : BaseController {
 
     private void ClickAddNewMonsterToThisStronghold(PlayerMonsterAttribute playerMonsterAttribute)
     {
+        JIRVIS.Instance.jIRVISData.getJIRVISBar.ClickJIRVISMask();//关闭遮罩
+
         //JIRVIS.Instance.CloseBtnBar();
-        PauseFingEvent(true);
+        //PauseFingEvent(true);
+        //JIRVIS.Instance.CloseTips();//先关闭前一条
+        //JIRVIS.Instance.BuildEditorBarForMonsterChangeNameOrBelongStorngholdIndex(playerMonsterAttribute,data.getCurStrongholdAtrrobute.strongholdIndex, FinishUploadMonsterInfo, GiveUpChangeMonsterInfo);
 
-       // JIRVIS.Instance.CloseTips();//先关闭前一条
-
-        JIRVIS.Instance.BuildEditorBarForMonsterChangeNameOrBelongStorngholdIndex(playerMonsterAttribute,data.getCurStrongholdAtrrobute.strongholdIndex, FinishUploadMonsterInfo, GiveUpChangeMonsterInfo);
-
+        AndaDataManager.Instance.CallServerInsertMonsterToStronghold(playerMonsterAttribute.monsterIndex, JIRVIS.Instance.jIRVISData.getCurMineStrongholdIndex, playerMonsterAttribute.monsterNickName, FinishUploadMonsterInfo);
     }
 
     #region 放弃编辑宠物名字
@@ -683,18 +683,28 @@ public class BuildDimensionRoomController : BaseController {
     #endregion
     #region 成功将修改后的宠物信息上传
 
-    private void FinishUploadMonsterInfo()
+    private void FinishUploadMonsterInfo(bool isSuccess)
     {
-        data.BuildMonsterList();
-        data.getCurStrongholdAtrrobute.currentMonsterCount = data.getPlayerMonsters.Count;
+        if(isSuccess)
+        {
+            data.BuildMonsterList();
 
-        data.SetCurSelectMonsterItemIndex(data.getPlayerMonsters.Count - 1);
+            data.getCurStrongholdAtrrobute.currentMonsterCount = data.getPlayerMonsters.Count;
 
-        SetMonster();
+            data.SetCurSelectMonsterItemIndex(data.getPlayerMonsters.Count - 1);
 
-        data.getCurInfoBar.capacityValue.text = (int)(data.getPlayerMonsters.Count) + "/" + (data.getCurStrongholdAtrrobute.playerStrongholdCapacity);
+            SetMonster();
 
-        Invoke("InvockCheckNeedAutoToMap" , 1.2f);
+            data.getCurInfoBar.capacityValue.text = (int)(data.getPlayerMonsters.Count) + "/" + (data.getCurStrongholdAtrrobute.playerStrongholdCapacity);
+
+            Invoke("InvockCheckNeedAutoToMap", 1.2f);
+        }
+        else
+        {
+            JIRVIS.Instance.PlayTips("请检查网络");
+        }
+
+      
     }
 
     private void InvockCheckNeedAutoToMap()
@@ -1067,10 +1077,10 @@ public class BuildDimensionRoomController : BaseController {
     //[在占星庭 点击 AR ]
     private void CallBackClickJIRVISARBtnForAstrology()
     {
-        if (data.getDimensionMenu.buildDimensionMenu_MonsterInforBar.isOpenSkillBar)
+        /*if (data.getDimensionMenu.buildDimensionMenu_MonsterInforBar.isOpenSkillBar)
         {
-            data.getDimensionMenu.buildDimensionMenu_MonsterInforBar.ClickOpneSkillInfo();
-        }
+            data.getDimensionMenu.buildDimensionMenu_MonsterInforBar.ClickOpenChildBar();
+        }*/
       
         JIRVIS.Instance.ChooseGameDisplayType(OTYPE.GameDisplayType.AR);
         BuildAstrology();
