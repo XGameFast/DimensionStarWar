@@ -946,15 +946,25 @@ public class JIRVISBar : UIBasic2 {
         
     }
 
+    private bool isLockJIRVISBtnBar =false;
+
+    public void SetJIRVISBtnBar(bool isLock)
+    {
+        isLockJIRVISBtnBar = isLock;
+    }
+
     public void SetBtnBarState(bool isOpen)
     {
+        if(isLockJIRVISBtnBar)return;
         if(isOpen)
         {
             if(!btnBarIsOpen)
             {
+                ResetJIRVISSleepTime();
                 btnBarIsOpen = true;
                 StartCoroutine(OpenBtnBar());
-              //  Debug.Log("open");
+                //打开jiirvis 面板，5秒无操作，会自动关闭
+                StartCoroutine(SleepJIRVISBtn());
             }
         }else
         {
@@ -962,10 +972,29 @@ public class JIRVISBar : UIBasic2 {
             {
                 btnBarIsOpen = false;
                 StartCoroutine(CloseBtnBar());
-             //   Debug.Log("close");
             }
         }
     }
+    private float jirvisWakeupTime ;
+    private IEnumerator SleepJIRVISBtn()
+    {
+        while(jirvisWakeupTime < 5 && btnBarIsOpen)
+        {
+            jirvisWakeupTime += Time.deltaTime;
+            yield return null;
+        }
+
+        if(!btnBarIsOpen)yield break;//如果是玩家手动关闭，则后面不再执行
+
+        SetBtnBarState(false);
+    }
+    //对jirvis 操作的时候，会 刷新jiavis的休眠时间
+    private void ResetJIRVISSleepTime()
+    {
+        jirvisWakeupTime = 0;
+    }
+
+
 
     public void SetBtnBarStateHori(bool isOpen)
     {
@@ -1097,11 +1126,17 @@ public class JIRVISBar : UIBasic2 {
 
     public void ClickJirvis()
     {
+        if(isLockJIRVISBtnBar)
+        {
+            JIRVIS.Instance.PlayTips("我的设计者不允许我此时弹出来 , 我也很绝望啊");
+            return;
+        }
         if(JIRVIS.Instance.jIRVISData.getItemList.Count == 0)
         {
             // 呼叫贾维斯
         }else
         { 
+
             bool state = btnBarIsOpen?false:true;
             SetBtnBarState(state);
         }
@@ -1110,7 +1145,8 @@ public class JIRVISBar : UIBasic2 {
 
     private void ClickBtnOutBtnPose(Vector3 pose , GameObject _item , int btnType)
     {
-        if(btnType == 0)
+        ResetJIRVISSleepTime();
+        if (btnType == 0)
         {
             AutoCloseHoriBar();
         }else

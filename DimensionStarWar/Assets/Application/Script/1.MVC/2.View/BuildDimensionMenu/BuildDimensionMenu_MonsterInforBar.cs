@@ -229,6 +229,7 @@ public class BuildDimensionMenu_MonsterInforBar : MonoBehaviour {
             {
                 case 0:
                     monsterStateGroup.gameObject.SetTargetActiveOnce(false);
+                    JIRVIS.Instance.SetBtnBarLock(false);
                     break;
                 case 1:
                     propGroup.gameObject.SetTargetActiveOnce(false);
@@ -246,7 +247,8 @@ public class BuildDimensionMenu_MonsterInforBar : MonoBehaviour {
                     SetMonsterStateBtn();
                     monsterStateGroup.gameObject.SetTargetActiveOnce(true);
                     monsterStateGroup.Play("FadeIn");
-                   
+                    JIRVIS.Instance.CloseBtnBar();
+                    JIRVIS.Instance.SetBtnBarLock(true);
                     break;
                 case 1:
                     monsterStateGroup.gameObject.SetTargetActiveOnce(false);
