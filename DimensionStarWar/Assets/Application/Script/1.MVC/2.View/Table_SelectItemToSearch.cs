@@ -12,6 +12,7 @@ public class Table_SelectItemToSearch : UIBasic2 {
     public Transform tableCenterPoint;
     public Transform tableEdgePoint;
     public Transform tableItem;
+    public Transform itemsGroupPoint;
     private List<UserObjsBox> bloodBottleProps;
     private List<UserObjsBox> searchProps;
     private List<UserObjsBox> luckyProps;
@@ -33,6 +34,12 @@ public class Table_SelectItemToSearch : UIBasic2 {
     private int changeIndex = 4;
     private int changeNextIndex = 7;
     public PlayerMonsterAttribute pma;
+
+    private int[] itemsCount = new int[3]{0,0,0};
+
+    private int curWheelIndex;
+    private int nextWheelIndex;
+
 
     public void SetMonsterIndex(PlayerMonsterAttribute _pma)
     {
@@ -84,7 +91,8 @@ public class Table_SelectItemToSearch : UIBasic2 {
                         if (bloodBottleItems == null) bloodBottleItems = new List<LD_Objs>();
                         bloodBottleItems.AddRange(bloodBottleProps[i].lD_Objs);
                     }
-
+                    itemsCount[0] = bloodBottleItems.Count;
+                    Debug.Log("总数" + itemsCount[0]);
                 }
                 BuildBloodbottleItems();
                 break;
@@ -106,6 +114,7 @@ public class Table_SelectItemToSearch : UIBasic2 {
                         searcItems.AddRange(searchProps[i].lD_Objs);
                     }
 
+                    itemsCount[1] = searcItems.Count;
                 }
 
                 BuildSearchItems();
@@ -128,6 +137,8 @@ public class Table_SelectItemToSearch : UIBasic2 {
                         if (luckyItems == null) luckyItems = new List<LD_Objs>();
                         luckyItems.AddRange(luckyProps[i].lD_Objs);
                     }
+
+                    itemsCount[2] = luckyItems.Count;
                 }
                   
                 BuildLuckyItmes();
@@ -147,7 +158,7 @@ public class Table_SelectItemToSearch : UIBasic2 {
         int count = bloodBottleItems.Count;
         for(int i = 0 ; i < count; i++)
         {
-            if (i > 6) return;
+            if (i > 5) break;
             BuildItem(bloodBottleItems[i],i,i);
         }
 
@@ -162,7 +173,7 @@ public class Table_SelectItemToSearch : UIBasic2 {
         int count = searcItems.Count;
         for (int i = 0; i < count; i++)
         {
-            if (i > 6) return;
+            if (i > 5) return;
             BuildItem(searcItems[i],i ,i);
         }
 
@@ -176,22 +187,30 @@ public class Table_SelectItemToSearch : UIBasic2 {
         int count = luckyItems.Count;
         for (int i = 0; i < count; i++)
         {
-            if (i > 6) return;
+            if (i > 5) return;
             BuildItem(luckyItems[i],i,i);
         }
 
         Repositon();
     }
 
-    private void BuildItem(LD_Objs _itemdata, int _itemdIndex, int _pointIndex)
+    private void BuildItem(LD_Objs _itemdata, int _itemdIndex, int _pointIndex , bool isExchange = false)
     {
         DimensionRoomItem_Info dimensionRoomItem_Info = AndaDataManager.Instance.InstantiateMenu<DimensionRoomItem_Info>(ONAME.DimensionRoomItem_tableItemInfo);
-        dimensionRoomItem_Info.SetInto(transform);
+        dimensionRoomItem_Info.SetInto(itemsGroupPoint);
         dimensionRoomItem_Info.SetInfo(_itemdata, _itemdIndex);
         dimensionRoomItem_Info.transform.position = itemPoints[_pointIndex].position;
         dimensionRoomItem_Info.callback = ScrollTable;
         if (dimensionRoomItem_Infos == null) dimensionRoomItem_Infos = new List<DimensionRoomItem_Info>();
-        dimensionRoomItem_Infos.Add(dimensionRoomItem_Info);
+        if(isExchange)
+        {
+            dimensionRoomItem_Infos[_pointIndex] = dimensionRoomItem_Info;
+        }
+        else
+        {
+            dimensionRoomItem_Infos.Add(dimensionRoomItem_Info);
+        }
+    
     }
 
     private void ClearItems()
@@ -257,7 +276,13 @@ public class Table_SelectItemToSearch : UIBasic2 {
 
     private void Repositon()
     {
-        if (curIndex == -1) ScrollTable(0);
+
+       // curWheelIndex = 0;
+       // nextWheelIndex =0;
+       // curIndex = 0;
+        InitScroll();
+
+        /*if (curIndex == -1) ScrollTable(0);
         else
         {
             if (selectItemIndex[typeIndex] != null)
@@ -272,10 +297,10 @@ public class Table_SelectItemToSearch : UIBasic2 {
                 }
                 else
                 {
-                    ScrollTable(curIndex);
+                    ScrollTo(curIndex);
                 }
             }
-        }
+        }*/
     }
 
     private Vector3 touchPose1;
@@ -295,7 +320,7 @@ public class Table_SelectItemToSearch : UIBasic2 {
 
             if (Input.GetMouseButtonUp(0))
             {
-                float x =  touchPose1.x - Input.mousePosition.x;
+                float x = Input.mousePosition.x - touchPose1.x ;
                 float p = Mathf.Abs(x);
                 if (p > 5)
                 {
@@ -319,96 +344,142 @@ public class Table_SelectItemToSearch : UIBasic2 {
     private Vector3 quaternion1;
     private Vector3 quaternion2;
 
+    private void InitScroll()
+    {
+        curIndex = 0;
+        curWheelIndex = 0;
+
+        ScrollTable((int)(tableItem.transform.localEulerAngles.z*-1));
+    }
+
     private void ScrollTo(int _dir)
     {
-        int dir =_dir;
-        int t = curIndex + _dir;
-        switch(typeIndex)
+        /*int maxCount = itmesCount[typeIndex];
+            if(curIndex == -1) curIndex = 0;
+        int t = curIndex - _dir ; //减相反数
+
+        curIndex = t ;
+
+        if(curIndex < 0) 
         {
-            case 0:
-              
-                if(t > bloodBottleItems.Count-1) t =0 ;
-                else if(t < 0)t = bloodBottleItems.Count - 1;
-                break;
-            case 1:
-                if (t > searcItems.Count - 1) t = 0;
-                else if (t < 0) t = searcItems.Count - 1;
-                break;
-            case 2:
-                if (t > luckyItems.Count - 1) t = 0;
-                else if (t < 0) t = luckyItems.Count - 1;
-                break;
+            curIndex = maxCount - 1;
+        }
+        else if(curIndex > maxCount -1)
+        {
+            curIndex = 0;
+        }*/
+
+        //计算出当前的点数
+        if (curWheelIndex == -1) curWheelIndex = 0;
+
+        ChangeItem(_dir);
+
+        nextWheelIndex = curWheelIndex -_dir;
+
+        #region 用于当数组小于 轮盘位置总数时
+
+        bool isDiffrenceRound = false;
+        int maxCount = itemsCount[typeIndex] >= allWheelCount ? allWheelCount : itemsCount[typeIndex];
+           
+        if (nextWheelIndex > maxCount - 1)
+        {
+            nextWheelIndex = 0;
+            isDiffrenceRound = true;
+        }
+        else if (nextWheelIndex < 0)
+        {
+            nextWheelIndex = maxCount - 1;
+            isDiffrenceRound = true;
         }
 
-        ScrollTable(t, dir);
+        #endregion
+
+        int anlge = Mathf.Abs(curWheelIndex * perAngle - nextWheelIndex * perAngle);
+
+        curWheelIndex = nextWheelIndex;
+
+        if (isDiffrenceRound)anlge = 360  - anlge;
+
+        anlge *= _dir;
+
+        //计算圈数 以及 点数
+
+     
+
+        ScrollTable(anlge);
+
+
     }
 
-    private void ChangeItem()
+    private void ChangeItem(int _dir)
     {
-        switch (typeIndex)
+
+        if(itemsCount[typeIndex] <= allWheelCount)return;
+        List<LD_Objs> items = typeIndex == 0 ? bloodBottleItems : typeIndex == 1 ? searcItems : luckyItems;
+        int seventhitem = allWheelCount;////拿出游标 6 ，即第7个
+
+        int t = curWheelIndex + 3;
+        t = t - t / allWheelCount * allWheelCount;
+
+        //替换 根据 防线选取目标 
+        if (_dir.Equals(-1))//下一个目标
         {
-            case 0:
-              /*  int next = t - halfWheelCount + allWheelCount;
-                if (next > bloodBottleItems.Count - 1) return;
-                LD_Objs lD_Objs = bloodBottleItems[next];
-                bloodBottleItems[next] = bloodBottleItems[curIndex - halfWheelCount];
-                bloodBottleItems[curIndex - halfWheelCount] = lD_Objs;
-                */break;
-            case 1:
-                break;
-            case 2:
-                break;
-        }
-
-        //dimensionRoomItem_Infos[changeIndex-1] = 
-    }
-
-
-    private void ScrollTable(int _index ,int _dir = 1)
-    {
-        if(curIndex == -1) curIndex =_index;
-
-        float w1 = curIndex / allWheelCount;
-        float t1 = curIndex - w1 * allWheelCount;
-
-        float w = _index / allWheelCount;
-        float t = _index - w * allWheelCount;
-        float angle = 0;
-        if (_dir.Equals(1))
-        {
-            if(_index < curIndex)
+           
+            //从库中拿出下一个
+            LD_Objs lD_Objs = items[seventhitem];
+            int count = items.Count;
+            for(int i = 6 ; i < count; i++)
             {
-
-            }else
-            {
-
+                if(i != count -1)
+                {
+                    items[i] = items[i + 1];
+                }else //这是最后一个
+                {
+                   
+                    items[i] = items[t];
+                    items[t] = lD_Objs;
+                }
             }
-            angle = t1 * perAngle - t * perAngle;//获取角度
+
+            AndaDataManager.Instance.RecieveItem(dimensionRoomItem_Infos[t]);
+            BuildItem(lD_Objs, t, t, true);
+
         }
-        else
+        else //上一个
         {
-            angle = t1 * perAngle - t * perAngle;//获取角度
-            angle = 360 - angle;
-
+            //从库中拿出下一个
+            LD_Objs lD_Objs = items[items.Count - 1];
+            int count = items.Count;
+            for (int i = count - 1; i > 5 ; i--)
+            {
+                if (i != count - 1)
+                {
+                    items[i] = items[i - 1];   
+                }
+                else
+                {
+                    items[i] = items[t];
+                    items[t] = lD_Objs;
+                }
+            }
+            AndaDataManager.Instance.RecieveItem(dimensionRoomItem_Infos[t]);
+            BuildItem(lD_Objs, t, t, true);
         }
+    }
 
-        curIndex = _index;
 
+    private void ScrollTable(int angle)
+    {
         quaternion1 = tableItem.transform.localEulerAngles;
-
-        //quaternion1.y += angle;
-
         quaternion2 = quaternion1;
         quaternion2.z += angle;
-
         StartCoroutine(ExcuteScroll());
     }
 
     private void ScrollTable(DimensionRoomItem_Info item)
     {
         int _index = dimensionRoomItem_Infos.IndexOf(item);
-
-      //  ScrollTable(_index);
+        //ScrollTable(_index);
     }
 
     private IEnumerator ExcuteScroll()
@@ -441,8 +512,11 @@ public class Table_SelectItemToSearch : UIBasic2 {
             centerGroup.gameObject.SetTargetActiveOnce(true);
         }
         centerGroup.GetComponent<Animator>().Play("FadeIn");
-        centerItemName.text = dimensionRoomItem_Infos[curIndex].itemName.text;
-        CenterImage.sprite = dimensionRoomItem_Infos[curIndex].itemImage.sprite;
+
+       // int t = curWheelIndex + 3;
+       // t = t - t / allWheelCount * allWheelCount;
+        centerItemName.text = dimensionRoomItem_Infos[curWheelIndex].itemName.text;
+        CenterImage.sprite = dimensionRoomItem_Infos[curWheelIndex].itemImage.sprite;
         if(typeIndex != -1)
         {
             if (!itemSprites[typeIndex].gameObject.activeSelf)
@@ -450,7 +524,7 @@ public class Table_SelectItemToSearch : UIBasic2 {
                 itemSprites[typeIndex].gameObject.SetTargetActiveOnce(true);
             }
             itemSprites[typeIndex] .sprite= CenterImage.sprite;
-            selectItemIndex[typeIndex] = dimensionRoomItem_Infos[curIndex].itemData;
+            selectItemIndex[typeIndex] = dimensionRoomItem_Infos[curWheelIndex].itemData;
         }
     }
 
