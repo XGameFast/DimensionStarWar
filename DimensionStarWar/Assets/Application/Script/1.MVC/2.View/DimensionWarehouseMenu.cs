@@ -16,7 +16,9 @@ public class DimensionWarehouseMenu : UIBasic2 {
     public Image centerImage;
     public Text centerItemName;
     public Text centerItemCount;
-     
+    public Transform monsterPoint;
+
+    private MonsterBasic monsterBasic;
     public override void InitMenu(BaseController _baseController)
     {
         base.InitMenu(_baseController);
@@ -105,23 +107,37 @@ public class DimensionWarehouseMenu : UIBasic2 {
             _item.SetCallBack(ClickItem);
             _item.transform.SetInto(grid);
             MonsterBaseConfig mbc = MonsterGameData.GetMonsterBaseConfig(go);
-            Debug.Log("mbc" + mbc.monsterID);
             _item.SetNameAndCount(mbc.monsterName, monsterDatas[go], mbc.monsterID.ToString());
             if(monsterDatas[go] != 0)
             {
-                if(freemCount!=0)
+                //玩家拥有这个 星宿，
+                _item.SetImageColorful();
+
+                if (freemCount!=0)
                 {
-                    for(int i = 0;  i < freemCount; i++)
+                    _item.SetRedPointState(false);
+                    for (int i = 0;  i < freemCount; i++)
                     {
-                        _item.SetRedPointState(freeMonster[i].monsterID == go);
+                        //当前这对星宿有自由宠物
+                        if(freeMonster[i].monsterID == go) //当前这只是自由宠物
+                        {
+                            _item.SetRedPointState(true);
+                            break;
+                        }
+
+                        //_item.SetRedPointState(freeMonster[i].monsterID == go);
                     }
-                }else
+
+                    //_item.SetRedPointState(false);
+                }
+                else
                 {
                     _item.SetRedPointState(false);
                 }
-            }else
+            }else //说明这个角色是没有的
             {
-                _item.SetRedPointState(true);
+                _item.SetImageBlack();
+                _item.SetRedPointState(false);
             }
 
             dimensionWareHouseChildItems.Add(_item);
@@ -256,6 +272,8 @@ public class DimensionWarehouseMenu : UIBasic2 {
 
     }
 
+
+
     private void ClickItem(int itemID)
     {
 
@@ -266,6 +284,8 @@ public class DimensionWarehouseMenu : UIBasic2 {
                
                 break;
             case 1000:
+                BuildMonsterItem(itemID);
+                break;
             case 40000:
                 centerItemGroup.gameObject.SetActive(false);
                 DimensionWareHouseChildItem dimensionWareHouseChildItem = dimensionWareHouseChildItems.FirstOrDefault(s => s.itemID == itemID);
@@ -294,6 +314,22 @@ public class DimensionWarehouseMenu : UIBasic2 {
         {
             JIRVIS.Instance.BuildEditorBarForItemInformation(itemID);
         }*/
+    }
+
+    private void BuildMonsterItem(int id)
+    {
+        if (monsterBasic != null) AndaDataManager.Instance.RecieveItem(monsterBasic);
+        if (monsterDatas[id] != 0)
+        {
+            monsterBasic = AndaDataManager.Instance.InstantiateMonster<MonsterBasic>(id.ToString());
+            monsterBasic.SetInto(monsterPoint);
+            monsterBasic.gameObject.SetLayer(ONAME.LayerUI);
+        }
+        else
+        {
+            //----
+            Debug.Log("这个东西没有");
+        }
     }
 }
 

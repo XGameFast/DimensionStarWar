@@ -64,6 +64,8 @@ public class BusinessCoupon
 }
 public class PlayerCoupon
 {
+    public string code { get; set; }
+
     public int applyIndex{get;set;}
     //后段需要，前段不需要管：）
     public int playerIndex{get;set;}

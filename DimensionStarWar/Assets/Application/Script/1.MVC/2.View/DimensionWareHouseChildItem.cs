@@ -48,5 +48,15 @@ public class DimensionWareHouseChildItem : AndaObjectBasic {
         redPoint.gameObject.SetTargetActiveOnce(isOpen);
     }
 
+    public void SetImageBlack()
+    {
+        sprite.color = Color.black;
+    }
+
+    public void SetImageColorful()
+    {
+        sprite.color = Color.white;
+    }
+
 
 }
