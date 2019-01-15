@@ -52,12 +52,12 @@ public class MallController : BaseController
         List<JIRVISFuncBtnStruct> btnStructs = new List<JIRVISFuncBtnStruct>()
         {
             new JIRVISFuncBtnStruct { btnName = "" , btnIconKey = ONAME.consumableIcon , clickCallBack =  ShowConsumable },
-            new JIRVISFuncBtnStruct { btnName = "" , btnIconKey = ONAME.csmIcon , clickCallBack =  Showcsm },
-            new JIRVISFuncBtnStruct { btnName = "" , btnIconKey = ONAME.tzIcon , clickCallBack =  Showtz },
-            new JIRVISFuncBtnStruct { btnName = "" , btnIconKey = ONAME.hbIcon , clickCallBack =  Showhb },
-            new JIRVISFuncBtnStruct { btnName = "" , btnIconKey = ONAME.xwjIcon , clickCallBack =  Showxwj },
-            new JIRVISFuncBtnStruct { btnName = "" , btnIconKey = ONAME.xywIcon , clickCallBack =  Showxyw },
-            new JIRVISFuncBtnStruct { btnName = "" , btnIconKey = ONAME.tcqIcon , clickCallBack =  Showtcq },
+            new JIRVISFuncBtnStruct { btnName = "" , btnIconKey = ONAME.dimensionDoorIcon , clickCallBack =  Showcsm },
+            new JIRVISFuncBtnStruct { btnName = "" , btnIconKey = ONAME.strongholdDrawingIcon , clickCallBack =  Showtz },
+            new JIRVISFuncBtnStruct { btnName = "" , btnIconKey = ONAME.currencyIcon , clickCallBack =  Showhb },
+            new JIRVISFuncBtnStruct { btnName = "" , btnIconKey = ONAME.unknowObj , clickCallBack =  Showxwj },
+            new JIRVISFuncBtnStruct { btnName = "" , btnIconKey = ONAME.luckyObjIcon , clickCallBack =  Showxyw },
+            new JIRVISFuncBtnStruct { btnName = "" , btnIconKey = ONAME.detectIcon , clickCallBack =  Showtcq },
         };
 
         JIRVISFuncBtnStruct backStep = new JIRVISFuncBtnStruct

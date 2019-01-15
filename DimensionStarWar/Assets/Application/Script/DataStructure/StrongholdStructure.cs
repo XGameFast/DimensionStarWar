@@ -57,6 +57,10 @@ public class BusinessCoupon
     /// </summary>
     public int type { get; set; }
 
+    public string tips {get;set;}
+
+    public string businessname {get;set;}
+
 }
 public class PlayerCoupon
 {
