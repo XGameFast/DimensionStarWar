@@ -325,6 +325,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 094231f3058fd4c019a051e4e192e9b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  showSecneConfiger: 0
+  showEditorMonsterPower: 0
+  showEditorNormalSkill: 0
+  showEditorDefenseSkill: 0
+  showEditorSpecialSkill: 0
+  showEnemyMonsterState: 0
+  mine_showEditorNormalSkill: 0
+  mine_showEditorDefenseSkill: 0
+  mine_showEditorSpecialSkill: 0
   enemyPower: {fileID: 1597774956}
   minePower: {fileID: 985746063}
   enemyMakePower: {fileID: 1552467055}
@@ -332,32 +341,96 @@ MonoBehaviour:
   mineMonsterPowerSlider: {fileID: 1447927919}
   enemyMonsterPowerSlider: {fileID: 1830022040}
   _selectMonsterID: 1007
-  _selectEnemyID: 1003
-  enmeyMaxPower: 0
+  _selectEnemyID: 1004
+  enmeyMaxPower: 563
+  enemyCurrentPower: 198
+  mineMaxPower: 419
+  mineCurrentPower: 212
   enemyNormalSkill: 10003
   enemyDefenseSkill: 11003
   enemySpecialSkill: 12003
+  normalSkillMaxPower: 20000
+  defenseSkillMaxPower: 40000
+  speciallSkillMaxPower: 50000
+  useCustomNormalSkillPower: 1
+  normalSkillPower: 16771
   useCustomSkillArchievemntLimit: 1
   normalSkillLevelCount: 33
-  normalSkilArchiRangelValue: 0200000002000000020000000200000002000000
+  normalSkilArchiRangelValue:
+  - {x: 33, y: 611}
+  - {x: 40, y: 1}
+  - {x: 50, y: 1}
+  - {x: 60, y: 1}
+  - {x: 79, y: 9}
+  - {x: 80, y: 2}
+  - {x: 81, y: 2}
+  useCustomDefnseSkillPower: 1
+  denfseSkillPower: 40000
+  useDefenseSkillArchievemntLimit: 1
+  defenseSkillLevelCount: 0
+  defenseSkilArchiRangelValue:
+  - {x: 10, y: 40}
+  - {x: 21, y: 43}
+  - {x: 22, y: 45}
+  - {x: 23, y: 4}
+  useCustomSpecialSkillPower: 1
+  specialSkillPower: 50000
+  useSpecialSkillArchievemntLimit: 1
+  specialSkillLevelCount: 0
+  specialSkilArchiRangelValue:
+  - {x: 44, y: 611}
+  - {x: 333, y: 1}
+  - {x: 666, y: 1}
+  - {x: 999, y: 1}
+  - {x: 1999, y: 9}
+  - {x: 3444, y: 2}
   useCustomNormalSkillArchi: 0
-  enemyNormalSkillArchievment: 3968
+  enemyNormalSkillArchievment: 3526
   useCustomDefenseSkillArchi: 0
   enemyDefenseArchievment: 4096
   useCustomSpecialSkillArchi: 0
-  enemySpecialSkillArchievment: 3968
-  allowThink: 0
-  allowNormallAttack: 0
+  enemySpecialSkillArchievment: 1898
+  mine_normalSkillMaxPower: 129
+  mine_defenseSkillMaxPower: 59
+  mine_speciallSkillMaxPower: 52
+  mine_useCustomNormalSkillPower: 1
+  mine_normalSkillPower: 21
+  mine_useCustomNormalSkillArchievemntLimit: 1
+  mine_normalSkillLevelCount: 0
+  mine_normalSkilArchiRangelValue:
+  - {x: 0, y: 0}
+  - {x: 1, y: 0}
+  mine_useCustomDefnseSkillPower: 1
+  mine_denfseSkillPower: 22
+  mine_useDefenseSkillArchievemntLimit: 1
+  mine_defenseSkillLevelCount: 0
+  mine_defenseSkilArchiRangelValue:
+  - {x: 0, y: 0}
+  - {x: 2, y: 0}
+  mine_useCustomSpecialSkillPower: 1
+  mine_specialSkillPower: 27
+  mine_useSpecialSkillArchievemntLimit: 1
+  mine_specialSkillLevelCount: 0
+  mine_specialSkilArchiRangelValue:
+  - {x: 0, y: 0}
+  - {x: 1, y: 0}
+  mine_useCustomNormalSkillArchi: 0
+  mine_NormalSkillArchievment: 10
+  mine_useCustomDefenseSkillArchi: 0
+  mine_DefenseArchievment: 10
+  mine_useCustomSpecialSkillArchi: 0
+  mine_SpecialSkillArchievment: 4
+  allowThink: 1
+  allowNormallAttack: 1
   allowDefense: 0
   allowSpecialSkill: 0
   allowMove: 0
   allowMineMonsterPlayBati: 1
-  allowEnemyMonsterPlayBati: 0
+  allowEnemyMonsterPlayBati: 1
   GameCamera: {fileID: 1257221252}
   UICamera: {fileID: 745780532}
   ARWorldTrans: {fileID: 224762856}
   playerStrongholdIndex: 2
-  tmpMonsterPower: 3272
   enemyPoint: {fileID: 2095024443}
   minePiont: {fileID: 30672862}
   enemy: {fileID: 0}
@@ -16793,7 +16866,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 612, y: -128}
+  m_AnchoredPosition: {x: 612, y: -348}
   m_SizeDelta: {x: 280, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1383071748
@@ -19371,7 +19444,7 @@ Prefab:
     - target: {fileID: 114287654913035130, guid: 7d006bfd0df7a42a698872a718e67a26,
         type: 2}
       propertyPath: _Account
-      value: 15728004898
+      value: 15824266891
       objectReference: {fileID: 0}
     - target: {fileID: 114287654913035130, guid: 7d006bfd0df7a42a698872a718e67a26,
         type: 2}
@@ -23411,7 +23484,7 @@ GameObject:
   - component: {fileID: 1890140577}
   - component: {fileID: 1890140576}
   m_Layer: 5
-  m_Name: enmeyPOwer
+  m_Name: mineMakPower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

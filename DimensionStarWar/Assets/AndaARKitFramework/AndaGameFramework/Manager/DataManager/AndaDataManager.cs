@@ -1235,6 +1235,28 @@ public class AndaDataManager {
       
     }
 
+    public int GetSkillPower(Vector2Int[] range, int archive)
+    {
+        int count = range.Length;
+        for (int i = 0; i < count; i++)
+        {
+            if (i == 0)
+            {
+                if (archive >= range[i][0] && archive < range[i][0])
+                    return range[i][1];
+            }
+            else
+            {
+                if (archive >= range[i - 1][0] && archive < range[i][0])
+                    return range[i][1];
+            }
+
+        }
+        return range[0][1];
+    }
+
+
+
     public int GetMonsterExpLimit(int exp , MonsterBaseConfig mbc)
     {
         int count = mbc.growUpEXPLimit.Count;
