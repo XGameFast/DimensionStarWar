@@ -1196,7 +1196,7 @@ public static class MonsterGameData
     public static List<SkillBaseAttribute> gameBaseSkillAttributeList
     {
         get {
-        
+         
             if(_gameBaseSkillAttributeList == null)
             {
             
@@ -1204,7 +1204,7 @@ public static class MonsterGameData
                 _gameBaseSkillAttributeList = JsonMapper.ToObject<List<SkillBaseAttribute>>(json);
         
             }
-        
+
             return _gameBaseSkillAttributeList;
         }
         /*get

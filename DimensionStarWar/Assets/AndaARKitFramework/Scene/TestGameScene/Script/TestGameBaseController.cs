@@ -54,6 +54,9 @@ public class TestGameBaseController : MonoBehaviour {
     [SerializeField]
     public Text mineMakePower;
 
+    public Slider mineMonsterPowerSlider;
+
+    public Slider enemyMonsterPowerSlider;
 
     [HideInInspector][SerializeField]
     public SelectMonsterID _selectMonsterID = SelectMonsterID.昴宿;
@@ -70,12 +73,54 @@ public class TestGameBaseController : MonoBehaviour {
     [HideInInspector][SerializeField]
     public SpecialSkillID enemySpecialSkill = SpecialSkillID.翼宿的特殊技能;
 
+    [HideInInspector]
+    [SerializeField]
+    public bool useCustomSkillArchievemntLimit = false;
+    [HideInInspector]
+    [SerializeField]
+    public int normalSkillLevelCount = 0;
+    [HideInInspector]
+    [SerializeField]
+    public int[] normalSkilArchiRangelValue;
+
+
+    [HideInInspector]
+    [SerializeField]
+    public bool useCustomNormalSkillArchi = false;
     [HideInInspector][SerializeField]
     public int enemyNormalSkillArchievment = 10;
+    [HideInInspector]
+    [SerializeField]
+    public bool useCustomDefenseSkillArchi = false;
     [HideInInspector][SerializeField]
     public int enemyDefenseArchievment = 10;
+    [HideInInspector]
+    [SerializeField]
+    public bool useCustomSpecialSkillArchi = false;
     [HideInInspector][SerializeField]
     public int enemySpecialSkillArchievment =10;
+
+    [HideInInspector]
+    [SerializeField]
+    public bool allowThink = true;
+    [HideInInspector]
+    [SerializeField]
+    public bool allowNormallAttack = true;
+    [HideInInspector]
+    [SerializeField]
+    public bool allowDefense = true;
+    [HideInInspector]
+    [SerializeField]
+    public bool allowSpecialSkill = true;
+    [HideInInspector]
+    [SerializeField]
+    public bool allowMove = true;
+    [HideInInspector]
+    [SerializeField]
+    public bool allowMineMonsterPlayBati = false;
+
+    [SerializeField]
+    public bool allowEnemyMonsterPlayBati = false;
 
 
     [HideInInspector][SerializeField]
@@ -122,7 +167,6 @@ public class TestGameBaseController : MonoBehaviour {
          
         curMineMonsterAttr = AndaDataManager.Instance.userData.userMonsterList.FirstOrDefault(s=>s.monsterID == (int)_selectMonsterID);
         curMineMonsterAttr.mosterPower = tmpMonsterPower == 0? curMineMonsterAttr.mosterPower : tmpMonsterPower;
-
         curMineMonsterAttr.monsterMaxPower = tmpMonsterPower == 0 ? curMineMonsterAttr.mosterPower : tmpMonsterPower;
     }
 
@@ -165,6 +209,9 @@ public class TestGameBaseController : MonoBehaviour {
         // curMineMonster.gameObject.SetLayer(ONAME.LayerDeafualt);
         ARMonsterSceneDataManager.Instance.currentSceneMonster = curMineMonster;
 
+        curMineMonster.DownloadMonsterValue(curMineMonsterAttr, OTYPE.MonsterStateType.fight);
+
+        curMineMonster.bati = allowMineMonsterPlayBati;
 
         BuildEnemy();
     }
@@ -183,7 +230,7 @@ public class TestGameBaseController : MonoBehaviour {
             {
                 new SkillGrowupAttribute
                 {
-                    skillID = (int)enemyNormalSkill,skillIndex =1,skillAchievementValue =enemyNormalSkillArchievment,skillNickName = "粒子炮"
+                    skillID = (int)enemyNormalSkill,skillIndex =1,skillAchievementValue = enemyNormalSkillArchievment,skillNickName = "粒子炮"
                 },
                 new SkillGrowupAttribute
                 {
@@ -191,7 +238,7 @@ public class TestGameBaseController : MonoBehaviour {
                 },
                 new SkillGrowupAttribute
                 {
-                    skillID = (int)enemySpecialSkill,skillIndex =4,skillAchievementValue =enemySpecialSkillArchievment, skillNickName = "卷土重来2"
+                    skillID = (int)enemySpecialSkill,skillIndex =4,skillAchievementValue = enemySpecialSkillArchievment, skillNickName = "卷土重来2"
                 }
             }
         };
@@ -204,12 +251,33 @@ public class TestGameBaseController : MonoBehaviour {
         enemy.MonsterDeadEvent += ListenrMonsterDeath;
         enemy.UsedSkillAttackedTarget += ListerEnmeyUseSkillPower;
         enemy.transform.SetInto(enemyPoint);
+        enemy.DownloadMonsterValue(curEnemyMonsterAttr, OTYPE.MonsterStateType.fight);
+
+
+
+        enemy.enmeyMonster.allowThink = allowThink;
+       // Debug.Log("allowMove" + allowThink);
+        enemy.enmeyMonster.allowNormalAttack = allowNormallAttack;
+      //  Debug.Log("allowMove" + allowNormallAttack);
+        enemy.enmeyMonster.allowDefnse = allowDefense;
+      //  Debug.Log("allowMove" + allowDefense);
+        enemy.enmeyMonster.allowBigAttack = allowSpecialSkill;
+      //  Debug.Log("allowMove" + allowSpecialSkill);
+        enemy.enmeyMonster.allowMove = allowMove;
+        //  Debug.Log("allowMove" + allowMove);
+
+        enemy.bati = allowEnemyMonsterPlayBati;
     }
 
     public virtual void BuildPlayerControl()
     {
-        curMineMonster.DownloadMonsterValue(curMineMonsterAttr, OTYPE.MonsterStateType.fight);
-        enemy.DownloadMonsterValue(curEnemyMonsterAttr, OTYPE.MonsterStateType.fight);
+       
+       
+
+
+       
+
+
         curMineMonster.SetControllerState(true);
         enemy.SetControllerState(true);
  
@@ -260,12 +328,15 @@ public class TestGameBaseController : MonoBehaviour {
 
     public void UpdateMineMonsterPower(int cur, int max)
     {
-       
+        float per = (float)cur/max;
+        mineMonsterPowerSlider.value = per;
         minePower.text = cur.ToString();
     }
 
     public void UpdateEnemeyMonsterPower(int cur,int max)
     {
+        float per = (float)cur/max;
+        enemyMonsterPowerSlider.value = per;
         enemyPower.text = cur.ToString();
     }
 

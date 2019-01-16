@@ -27,6 +27,8 @@ public class EnemyIntermediate : EnemyFightController {
      */
     private Vector3 rollToTargetPoint;
     
+    
+
 
     protected override void OnInitValue()
     {
@@ -97,12 +99,64 @@ public class EnemyIntermediate : EnemyFightController {
     protected override void Ami()
     {
         base.Ami();
-        if (Time.time - lockLoadTime > lockTimeLimit)
+
+        if(allowThink)
         {
-            int skillType = Random.Range(0,10);
-            skillType = skillType <=5? 1 : 2;
-            self.ControlChangeSkillFixSkill(skillType);
-            currentFightState = EnemyFightState.attack;
+            if (Time.time - lockLoadTime > lockTimeLimit)
+            {
+
+                if(allowNormalAttack && allowBigAttack)
+                {
+                    int skillType = Random.Range(0, 10);
+                    skillType = skillType <= 5 ? 1 : 2;
+                    self.ControlChangeSkillFixSkill(skillType);
+                    currentFightState = EnemyFightState.attack;
+                    return;
+                }
+
+                if(allowNormalAttack)
+                {
+
+                    int skillType = 1;
+                    self.ControlChangeSkillFixSkill(skillType);
+                    currentFightState = EnemyFightState.attack;
+                    return;
+                }
+
+                if (allowBigAttack)
+                {
+
+                    int skillType = 2;
+                    self.ControlChangeSkillFixSkill(skillType);
+                    currentFightState = EnemyFightState.attack;
+                    return;
+                }
+                ResetAmiValue();
+            }
+        }else
+        {
+            if(allowNormalAttack && Time.time -  self.monsterDataValue.getNormalSkillCurrentCD > self.monsterDataValue.getNormalSkillCDLimit)
+            {
+                self.ControlChangeSkillFixSkill(1);
+                currentFightState = EnemyFightState.attack;
+                return;
+            }
+
+            if(allowDefnse && Time.time - self.monsterDataValue.getDefnseSkillCurrentCD > self.monsterDataValue.getDefenseSkillCDLimit)
+            {
+                self.ControlChangeSkillFixSkill(0);
+                currentFightState = EnemyFightState.attack;
+                return;
+            }
+
+            if (allowDefnse && Time.time - self.monsterDataValue.getSpecialSkillCurrentCD > self.monsterDataValue.getSpecialSkillCDLimit)
+            {
+                self.ControlChangeSkillFixSkill(2);
+                currentFightState = EnemyFightState.attack;
+                return;
+            }
+
+            ResetAmiValue();
         }
     }
 
@@ -172,6 +226,7 @@ public class EnemyIntermediate : EnemyFightController {
     public override void ListenerPlayerMonsterUseSkill(int skillType)
     {
         base.ListenerPlayerMonsterUseSkill(skillType);
+        if(!allowMove)return ;
         if (currentFightState == EnemyFightState.ami && skillType ==(int)MonsterGameData.SkillType.attack)
         {
             int random = Random.Range(0,10);
@@ -179,8 +234,17 @@ public class EnemyIntermediate : EnemyFightController {
             {  
                 if(self.SkillIsCownDown(0)) 
                 {
-                    self.ControlChangeSkillFixSkill(0); //防御
-                    currentFightState = EnemyFightState.attack;
+                    if(allowDefnse)
+                    {
+                        self.ControlChangeSkillFixSkill(0); //防御
+                        currentFightState = EnemyFightState.attack;
+                    }
+                    else
+                    {
+                        currentFightState = EnemyFightState.doge;
+                    }
+
+
                 }else
                 {
                     currentFightState = EnemyFightState.doge;
