@@ -877,9 +877,15 @@ public class AndaDataManager
 
     #region 优惠卷
 
-    public void PlayerCouponUp(int playerCouponIndex, System.Action<bool> callBack)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="playerCouponIndex">优惠卷主键</param>
+    /// <param name="addressIndex">收件地址主键</param>
+    /// <param name="callBack">返回方法</param>
+    public void PlayerCouponUp(int playerCouponIndex, int addressIndex, System.Action<bool> callBack)
     {
-        naetdataManager.PlayerCouponUp(playerCouponIndex, callBack);
+        naetdataManager.PlayerCouponUp(playerCouponIndex, addressIndex, callBack);
     }
 
     public void GetPlayerCoupon(System.Action<PlayerCouponsRequest> callback)
@@ -894,6 +900,11 @@ public class AndaDataManager
     public void GetServerMessage(System.Action<ServerMessageRequest> callback)
     {
         naetdataManager.GetServerMessage(callback);
+    }
+
+    public void GetServerMessageAwards(System.Action<ServerMessageAwardsRequest> callback , int serverMessageIndex)
+    {
+        naetdataManager.GetServerMessageAwards(callback, serverMessageIndex);
     }
     #endregion
 

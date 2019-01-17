@@ -87,11 +87,20 @@ public class PlayerCoupon
     public int expirationDate { get; set; }
     //建立时间
     public int createTime { get; set; }
+
+    public string code { get; set; }
+
     //优惠券详情
     public BusinessCoupon coupon { get; set; }
+}
 
-  
- 
+public class PlayerCouponQR
+{
+    public int playerCouponIndex { get; set; }
+
+    public int playerIndex { get; set; }
+
+    public int CreateTime { get; set; }
 }
 
 public class StrongholdBaseConfigAttribute

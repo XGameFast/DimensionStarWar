@@ -46,12 +46,12 @@ public class AndaMessageManager {
                             {
                                 //物品
                                 case 1:
-                                    Debug.Log(LitJson.JsonMapper.ToJson(res.serverMessageList[i].objectList[i].sD_Pag4U));
+                                    //Debug.Log(LitJson.JsonMapper.ToJson(res.serverMessageList[i].objectList[i].sD_Pag4U));
                                     //res.serverMessageList[i].objectList[i].item;
                                     break;
                                 //宠物
                                 case 2:
-                                    Debug.Log(LitJson.JsonMapper.ToJson(res.serverMessageList[i].objectList[i].monsterGrowUpAttribute));
+                                    //Debug.Log(LitJson.JsonMapper.ToJson(res.serverMessageList[i].objectList[i].monsterGrowUpAttribute));
                                     //res.serverMessageList[i].objectList[i].item ;
                                     break;
                                 //优惠卷
@@ -77,6 +77,41 @@ public class AndaMessageManager {
             }
         }
     }
+
+    public void GetServerMessageAward()
+    {
+        AndaDataManager.Instance.GetServerMessageAwards(GetServerMessageAwardBack, serverMessageView.selectServerItem.info.serverMessageIndex);
+    }
+
+    public void GetServerMessageAwardBack(ServerMessageAwardsRequest res)
+    {
+        var datalist = new List<AndaLocalRewardData>();
+
+        serverMessageView.selectServerItem.info.receiveAwardsTime = res.serverMessage.receiveAwardsTime;
+        AndaMessageManager.Instance.SaveData();
+        //物品展示
+        if (res.sD_Pag4Us != null)
+        {
+            foreach (var m in res.sD_Pag4Us)
+            {
+                AndaDataManager.Instance.UpdateUserConsumableItemForADD(new SD_Pag4U()
+                {
+                    hostIndex = res.serverMessage.hostIndex,
+                    objectCount = m.addCount,
+                    objectID = m.objectId,
+                    objectIndex = m.objectIndex,
+                    objectValue = 0
+                });
+                datalist.Add(new AndaLocalRewardData()
+                {
+                    objCount = m.addCount,
+                    objID = m.objectId,
+                });
+            }
+            JIRVIS.Instance.jIRVISData.SetNormalRewardList(datalist);
+            JIRVIS.Instance.CheckNormalReward();
+        }
+    }
     public List<ServerMessage> GetSMMData()
     {
         if (SMMData == null)
@@ -96,5 +131,14 @@ public class AndaMessageManager {
         var json = JsonMapper.ToJson(SMMData);
         PlayerPrefs.SetString("ServerMessage", json);
     }
-
+    //清除历史
+    public void ClearHistory()
+    {
+        if (SMMData == null)
+            SMMData = new List<ServerMessage>();
+        else
+            SMMData.Clear();
+        var json = JsonMapper.ToJson(SMMData);
+        PlayerPrefs.SetString("ServerMessage", json);
+    }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using System.Linq;
 
 public class ItemInfo_ServerMessage :  AndaObjectBasic,  IPointerClickHandler{
 
@@ -19,7 +20,7 @@ public class ItemInfo_ServerMessage :  AndaObjectBasic,  IPointerClickHandler{
     public GameObject openImage;
     public GameObject openBgImage;
 
-
+    public List<AndaLocalRewardData> andaLocalRewardDatas;
     // Use this for initialization
     void Start () {
 		
@@ -47,7 +48,6 @@ public class ItemInfo_ServerMessage :  AndaObjectBasic,  IPointerClickHandler{
             Read.SetActive(true);
             UnRead.SetActive(false);
         }
-        
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -74,16 +74,34 @@ public class ItemInfo_ServerMessage :  AndaObjectBasic,  IPointerClickHandler{
 
         serverMessageView.confirmButton.SetActive(false);
 
+        if (andaLocalRewardDatas != null)
+            return;
+        andaLocalRewardDatas = new List<AndaLocalRewardData>();
         if (info.objectList != null || info.objectList.Count != 0)
         {
+            serverMessageView.confirmButton.SetActive(true);
+
             foreach (var m in info.objectList)
             {
-                if (m.type == 3)
+                if (m.type == 1)
                 {
-                    serverMessageView.confirmButton.SetActive(true);
+                    var item = andaLocalRewardDatas.FirstOrDefault(o => o.objID == m.id);
+                    if (item != null)
+                        item.objCount+= m.count;
+                    else
+                        andaLocalRewardDatas.Add(new AndaLocalRewardData()
+                        {
+                            objCount = m.count,
+                            objID = m.id,
+                        });
                 }
-                else {
-                    serverMessageView.confirmButton.SetActive(false);
+                else if (m.type == 2)
+                {
+
+                }
+                else if (m.type == 3)
+                {
+                   
                 }
             }
         }

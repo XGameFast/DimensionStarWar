@@ -149,5 +149,24 @@ public class ServerMessageView : MonoBehaviour {
             return;
         if (selectServerItem.info.objectList[0].type == 3)
             AndaPlayerCouponManager.Instance.SetPlayerDetail(selectServerItem.info.objectList[0].playerCoupon);
+        else
+        {
+            if (selectServerItem.info.receiveAwardsTime == 0)//领取奖励
+            {
+                AndaMessageManager.Instance.GetServerMessageAward();
+            }
+            else
+            {
+                if (selectServerItem.andaLocalRewardDatas != null)
+                    JIRVIS.Instance.jIRVISData.SetNormalRewardList(selectServerItem.andaLocalRewardDatas);
+                JIRVIS.Instance.CheckNormalReward();
+            }
+        }
+    }
+
+
+    public void ClearHistory()
+    {
+        AndaMessageManager.Instance.ClearHistory();
     }
 }

@@ -1609,11 +1609,12 @@ public class NetdataManager : ManagerBase {
     #endregion
 
     #region
-    public void PlayerCouponUp(int playerCouponIndex, System.Action<bool> callback)
+    public void PlayerCouponUp(int playerCouponIndex,int addressIndex, System.Action<bool> callback)
     {
         var _wForm = new WWWForm();
         _wForm.AddField("token", AndaDataManager.Instance.userData.token);
         _wForm.AddField("playerCouponIndex", playerCouponIndex);
+        _wForm.AddField("addressIndex", addressIndex);
         string path = networkAdress2 + "PlayerCoupon/Up";
         //string path = "http://localhost:57789/api/" + "SD_Pag/Consume";
         StartCoroutine(PlayerCouponUpResutl(path, _wForm, callback));
@@ -1676,6 +1677,7 @@ public class NetdataManager : ManagerBase {
             return;
         _wForm.AddField("token", AndaDataManager.Instance.userData.token);
         string path = networkAdress2 + "ServerMessage/Get";
+        //string path = "http://localhost:57789/api/ServerMessage/Get";
         StartCoroutine(ExcuteGetServerMessage(path, _wForm, callback));
     }
 
@@ -1693,6 +1695,38 @@ public class NetdataManager : ManagerBase {
         {
             Debug.Log(postData.text);
             ServerMessageRequest result = JsonMapper.ToObject<ServerMessageRequest>(postData.text);
+            callback(result);
+        }
+    }
+
+
+
+    public void GetServerMessageAwards(System.Action<ServerMessageAwardsRequest> callback , int serverMessageIndex)
+    {
+        var _wForm = new WWWForm();
+        if (AndaDataManager.Instance.userData == null)
+            return;
+        _wForm.AddField("token", AndaDataManager.Instance.userData.token);
+        _wForm.AddField("serverMessageIndex", serverMessageIndex);
+        string path = networkAdress2 + "ServerMessage/GetAward";
+        //string path = "http://localhost:57789/api/ServerMessage/GetAward";
+        StartCoroutine(ExcuteGetServerMessageAwards(path, _wForm, callback));
+    }
+
+    private IEnumerator ExcuteGetServerMessageAwards(string _url, WWWForm _wForm, System.Action<ServerMessageAwardsRequest> callback)
+    {
+
+        WWW postData = new WWW(_url, _wForm);
+        yield return postData;
+
+        if (postData.error != null)
+        {
+            Debug.Log(postData.error);
+        }
+        else
+        {
+            Debug.Log(postData.text);
+            ServerMessageAwardsRequest result = JsonMapper.ToObject<ServerMessageAwardsRequest>(postData.text);
             callback(result);
         }
     }

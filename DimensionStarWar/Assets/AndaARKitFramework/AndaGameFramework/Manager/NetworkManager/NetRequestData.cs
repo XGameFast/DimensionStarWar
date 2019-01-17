@@ -83,6 +83,14 @@ public class ServerMessageRequest : Result
     public List<ServerMessage> serverMessageList { get; set; }
 }
 
+public class ServerMessageAwardsRequest : Result
+{
+    public List<GameRequest.BattelObject> sD_Pag4Us { get; set; }
+    public List<MonsterGrowUpAttribute> monsterGrowUpAttributes { get; set; }
+    public ServerMessage serverMessage { get; set; }
+}
+
+
 public class ServerMessage
 {
     public int serverMessageIndex { get; set; }
@@ -92,6 +100,7 @@ public class ServerMessage
     public int hostIndex { get; set; }
     public int sendTime { get; set; }
     public int receiveTime { get; set; }
+    public int receiveAwardsTime { get; set; }
 }
 
 public class ServerMessageObject

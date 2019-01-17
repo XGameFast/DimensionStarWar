@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
+using System.Text;
 using UnityEngine;
 
 public class ToolByGjp
@@ -56,6 +58,61 @@ public class ToolByGjp
         Sprite s = Sprite.Create(tex2D, new Rect(0, 0, tex2D.width, tex2D.height),
             new Vector2(0.5f, 0.5f));
         return  s;
+    }
+
+    public class AESEncryptor
+    {
+        /// <summary>
+        /// 加密
+        /// </summary>
+        /// <param name="plainText"></param>
+        /// <param name="AESKey"></param>
+        /// <returns></returns>
+        public static string Encrypt(string plainText, string AESKey)
+        {
+            using (DESCryptoServiceProvider des = new DESCryptoServiceProvider())
+            {
+
+                byte[] inputByteArray = Encoding.UTF8.GetBytes(plainText);
+                des.Key = ASCIIEncoding.ASCII.GetBytes(AESKey.Substring(0, 8));
+                des.IV = ASCIIEncoding.ASCII.GetBytes(AESKey.Substring(0, 8));
+                System.IO.MemoryStream ms = new System.IO.MemoryStream();
+                using (CryptoStream cs = new CryptoStream(ms, des.CreateEncryptor(), CryptoStreamMode.Write))
+                {
+                    cs.Write(inputByteArray, 0, inputByteArray.Length);
+                    cs.FlushFinalBlock();
+                    cs.Close();
+                }
+                string str = Convert.ToBase64String(ms.ToArray());
+                ms.Close();
+                return str;
+            }
+        }
+        /// <summary>
+        /// 解密
+        /// </summary>
+        /// <param name="showText"></param>
+        /// <param name="AESKey"></param>
+        /// <returns></returns>
+        public static string Decrypt(string showText, string AESKey)
+        {
+            byte[] inputByteArray = Convert.FromBase64String(showText);
+            using (DESCryptoServiceProvider des = new DESCryptoServiceProvider())
+            {
+                des.Key = ASCIIEncoding.ASCII.GetBytes(AESKey.Substring(0, 8));
+                des.IV = ASCIIEncoding.ASCII.GetBytes(AESKey.Substring(0, 8));
+                System.IO.MemoryStream ms = new System.IO.MemoryStream();
+                using (CryptoStream cs = new CryptoStream(ms, des.CreateDecryptor(), CryptoStreamMode.Write))
+                {
+                    cs.Write(inputByteArray, 0, inputByteArray.Length);
+                    cs.FlushFinalBlock();
+                    cs.Close();
+                }
+                string str = Encoding.UTF8.GetString(ms.ToArray());
+                ms.Close();
+                return str;
+            }
+        }
     }
 
 }

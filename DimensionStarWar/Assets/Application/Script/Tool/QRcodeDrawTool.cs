@@ -34,9 +34,9 @@ public class QRcodeDrawTool  {
          
             //重新赋值一张图，计算大小,避免白色边框过大
             Texture2D encoded1;
-            encoded1 = new Texture2D(190, 190);
+            encoded1 = new Texture2D(200, 200);
             //创建目标图片大小          
-            encoded1.SetPixels(encoded.GetPixels(32, 32, 190, 190));
+            encoded1.SetPixels(encoded.GetPixels(32, 32, 200, 200));
             encoded1.Apply();
             return encoded1;
         }

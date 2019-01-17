@@ -199,8 +199,14 @@ public class JIRVISData {
 
     public void SetNormalRewardList(List<AndaLocalRewardData> andaLocalRewardDatas)
     {
-        if(normalRewardList == null) normalRewardList = new List<AndaLocalRewardData>();
-        normalRewardList = andaLocalRewardDatas;
+        if (andaLocalRewardDatas == null)
+            return;
+        if (normalRewardList == null) normalRewardList = new List<AndaLocalRewardData>();
+        else normalRewardList.Clear();
+        for (int i = 0; i < andaLocalRewardDatas.Count; i++)
+        {
+            normalRewardList.Add(andaLocalRewardDatas[i]);
+        }
     }
 
     public void SetRewardsList(List<GameRequest.BattelObject> _battelObjects)
