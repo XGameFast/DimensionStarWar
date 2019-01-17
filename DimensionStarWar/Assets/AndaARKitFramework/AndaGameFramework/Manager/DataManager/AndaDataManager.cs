@@ -1262,9 +1262,7 @@ public class AndaDataManager
 
     }
 
-<<<<<<< HEAD
-    public int GetMonsterExpLimit(int exp, MonsterBaseConfig mbc)
-=======
+
     public int GetSkillPower(Vector2Int[] range, int archive)
     {
         int count = range.Length;
@@ -1288,7 +1286,7 @@ public class AndaDataManager
 
 
     public int GetMonsterExpLimit(int exp , MonsterBaseConfig mbc)
->>>>>>> origin/绅士手
+
     {
         int count = mbc.growUpEXPLimit.Count;
         for (int i = 0; i < count; i++)
