@@ -18,7 +18,15 @@ public class DimensionWarehouseMenu : UIBasic2 {
     public Text centerItemCount;
     public Transform monsterPoint;
 
+    private int lastSelectItemIDType  = -1;
     private MonsterBasic monsterBasic;
+
+
+    public GameObject setMonsterToStrongholdBtn;
+
+
+    private SelectDimensionRoomSetMonster selectDimensionRoomSetMonster;
+
     public override void InitMenu(BaseController _baseController)
     {
         base.InitMenu(_baseController);
@@ -276,12 +284,12 @@ public class DimensionWarehouseMenu : UIBasic2 {
 
     private void ClickItem(int itemID)
     {
-
+        RemoveCurrentItem();
         int idType = AndaDataManager.Instance.GetObjectGroupID(itemID);
+        lastSelectItemIDType = idType;
         switch(idType)
         {
             case -1:
-               
                 break;
             case 1000:
                 BuildMonsterItem(itemID);
@@ -318,7 +326,6 @@ public class DimensionWarehouseMenu : UIBasic2 {
 
     private void BuildMonsterItem(int id)
     {
-        if (monsterBasic != null) AndaDataManager.Instance.RecieveItem(monsterBasic);
         if (monsterDatas[id] != 0)
         {
             monsterBasic = AndaDataManager.Instance.InstantiateMonster<MonsterBasic>(id.ToString());
@@ -330,6 +337,31 @@ public class DimensionWarehouseMenu : UIBasic2 {
             //----
             Debug.Log("这个东西没有");
         }
+    }
+
+
+    private void RemoveCurrentItem()
+    {
+        switch(lastSelectItemIDType)
+        {
+            case 1000:
+                if (monsterBasic != null) AndaDataManager.Instance.RecieveItem(monsterBasic);
+                break;
+            case 40000:
+                break;
+            case -1:
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void ClickOpenSelectMonsterSetStrongholdBar()
+    {
+        if(selectDimensionRoomSetMonster!=null)
+            AndaDataManager.Instance.RecieveItem(selectDimensionRoomSetMonster);
+    //   selectDimensionRoomSetMonster = AndaDataManager.Instance.InstantiateMenu<SelectDimensionRoomSetMonster>(ONAME.SelectDimensionRoomSetMonster);
+     //   selectDimensionRoomSetMonster.SetInfo();
     }
 }
 

@@ -176,6 +176,9 @@ public static class ONAME
 
     public static string ExchangeMenuItem_SellItem = "ExchangeMenuItem_SellItem";
 
+    public static string Item_SetMonsterToSelectDimensionRoomItem = "Item_SetMonsterToSelectDimensionRoomItem";
+
+    public static string SelectDimensionRoomSetMonster = "SelectDimensionRoomSetMonster";
     #endregion
     #region 消耗品
     public static string ExpBall00 = "ExpBall00";

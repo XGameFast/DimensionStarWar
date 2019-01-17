@@ -122,6 +122,7 @@ public static class ConvertTool{
         pshgu.playerStrongholdRecoveryStrengthTime = MonsterGameData.GetStrongBasedAttribute().playerStrongHoldRecoveryStrengthTime[level].DoubleToFloat();
         pshgu.playerStrongholdExpblockCount = MonsterGameData.GetStrongBasedAttribute().playerStronghHoldExprienceBlockCount[level];
         pshgu.playerStrongholdCapacity = MonsterGameData.GetStrongBasedAttribute().playerStrongHoldCapacity[level];
+      
         pshgu.storngholdFightype = MonsterGameData.GetStrongBasedAttribute().strongholdFightType[level];
         pshgu.strongholdLevelName = MonsterGameData.GetStrongBasedAttribute().playerStrongholdMedalLeveLName[level];
         //Debug.Log("PlayerStronghold" + go.strongholdPosition[0] + "Y:" +  go.strongholdPosition[1] );

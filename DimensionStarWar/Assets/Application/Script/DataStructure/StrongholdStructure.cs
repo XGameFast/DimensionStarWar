@@ -279,6 +279,9 @@ public class PlayerStrongholdAttribute : StrongholdBaseAttribution
     public float playerStrongholdRecoveryStrengthTime { get; set; }
     //当前空间的容量
     public int playerStrongholdCapacity { get; set; }
+
+
+
     //当前空间产生的经验块
     public int playerStrongholdExpblockCount { get; set; }
     //最多多少个经验快
