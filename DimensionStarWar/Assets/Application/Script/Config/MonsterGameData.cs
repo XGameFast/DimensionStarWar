@@ -765,7 +765,9 @@ public static class MonsterGameData
             if(_gameBaseMonsterAttributeList == null)
             {
                 string json = PlayerPrefs.GetString(ONAME.MonsterConfigFileName);
+                #if UNITY_EDITOR
                 Debug.Log("monsterJson" + json);
+                #endif
                 _gameBaseMonsterAttributeList = JsonMapper.ToObject<List<MonsterBaseConfig>>(json);
             }
             return _gameBaseMonsterAttributeList;
@@ -1194,7 +1196,7 @@ public static class MonsterGameData
     public static List<SkillBaseAttribute> gameBaseSkillAttributeList
     {
         get {
-        
+         
             if(_gameBaseSkillAttributeList == null)
             {
             
@@ -1202,7 +1204,7 @@ public static class MonsterGameData
                 _gameBaseSkillAttributeList = JsonMapper.ToObject<List<SkillBaseAttribute>>(json);
         
             }
-        
+
             return _gameBaseSkillAttributeList;
         }
         /*get
@@ -2204,7 +2206,20 @@ public static class MonsterGameData
         return businessStrongholadBaseAttribute;
     }
 
-
+    public static List<MonsterBaseConfig> GetUserMonsterBaseConfigList()
+    {
+        int count = gameBaseMonsterAttributeList.Count;
+        List<MonsterBaseConfig> monsterBaseConfigs = new List<MonsterBaseConfig>();
+        for(int i = 0 ; i < count; i ++)
+        {
+            if(gameBaseMonsterAttributeList[i].monsterID < 2000)
+            {
+                monsterBaseConfigs.Add(gameBaseMonsterAttributeList[i]);
+            }
+           
+        }
+        return monsterBaseConfigs;
+    }
 
 
 

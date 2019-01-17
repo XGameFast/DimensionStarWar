@@ -66,9 +66,15 @@ public class BusinessCoupon
     /// </summary>
     public string businessname { get; set; }
 
+    public string tips {get;set;}
+
+    public string businessname {get;set;}
+
 }
 public class PlayerCoupon
 {
+    public string code { get; set; }
+
     public int applyIndex{get;set;}
     //后段需要，前段不需要管：）
     public int playerIndex{get;set;}
@@ -291,6 +297,9 @@ public class PlayerStrongholdAttribute : StrongholdBaseAttribution
     public float playerStrongholdRecoveryStrengthTime { get; set; }
     //当前空间的容量
     public int playerStrongholdCapacity { get; set; }
+
+
+
     //当前空间产生的经验块
     public int playerStrongholdExpblockCount { get; set; }
     //最多多少个经验快

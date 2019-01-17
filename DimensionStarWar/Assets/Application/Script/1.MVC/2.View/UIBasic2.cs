@@ -116,7 +116,10 @@ public class UIBasic2 : AndaObjectBasic {
     }
 
 
-
+    public void SetFullScreen()
+    {
+        transform.GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width, Screen.height);
+    }
 
 
     #region 快递定位列表里的某一个item

@@ -31,30 +31,30 @@ public class SkillTriggerEvent : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.name);
+        //Debug.Log(other.name);
         if (isTag)
         {
-            Debug.Log(1);
+            //Debug.Log(1);
             if (other.tag == tagStr)
             {
-                Debug.Log(2);
+                //Debug.Log(2);
                 if (hitCallBack!=null)
                 {
-                    Debug.Log(3);
+                   // Debug.Log(3);
                     hitCallBack(other.transform);
                 }
             }
         }else
         {
-            Debug.Log(4);
+           // Debug.Log(4);
             if (hitLyaer == null)
                 return;
             foreach (var go in hitLyaer)
             {
-                Debug.Log(5);
+                //Debug.Log(5);
                 if (other.gameObject.layer == LayerMask.NameToLayer(go))
                 {
-                    Debug.Log(6);
+                   // Debug.Log(6);
                     HitTarget(other.GetComponent<AndaObjectBasic>(), go);
                 }
             }

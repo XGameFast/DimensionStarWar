@@ -4,6 +4,18 @@ using UnityEngine;
 
 public class MonsterBasic : AndaObjectBasic
 {
+    [HideInInspector]
+    public bool bati = false; // 不播放受击动画
+    [HideInInspector]
+    public bool onlyBigAttack = false;
+    [HideInInspector]
+    public bool onlyDefense = false;
+    [HideInInspector]
+    public bool onlyNormalAttack = false;
+    [HideInInspector]
+    public bool standOnly = false;
+
+
 
     public MonsterPowerBar monsterPowerBar;
     [HideInInspector]
@@ -600,11 +612,19 @@ public class MonsterBasic : AndaObjectBasic
             //普通攻击会被打断
             if (!currentSkillIsCombination)
             {
+
                 if (SetState((int)OTYPE.MonsterActiveStateType.hit))
                 {
                     ResetPlaySkill();
                     isBigHit = hitPower > 200 ? true : false;
-                    PlayAnimationState();
+                    if(bati)
+                    {
+                        HitAnimationOut();
+
+                    }else
+                    {
+                        PlayAnimationState();
+                    }
                 }
             }
             else
@@ -617,7 +637,15 @@ public class MonsterBasic : AndaObjectBasic
                     {
                         ResetPlaySkill();
                         isBigHit = hitPower > 200 ? true : false;
-                        PlayAnimationState();
+                        if (bati)
+                        {
+                            HitAnimationOut();
+
+                        }
+                        else
+                        {
+                            PlayAnimationState();
+                        }
                     }
                 }
             }

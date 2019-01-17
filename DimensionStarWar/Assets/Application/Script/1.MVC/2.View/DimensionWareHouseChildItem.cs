@@ -8,8 +8,8 @@ public class DimensionWareHouseChildItem : AndaObjectBasic {
     public Text itemNameText;
     public Image sprite;
     private System.Action<int> callbackAction;
-    private int itemID;
-   
+    public int itemID;
+    public GameObject redPoint;
     public void ClicItem()
     {
         if(callbackAction!=null)
@@ -43,7 +43,20 @@ public class DimensionWareHouseChildItem : AndaObjectBasic {
         }
       
     }
+    public void SetRedPointState(bool isOpen)
+    {
+        redPoint.gameObject.SetTargetActiveOnce(isOpen);
+    }
 
+    public void SetImageBlack()
+    {
+        sprite.color = Color.black;
+    }
+
+    public void SetImageColorful()
+    {
+        sprite.color = Color.white;
+    }
 
 
 }
