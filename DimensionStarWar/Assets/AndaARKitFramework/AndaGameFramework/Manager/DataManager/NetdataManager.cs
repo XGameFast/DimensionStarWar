@@ -1608,7 +1608,7 @@ public class NetdataManager : ManagerBase {
     }
     #endregion
 
-    #region
+    #region 优惠卷部分
     public void PlayerCouponUp(int playerCouponIndex,int addressIndex, System.Action<bool> callback)
     {
         var _wForm = new WWWForm();
@@ -1668,6 +1668,150 @@ public class NetdataManager : ManagerBase {
         }
     }
     #endregion
+
+    #region 玩家地址管理部分
+    public void UserAddressList(System.Action<bool> callback)
+    {
+        var _wForm = new WWWForm();
+        _wForm.AddField("token", AndaDataManager.Instance.userData.token);
+        string path = networkAdress2 + "UserInfo/GetAddress";
+        //string path = "http://localhost:57789/api/" + "SD_Pag/Consume";
+        StartCoroutine(UserAddressListResutl(path, _wForm, callback));
+    }
+
+    private IEnumerator UserAddressListResutl(string _url, WWWForm _wForm, System.Action<bool> callback)
+    {
+        WWW postData = new WWW(_url, _wForm);
+        yield return postData;
+        if (postData.error != null)
+        {
+            Debug.Log(postData.error);
+            //callback(false);
+        }
+        else
+        {
+            Debug.Log("postData.text" + postData.text);
+            string s = postData.text;
+            AddressListRequest res = JsonMapper.ToObject<AddressListRequest>(postData.text);
+            if (res.code == "200")
+            {
+                Debug.Log("提交成功");
+            }
+            callback(res.code == "200");
+        }
+    }
+
+    public void UserAddressAdd(UserAddress info, System.Action<bool> callback)
+    {
+        var _wForm = new WWWForm();
+        _wForm.AddField("token", AndaDataManager.Instance.userData.token);
+        _wForm.AddField("address", info.address);
+        _wForm.AddField("area", info.area);
+        _wForm.AddField("city", info.city);
+        _wForm.AddField("contacts", info.contacts);
+        _wForm.AddField("phone", info.phone);
+        _wForm.AddField("province", info.province);
+        _wForm.AddField("street", info.street);
+        string path = networkAdress2 + "UserInfo/AddAddress";
+        //string path = "http://localhost:57789/api/" + "SD_Pag/Consume";
+        StartCoroutine(UserAddressAddResutl(path, _wForm, callback));
+    }
+
+    private IEnumerator UserAddressAddResutl(string _url, WWWForm _wForm, System.Action<bool> callback)
+    {
+        WWW postData = new WWW(_url, _wForm);
+        yield return postData;
+        if (postData.error != null)
+        {
+            Debug.Log(postData.error);
+            //callback(false);
+        }
+        else
+        {
+            Debug.Log("postData.text" + postData.text);
+            string s = postData.text;
+            AddressRequest res = JsonMapper.ToObject<AddressRequest>(postData.text);
+            if (res.code == "200")
+            {
+                Debug.Log("提交成功");
+            }
+            callback(res.code == "200");
+        }
+    }
+
+
+    public void UserAddressEdit(UserAddress info, System.Action<bool> callback)
+    {
+        var _wForm = new WWWForm();
+        _wForm.AddField("token", AndaDataManager.Instance.userData.token);
+        _wForm.AddField("address", info.address);
+        _wForm.AddField("area", info.area);
+        _wForm.AddField("city", info.city);
+        _wForm.AddField("contacts", info.contacts);
+        _wForm.AddField("phone", info.phone);
+        _wForm.AddField("province", info.province);
+        _wForm.AddField("street", info.street);
+        _wForm.AddField("userAddressIndex", info.userAddressIndex);
+        string path = networkAdress2 + "UserInfo/EditAddress";
+        //string path = "http://localhost:57789/api/" + "SD_Pag/Consume";
+        StartCoroutine(UserAddressEditResutl(path, _wForm, callback));
+    }
+
+    private IEnumerator UserAddressEditResutl(string _url, WWWForm _wForm, System.Action<bool> callback)
+    {
+        WWW postData = new WWW(_url, _wForm);
+        yield return postData;
+        if (postData.error != null)
+        {
+            Debug.Log(postData.error);
+            //callback(false);
+        }
+        else
+        {
+            Debug.Log("postData.text" + postData.text);
+            string s = postData.text;
+            AddressRequest res = JsonMapper.ToObject<AddressRequest>(postData.text);
+            if (res.code == "200")
+            {
+                Debug.Log("提交成功");
+            }
+            callback(res.code == "200");
+        }
+    }
+
+    public void UserAddressDel(int userAddressIndex, System.Action<bool> callback)
+    {
+        var _wForm = new WWWForm();
+        _wForm.AddField("token", AndaDataManager.Instance.userData.token);
+        _wForm.AddField("userAddressIndex",userAddressIndex);
+        string path = networkAdress2 + "UserInfo/DelAddress";
+        //string path = "http://localhost:57789/api/" + "SD_Pag/Consume";
+        StartCoroutine(UserAddressDelResutl(path, _wForm, callback));
+    }
+
+    private IEnumerator UserAddressDelResutl(string _url, WWWForm _wForm, System.Action<bool> callback)
+    {
+        WWW postData = new WWW(_url, _wForm);
+        yield return postData;
+        if (postData.error != null)
+        {
+            Debug.Log(postData.error);
+            //callback(false);
+        }
+        else
+        {
+            Debug.Log("postData.text" + postData.text);
+            string s = postData.text;
+            AddressRequest res = JsonMapper.ToObject<AddressRequest>(postData.text);
+            if (res.code == "200")
+            {
+                Debug.Log("提交成功");
+            }
+            callback(res.code == "200");
+        }
+    }
+    #endregion
+
 
     #region 服务器消息获取
     public void GetServerMessage(System.Action<ServerMessageRequest> callback)

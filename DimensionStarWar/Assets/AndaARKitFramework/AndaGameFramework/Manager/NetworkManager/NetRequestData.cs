@@ -78,6 +78,15 @@ public class PlayerCouponsRequest : Result
     public List<PlayerCoupon> data { get; set; }
 }
 
+public class AddressRequest : Result
+{
+    public UserAddress data { get; set; }
+}
+public class AddressListRequest : Result
+{
+    public List<UserAddress> data { get; set; }
+}
+
 public class ServerMessageRequest : Result
 {
     public List<ServerMessage> serverMessageList { get; set; }

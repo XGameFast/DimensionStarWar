@@ -52,6 +52,8 @@ public class BusinessCoupon
     //总数
     public int totalCount { get; set; }
 
+    //目前已掉落数量
+    public int fallenCount { get; set; }
     /// <summary>
     /// 类别（0不可直接兑换1可直接兑换）
     /// </summary>
@@ -71,11 +73,12 @@ public class BusinessCoupon
 }
 public class PlayerCoupon
 {
-    
+    //玩家昵称
+    public string playerName { get; set; }
 
-    public int applyIndex{get;set;}
-    //后段需要，前段不需要管：）
-    public int playerIndex{get;set;}
+    public int applyIndex { get; set; }
+    //后段需要，前段不需要管：
+    public int playerIndex { get; set; }
     //在玩家数据库中的与玩家挂钩的主键
     public int playerCouponIndex { get; set; }
     //这张优惠券来自哪个商家挂钩的优惠券主键
@@ -91,6 +94,8 @@ public class PlayerCoupon
     public int expirationDate { get; set; }
     //建立时间
     public int createTime { get; set; }
+    //操作时间（确认/发货、拒绝）
+    public int operationTime { get; set; }
 
     public string code { get; set; }
 

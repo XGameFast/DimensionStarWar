@@ -72,10 +72,18 @@ public class ItemInfo_ServerMessage :  AndaObjectBasic,  IPointerClickHandler{
         serverMessageView.selectServerItem = this;
         //关闭其他面板
 
-        serverMessageView.confirmButton.SetActive(false);
+        if (info.receiveAwardsTime == 0)
+        {
+            serverMessageView.confirmButton.transform.GetChild(0).GetComponent<Text>().text = "领取";
+        }
+        else {
+            serverMessageView.confirmButton.transform.GetChild(0).GetComponent<Text>().text = "查看";
+        }
 
         if (andaLocalRewardDatas != null)
             return;
+
+        serverMessageView.confirmButton.SetActive(false);
         andaLocalRewardDatas = new List<AndaLocalRewardData>();
         if (info.objectList != null || info.objectList.Count != 0)
         {
