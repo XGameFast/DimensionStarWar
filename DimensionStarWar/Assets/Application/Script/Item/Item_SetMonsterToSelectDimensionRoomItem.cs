@@ -45,4 +45,5 @@ public class Item_SetMonsterToSelectDimensionRoomItem : AndaObjectBasic {
             callbackSelect(this);
         }
     }
+
 }

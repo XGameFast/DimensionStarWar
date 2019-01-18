@@ -74,7 +74,7 @@ public class DimensionWarehouseController : BaseController {
             {
                 new JIRVISFuncBtnStruct{btnName = "关闭" , btnIconKey = ONAME.BackStep , clickCallBack = OutDimensionWareController},
                 new JIRVISFuncBtnStruct{btnName = "星宿" , btnIconKey = ONAME.MonsterIcon , clickCallBack =   data.getDimensionwarehouse.BuildMonsterItem },
-              //  new JIRVISFuncBtnStruct{btnName = "优惠券" , btnIconKey = ONAME.cardTicket , clickCallBack =   data.getDimensionwarehouse.BuildMonsterItem },
+                new JIRVISFuncBtnStruct{btnName = "优惠券" , btnIconKey = ONAME.cardTicket , clickCallBack =   data.getDimensionwarehouse.BuildTickt },
                 new JIRVISFuncBtnStruct{btnName = "消耗品" , btnIconKey = ONAME.consumableIcon , clickCallBack =   data.getDimensionwarehouse.BuildCoumsable },
               //  new JIRVISFuncBtnStruct{btnName = "小物件" , btnIconKey = ONAME.unknowObj , clickCallBack =   data.getDimensionwarehouse.BuildMonsterItem },
               //  new JIRVISFuncBtnStruct{btnName = "幸运物" , btnIconKey = ONAME.luckyObjIcon , clickCallBack =   data.getDimensionwarehouse.BuildMonsterItem },

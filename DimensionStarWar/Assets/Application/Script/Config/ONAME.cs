@@ -182,6 +182,8 @@ public static class ONAME
     public static string Item_SetMonsterToSelectDimensionRoomItem = "Item_SetMonsterToSelectDimensionRoomItem";
 
     public static string SelectDimensionRoomSetMonster = "SelectDimensionRoomSetMonster";
+
+    public static string Item_PlayerCoupon = "Item_PlayerCoupon";
     #endregion
     #region 消耗品
     public static string ExpBall00 = "ExpBall00";

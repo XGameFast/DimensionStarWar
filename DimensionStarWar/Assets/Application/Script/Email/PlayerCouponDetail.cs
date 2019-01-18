@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerCouponDetail : UIBasic {
+public class PlayerCouponDetail : UIBasic2 {
+
+
+    public Animator animatorBar;
 
     public PlayerCoupon selectPlayerCoupon;
 
@@ -22,6 +25,9 @@ public class PlayerCouponDetail : UIBasic {
     public Transform content;
 
     public bool IsShow = false;
+
+
+    public System.Action callbackClose;
 
 
     public void setInfo(PlayerCoupon _playerCoupon)
@@ -90,8 +96,9 @@ public class PlayerCouponDetail : UIBasic {
     }
     public void Show()
     {
-        PlayeAniFadeIn();
+      //  FadeIn();
         gameObject.SetTargetActiveOnce(true);
+        animatorBar.Play("FadeIn");
     }
     public void SetShow()
     {
@@ -99,21 +106,43 @@ public class PlayerCouponDetail : UIBasic {
     }
     public void SetClose()
     {
-        gameObject.SetActive(false);
-        content.transform.position = new Vector3(content.transform.position.x, 0, content.transform.position.z);
+        //gameObject.SetActive(false);
+        //content.transform.position = new Vector3(content.transform.position.x, 0, content.transform.position.z);
     }
     public void Close()
     {
         IsShow = false;
-        PlayAniFadeOut();
+        animatorBar.Play("FadeOut");
+       // FadeOut(CallbackFinishFadeOut);
+
+        Invoke("CallbackFinishFadeOut",2f);
+
     }
-    public void Scroll(Vector2 v2)
+    /*public void Scroll(Vector2 v2)
     {
         if (IsShow)
         {
-            if (content.transform.position.y < 20)
+           
+        }
+    }*/
+    private void CallbackFinishFadeOut()
+    {
+        if (callbackClose != null)
+        {
+            callbackClose();
+        }
+    }
+
+    private void Update()
+    {
+        if(IsShow)
+        {
+            if(Input.GetMouseButtonUp(0))
             {
-                Close();
+                if (content.transform.position.y <40)
+                {
+                    Close();
+                }
             }
         }
     }

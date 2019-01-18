@@ -10,6 +10,10 @@ public class DimensionWarehouseMenu : UIBasic2 {
     List<DimensionWareHouseChildItem> dimensionWareHouseChildItems =new List<DimensionWareHouseChildItem>();
    
     private Dictionary<int , int> monsterDatas;
+    private Dictionary<int ,int> consumableDatas;
+
+
+    private List<PlayerCoupon> playerCouponDatas;
 
     //private Dictionary<>
     public Animator centerItemGroup;
@@ -17,22 +21,24 @@ public class DimensionWarehouseMenu : UIBasic2 {
     public Text centerItemName;
     public Text centerItemCount;
     public Transform monsterPoint;
+    public Transform centerItemPoint;
 
     private int lastSelectItemIDType  = -1;
     private MonsterBasic monsterBasic;
+    private Item_PlayerCoupon playerCouponItem;
 
 
     public GameObject setMonsterToStrongholdBtn;
-
+    public GameObject usePlayerCouponTickBtn;
 
     private SelectDimensionRoomSetMonster selectDimensionRoomSetMonster;
-
+    private PlayerCouponDetail playerCouponDetail;
+    private PlayerMonsterAttribute currentSelectMonsterAttribute;
+    private PlayerCoupon currentSelectPlayerCounpon;
     public override void InitMenu(BaseController _baseController)
     {
         base.InitMenu(_baseController);
     }
-
-
 
     public override void OnDispawn()
     {
@@ -82,12 +88,11 @@ public class DimensionWarehouseMenu : UIBasic2 {
             int count = mineMonster.Count;
             for (int i = 0; i < count; i++)
             {
-
                 if (monsterDatas.ContainsKey(mineMonster[i].monsterID))
                 {
                     monsterDatas[mineMonster[i].monsterID] += 1;
                 }
-                else
+                else //新添加
                 {
                     monsterDatas.Add(mineMonster[i].monsterID, 1);
                 }
@@ -99,7 +104,7 @@ public class DimensionWarehouseMenu : UIBasic2 {
             {
                 if(!monsterDatas.ContainsKey(mbcList[i].monsterID))
                 {
-                    monsterDatas.Add(mbcList[i].monsterID,0);
+                    monsterDatas.Add(mbcList[i].monsterID, 1);
                 }
             }
              
@@ -153,12 +158,17 @@ public class DimensionWarehouseMenu : UIBasic2 {
     }
     #endregion
 
+
+
+
     #region 构建消耗品 除金币外
 
     public void BuildCoumsable()
     {
         ClearItems();
         List<UserObjsBox> UserObjsBoxs = AndaDataManager.Instance.userData.GetConsumableListExceptCurrency();
+        List<UserObjsBox> ob = new List<UserObjsBox>(); 
+
         int count = UserObjsBoxs.Count;
         for (int i = 0 ; i < count; i++)
         {
@@ -171,6 +181,47 @@ public class DimensionWarehouseMenu : UIBasic2 {
             dimensionWareHouseChildItems.Add(_item);
         }
        
+    }
+
+    #endregion
+
+    #region 构建玩家获得票据
+
+    public void BuildTickt()
+    {
+        ClearItems();
+        // public List<PlayerCoupon> playerCoupons { get; set; }
+        List<PlayerCoupon> playerCoupons = AndaDataManager.Instance.userData.playerdata.playerCoupons;
+        if(playerCouponDatas != null && playerCouponDatas.Count!=0)playerCouponDatas.Clear();
+        if (playerCoupons!=null && playerCoupons.Count!=0)
+        {
+            int count = playerCoupons.Count;
+            for (int i = 0; i < count; i++)
+            {
+                if (playerCouponDatas == null) playerCouponDatas = new List<PlayerCoupon>();
+                playerCouponDatas.Add(playerCoupons[i]);
+               /* if (playerCoupons[i].status.Equals(0))
+                {
+                    if(playerCouponDatas == null) playerCouponDatas = new List<PlayerCoupon>();
+                    playerCouponDatas.Add(playerCoupons[i]);
+                }*/
+            }
+        }
+
+        //构建物件  
+        if(playerCouponDatas!=null && playerCouponDatas.Count!=0)
+        {
+            int count = playerCouponDatas.Count;
+            for (int i = 0; i < count; i++)
+            {
+                DimensionWareHouseChildItem _item = AndaDataManager.Instance.InstantiateMenu<DimensionWareHouseChildItem>("DimensionWarehouseChild");
+                _item.SetCallBack2(ClickItem);
+                _item.transform.SetInto(grid);
+                _item.SetNameHeadImageCount(playerCouponDatas[i].coupon.title, playerCouponDatas[i].count, playerCouponDatas[i].coupon.image, playerCouponDatas[i].businessIndex, playerCouponDatas[i].playerCouponIndex, playerCouponDatas[i].coupon.userIndex == AndaDataManager.Instance.userData.userIndex);
+                dimensionWareHouseChildItems.Add(_item);
+            }
+        }
+
     }
 
     #endregion
@@ -275,27 +326,53 @@ public class DimensionWarehouseMenu : UIBasic2 {
         }
     }
 
+
+
     public void SetPlayerConpon()
     {
 
     }
 
-
-
-    private void ClickItem(int itemID)
+    private void ClickItem(int _itmeType, int _itemIndex)
     {
         RemoveCurrentItem();
-        int idType = AndaDataManager.Instance.GetObjectGroupID(itemID);
-        lastSelectItemIDType = idType;
-        switch(idType)
+        lastSelectItemIDType = _itmeType;
+        centerItemGroup.gameObject.SetActive(false);
+        switch (_itmeType)
         {
             case -1:
                 break;
+            case -2:
+                centerItemGroup.gameObject.SetActive(true);
+                currentSelectPlayerCounpon = playerCouponDatas.FirstOrDefault(s=>s.playerCouponIndex == _itemIndex);
+                playerCouponItem = AndaDataManager.Instance.InstantiateMenu<Item_PlayerCoupon>(ONAME.Item_PlayerCoupon);
+                playerCouponItem.SetInto(centerItemPoint.transform);
+                playerCouponItem.SetInfo(currentSelectPlayerCounpon);
+                usePlayerCouponTickBtn.gameObject.SetTargetActiveOnce(true);
+                break;
+        }
+    }
+
+    private void ClickItem(int itemID )
+    {
+         
+        RemoveCurrentItem();
+        int idType = AndaDataManager.Instance.GetObjectGroupID(itemID);
+        lastSelectItemIDType = idType;
+        centerItemGroup.gameObject.SetActive(false);
+        switch (idType)
+        {
+            case -1:
+                break;
+            case -2:
+               
+                break;
             case 1000:
-                BuildMonsterItem(itemID);
+                PlayerMonsterAttribute pma = AndaDataManager.Instance.userData.GetFreeMonster().FirstOrDefault(s=>s.monsterID == itemID);
+                BuildMonsterItem(pma);
                 break;
             case 40000:
-                centerItemGroup.gameObject.SetActive(false);
+                centerItemGroup.gameObject.SetActive(true);
                 DimensionWareHouseChildItem dimensionWareHouseChildItem = dimensionWareHouseChildItems.FirstOrDefault(s => s.itemID == itemID);
                 SetCenterImage(dimensionWareHouseChildItem.sprite.sprite, dimensionWareHouseChildItem.itemNameText.text, dimensionWareHouseChildItem.countText.text);
                 break;
@@ -324,19 +401,17 @@ public class DimensionWarehouseMenu : UIBasic2 {
         }*/
     }
 
-    private void BuildMonsterItem(int id)
+    private void BuildMonsterItem(PlayerMonsterAttribute playerMonsterAttribute)
     {
-        if (monsterDatas[id] != 0)
-        {
-            monsterBasic = AndaDataManager.Instance.InstantiateMonster<MonsterBasic>(id.ToString());
-            monsterBasic.SetInto(monsterPoint);
-            monsterBasic.gameObject.SetLayer(ONAME.LayerUI);
-        }
-        else
-        {
-            //----
-            Debug.Log("这个东西没有");
-        }
+        currentSelectMonsterAttribute = playerMonsterAttribute;
+
+        monsterBasic = AndaDataManager.Instance.InstantiateMonster<MonsterBasic>(currentSelectMonsterAttribute.monsterID.ToString());
+
+        monsterBasic.SetInto(monsterPoint);
+
+        monsterBasic.gameObject.SetLayer(ONAME.LayerUI);
+      
+        setMonsterToStrongholdBtn.gameObject.SetTargetActiveOnce(currentSelectMonsterAttribute.belongStrongholdIndex == 0 || currentSelectMonsterAttribute.belongStrongholdIndex == -1);
     }
 
 
@@ -350,18 +425,53 @@ public class DimensionWarehouseMenu : UIBasic2 {
             case 40000:
                 break;
             case -1:
+
+                break;
+            case -2:
+                if(playerCouponItem!=null)AndaDataManager.Instance.RecieveItem(playerCouponItem);
                 break;
             default:
                 break;
         }
     }
 
+    private void CloseFunctionBtn()
+    {
+        setMonsterToStrongholdBtn.gameObject.SetTargetActiveOnce(false);
+        usePlayerCouponTickBtn.gameObject.SetTargetActiveOnce(false);
+    }
+
     public void ClickOpenSelectMonsterSetStrongholdBar()
     {
-        if(selectDimensionRoomSetMonster!=null)
+        selectDimensionRoomSetMonster = AndaDataManager.Instance.InstantiateMenu<SelectDimensionRoomSetMonster>(ONAME.SelectDimensionRoomSetMonster);
+        selectDimensionRoomSetMonster.SetInto(AndaUIManager.Instance.uicenter);
+        selectDimensionRoomSetMonster.SetFullScreen();
+        selectDimensionRoomSetMonster.SetInfo(currentSelectMonsterAttribute);
+        selectDimensionRoomSetMonster.clickCloseBar = ClickCloseSelectMonsterSetStrongholdBar;
+    }
+
+    public void ClickCloseSelectMonsterSetStrongholdBar()
+    {
+        if (selectDimensionRoomSetMonster != null)
             AndaDataManager.Instance.RecieveItem(selectDimensionRoomSetMonster);
-    //   selectDimensionRoomSetMonster = AndaDataManager.Instance.InstantiateMenu<SelectDimensionRoomSetMonster>(ONAME.SelectDimensionRoomSetMonster);
-     //   selectDimensionRoomSetMonster.SetInfo();
+
+    }
+
+    public void ClickUsePlaycoupinTick()
+    {
+        playerCouponDetail = AndaDataManager.Instance.InstantiateMenu<PlayerCouponDetail>(ONAME.PlayerCouponDetail);
+        playerCouponDetail.SetInto(AndaUIManager.Instance.uicenter);
+        playerCouponDetail.SetFullScreen();
+        playerCouponDetail.setInfo(currentSelectPlayerCounpon);
+        playerCouponDetail.callbackClose = ClosePlayercouponDetialBar;
+    }
+
+    private void ClosePlayercouponDetialBar()
+    {
+        if(playerCouponDetail!=null)
+        {
+            AndaDataManager.Instance.RecieveItem(playerCouponDetail);
+        }
     }
 }
 
