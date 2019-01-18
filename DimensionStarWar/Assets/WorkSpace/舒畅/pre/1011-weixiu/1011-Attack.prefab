@@ -1986,7 +1986,7 @@ Transform:
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_Children: []
   m_Father: {fileID: 4258353751157444}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4185381390791334
 Transform:
@@ -2096,8 +2096,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 4756141797204070}
   - {fileID: 4183481343405824}
+  - {fileID: 4756141797204070}
   - {fileID: 4806605513314934}
   m_Father: {fileID: 4341615571945990}
   m_RootOrder: 1
@@ -2776,7 +2776,7 @@ Transform:
   - {fileID: 4045904169249878}
   - {fileID: 4163597734062592}
   m_Father: {fileID: 4258353751157444}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4761716477877802
 Transform:
@@ -3358,6 +3358,7 @@ SkinnedMeshRenderer:
   m_ReflectionProbeUsage: 1
   m_Materials:
   - {fileID: 2100000, guid: ddd0f442e14438044ab320b468f24831, type: 2}
+  - {fileID: 2100000, guid: c05288fad05b39b418e0ad81118ebb10, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -10379,7 +10380,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
-  randomSeed: -23370174
+  randomSeed: 802426174
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -17197,7 +17198,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
-  randomSeed: 114578906
+  randomSeed: -333145722
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -30839,7 +30840,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
-  randomSeed: 1825379537
+  randomSeed: 1178848675
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -57976,7 +57977,7 @@ ParticleSystem:
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
-  randomSeed: 593005108
+  randomSeed: 1662436545
   InitialModule:
     serializedVersion: 3
     enabled: 1
