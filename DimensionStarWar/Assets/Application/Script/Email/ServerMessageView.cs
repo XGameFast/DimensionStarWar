@@ -59,12 +59,16 @@ public class ServerMessageView : MonoBehaviour {
     }
     public void Begin()
     {
+        if (AndaMessageManager.Instance.serverMessageView==null)
+        {
+            AndaMessageManager.Instance.serverMessageView = this;
+        }
         if (Status == 1)
         {
             return;
         }
         if (Status == 2)
-            StopCoroutine("TimeChange");
+            StartCoroutine("TimeChange");
         InstanceContentPanel();
         Status = 0;
     }
@@ -154,6 +158,7 @@ public class ServerMessageView : MonoBehaviour {
             if (selectServerItem.info.receiveAwardsTime == 0)//领取奖励
             {
                 AndaMessageManager.Instance.GetServerMessageAward();
+                confirmButton.transform.GetChild(0).GetComponent<Text>().text = "查看";
             }
             else
             {

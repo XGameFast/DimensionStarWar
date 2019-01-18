@@ -896,6 +896,26 @@ public class AndaDataManager
     #endregion
 
 
+    #region 用户地址管理
+    public void UserAddressList(System.Action<bool> callback)
+    {
+        naetdataManager.UserAddressList(callback);
+    }
+    public void UserAddressAdd(UserAddress info, System.Action<bool> callback)
+    {
+        naetdataManager.UserAddressAdd(info,callback);
+    }
+    public void UserAddressEdit(UserAddress info, System.Action<bool> callback)
+    {
+        naetdataManager.UserAddressEdit(info, callback);
+    }
+    public void UserAddressDel(int userAddressIndex,System.Action<bool> callback)
+    {
+        naetdataManager.UserAddressDel(userAddressIndex,callback);
+    }
+    #endregion
+
+
     #region 服务器消息获取
     public void GetServerMessage(System.Action<ServerMessageRequest> callback)
     {
