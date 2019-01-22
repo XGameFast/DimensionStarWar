@@ -114,13 +114,16 @@ public class AndaMessageManager {
     }
     public List<ServerMessage> GetSMMData()
     {
-        if (SMMData == null)
+        if (SMMData == null || SMMData.Count>0)
         {
             var josn = PlayerPrefs.GetString("ServerMessage");
             if (josn == "")
                 SMMData = new List<ServerMessage>();
             else
-                SMMData = LitJson.JsonMapper.ToObject<List<ServerMessage>>(josn);
+            {
+                if (AndaDataManager.Instance.userData != null)
+                    SMMData = LitJson.JsonMapper.ToObject<List<ServerMessage>>(josn).Where(o => o.hostIndex == AndaDataManager.Instance.userData.userIndex).ToList();
+            }
         }
         return SMMData;
     }
