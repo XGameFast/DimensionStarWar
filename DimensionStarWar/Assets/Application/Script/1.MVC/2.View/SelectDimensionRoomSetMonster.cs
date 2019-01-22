@@ -16,11 +16,15 @@ public class SelectDimensionRoomSetMonster : UIBasic2 {
     public PlayerMonsterAttribute selectMonsterAttribute;
     private PlayerStrongholdAttribute selectStrongholdAttribute;
 
+    public System.Action clickCloseBar;
+
+
 
     public override void OnDispawn()
     {
-
-        if(itemList !=null)
+        selectMask.gameObject.SetTargetActiveOnce(false);
+        selectMask.SetInto(transform);
+        if (itemList !=null)
         {
             int count = itemList.Count;
             for(int i = 0; i <count; i++)
@@ -32,7 +36,7 @@ public class SelectDimensionRoomSetMonster : UIBasic2 {
 
         selectMonsterAttribute = null;
         selectStrongholdAttribute = null;
-        selectMask.gameObject.SetTargetActiveOnce(false);
+
         SetComfirmBtnState(false);
         base.OnDispawn();
     }
@@ -41,6 +45,7 @@ public class SelectDimensionRoomSetMonster : UIBasic2 {
     public void SetInfo(PlayerMonsterAttribute _pma)
     {
         selectMonsterAttribute = _pma;
+        BuildDimensionRoom();
     }
 
 
@@ -71,8 +76,10 @@ public class SelectDimensionRoomSetMonster : UIBasic2 {
         for(int i = 0 ; i< count; i ++)
         {
             Item_SetMonsterToSelectDimensionRoomItem _item = AndaDataManager.Instance.InstantiateMenu<Item_SetMonsterToSelectDimensionRoomItem>(ONAME.Item_SetMonsterToSelectDimensionRoomItem);
+            _item.SetInto(grid);
             _item.SetInfo(pmaList[i]);
             _item.callbackSelect = ClickItem;
+            if (itemList == null) itemList= new List<Item_SetMonsterToSelectDimensionRoomItem>();
             itemList.Add(_item);
         }
     }
@@ -82,7 +89,8 @@ public class SelectDimensionRoomSetMonster : UIBasic2 {
     {
         int _index = itemList.IndexOf(_item);
         selectMask.gameObject.SetTargetActiveOnce(true);
-        selectMask.transform.position = itemList[_index].transform.position;
+        selectMask.SetInto(_item.transform);
+        //selectMask.transform.position = itemList[_index].transform.position;
         if(itemList[_index].pma.monsterCount < itemList[_index].pma.playerStrongholdCapacity)
         {
             selectStrongholdAttribute = _item.pma;
@@ -94,6 +102,7 @@ public class SelectDimensionRoomSetMonster : UIBasic2 {
             SetComfirmBtnState(false);
         }
     }
+
 
     private void SetComfirmBtnState(bool isOpen)
     {
@@ -108,7 +117,13 @@ public class SelectDimensionRoomSetMonster : UIBasic2 {
             CallSereverSetMonsterToStronghold();
         }
     }
-
+    public void ClickCloseBar()
+    {
+        if (clickCloseBar != null)
+        {
+            clickCloseBar();
+        }
+    }
     private void CallSereverSetMonsterToStronghold()
     {
          
@@ -125,4 +140,7 @@ public class SelectDimensionRoomSetMonster : UIBasic2 {
             JIRVIS.Instance.PlayTips("请检查网络");
         }
     }
+
+
+  
 }

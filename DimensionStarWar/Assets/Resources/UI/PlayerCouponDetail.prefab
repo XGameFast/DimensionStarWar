@@ -205,14 +205,14 @@ GameObject:
   m_Component:
   - component: {fileID: 224205396179272410}
   - component: {fileID: 114622767943226398}
-  - component: {fileID: 95379615438849246}
+  - component: {fileID: 95129198326454888}
   m_Layer: 5
   m_Name: PlayerCouponDetail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1541487798418256
 GameObject:
   m_ObjectHideFlags: 1
@@ -258,6 +258,7 @@ GameObject:
   - component: {fileID: 224976684898030670}
   - component: {fileID: 222324697904469612}
   - component: {fileID: 114429713278452548}
+  - component: {fileID: 225274592516850432}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -398,7 +399,7 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!95 &95379615438849246
+--- !u!95 &95129198326454888
 Animator:
   serializedVersion: 3
   m_ObjectHideFlags: 1
@@ -705,15 +706,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.672}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 507e9839766a8344c9c5fc568949db7d, type: 3}
-  m_Type: 0
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -869,8 +870,10 @@ MonoBehaviour:
   objectID: 
   initializationScale: 1
   isActive: 0
-  widget: {fileID: 0}
-  animator: {fileID: 95379615438849246}
+  menuLayer: 0
+  baseGroup: {fileID: 0}
+  isExcuteFadeIn: 0
+  animatorBar: {fileID: 95129198326454888}
   headImage: {fileID: 114573124890160824}
   businessName: {fileID: 114583399099888198}
   playerCouponName: {fileID: 114069514990499226}
@@ -1287,11 +1290,11 @@ RectTransform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 91.82117}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224226534471045618
 RectTransform:
   m_ObjectHideFlags: 1
@@ -1500,11 +1503,11 @@ RectTransform:
   m_Father: {fileID: 224768509669468038}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 472.5, y: -43}
-  m_SizeDelta: {x: 945, y: 2180}
-  m_Pivot: {x: 0.5, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224689051887832020
 RectTransform:
   m_ObjectHideFlags: 1
@@ -1558,7 +1561,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.000027922706}
+  m_AnchoredPosition: {x: 0, y: 0.000028010405}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!224 &224841198870799656
@@ -1595,9 +1598,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -868}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 945, y: 2026.66}
-  m_Pivot: {x: 0.5, y: 1}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224910352067905214
 RectTransform:
   m_ObjectHideFlags: 1
@@ -1648,8 +1651,19 @@ RectTransform:
   m_Father: {fileID: 224205396179272410}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -920}
-  m_SizeDelta: {x: 1242, y: 2800}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!225 &225274592516850432
+CanvasGroup:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1614195852444526}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
