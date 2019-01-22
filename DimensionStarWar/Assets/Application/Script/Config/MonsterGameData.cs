@@ -122,7 +122,7 @@ public static class MonsterGameData
                         monsterID = 1006,
                         skillAnimationConfigs = new List<SkillAnimationConfig>
                         {
-                            new SkillAnimationConfig { skillID = 10006, skillAnimationLength = 1.067f , skillAnimationInterval = new List<float> { 11f ,18f, 32f}},
+                            new SkillAnimationConfig { skillID = 10006, skillAnimationLength = 1.067f , skillAnimationInterval = new List<float> { 10f ,18f, 32f}},
                             new SkillAnimationConfig { skillID = 11006, skillAnimationLength = 1f , skillAnimationInterval = new List<float> { 10f, 26f, 30f }},
                             new SkillAnimationConfig { skillID = 12006, skillAnimationLength = 2.6f , skillAnimationInterval = new List<float> { 34f,45f, 77f }},
                         }
