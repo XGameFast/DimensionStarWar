@@ -70,9 +70,11 @@ public class AndaMessageManager {
                 }
                 serverMessageView.AddContentPanel(res.serverMessageList);
                 GetSMMData().AddRange(res.serverMessageList);
+            
                 serverMessageView.messageCout.text = GetSMMData().Count(o => o.receiveTime == 0).ToString();
                 //消息列表更新
                 var json = JsonMapper.ToJson(SMMData);
+                Debug.Log(json);
                 PlayerPrefs.SetString("ServerMessage", json);
             }
         }
@@ -114,13 +116,14 @@ public class AndaMessageManager {
     }
     public List<ServerMessage> GetSMMData()
     {
-        if (SMMData == null || SMMData.Count>0)
+        if (SMMData == null || SMMData.Count==0)
         {
             var josn = PlayerPrefs.GetString("ServerMessage");
             if (josn == "")
                 SMMData = new List<ServerMessage>();
             else
             {
+            
                 if (AndaDataManager.Instance.userData != null)
                     SMMData = LitJson.JsonMapper.ToObject<List<ServerMessage>>(josn).Where(o => o.hostIndex == AndaDataManager.Instance.userData.userIndex).ToList();
             }
@@ -132,6 +135,7 @@ public class AndaMessageManager {
         if (SMMData == null)
             return;
         var json = JsonMapper.ToJson(SMMData);
+        Debug.Log("保存"+ json);
         PlayerPrefs.SetString("ServerMessage", json);
     }
     //清除历史

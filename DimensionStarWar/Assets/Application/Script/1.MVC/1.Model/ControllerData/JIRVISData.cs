@@ -423,6 +423,7 @@ public class JIRVISData {
             jIRVISContent_RewardBar.menuLayer = 1;
             jIRVISContent_RewardBar.transform.SetUIInto(getJIRVISBar.EditorboardPoint.transform);
             jIRVISContent_RewardBar.BuildNormalReward(normalRewardList, callback);
+            jIRVISContent_RewardBar.transform.SetAsLastSibling();
             jIRVISContent_RewardBar.FadeIn();
         }
     }

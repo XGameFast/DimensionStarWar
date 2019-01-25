@@ -77,6 +77,22 @@ public class AndaUIManager  {
             return _JIRVISEditorRoot;
         }
     }
+
+    private Transform _JIRVISMonsterImageDetail = null;
+    public Transform jirvisMonsterImageDetail
+    {
+        get
+
+        {
+            if (_JIRVISEditorRoot == null)
+            {
+                _JIRVISMonsterImageDetail = canvasRoot.Find("jirvis-top/jirvisMonsterImageDetail").transform;
+            }
+
+            return _JIRVISMonsterImageDetail;
+        }
+    }
+
     private Transform _jirvis_top = null;
     public Transform jirvis_top
     {
