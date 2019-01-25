@@ -9,7 +9,7 @@ public class M_1011 : MonsterBasic
     public GameObject sayhello;
     public GameObject excity00;
     public GameObject happy;
-
+    public GameObject nanguo;
 
 
     public void SayHello()
@@ -37,13 +37,20 @@ public class M_1011 : MonsterBasic
         Initialization();
         dazhaohu1.SetTargetActiveOnce(true);
     }
+    public void NanGuo()
+    {
+        Initialization();
+        nanguo.SetTargetActiveOnce(true);
+    }
     public override void EndOfMonsterMoodAnimation()
     {
         Initialization();
         base.EndOfMonsterMoodAnimation();
     }
+
     public void Initialization()
     {
+        nanguo.SetTargetActiveOnce(false);
         dazhaohu0.SetTargetActiveOnce(false);
         dazhaohu1.SetTargetActiveOnce(false);
         excity00.SetTargetActiveOnce(false);
