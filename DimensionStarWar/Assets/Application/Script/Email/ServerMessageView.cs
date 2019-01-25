@@ -22,7 +22,6 @@ public class ServerMessageView : MonoBehaviour {
 
     public List<ServerMessage> SMMData;
 
-
     public GameObject confirmButton;
 
     

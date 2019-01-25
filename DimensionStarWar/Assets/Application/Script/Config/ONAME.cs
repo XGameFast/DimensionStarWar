@@ -150,6 +150,8 @@ public static class ONAME
 
     public static string PlayerCouponDetail = "PlayerCouponDetail";
 
+    public static string JirvisMonsterImageDetail = "jirvisMonsterImageDetail";
+
     public static string ServerItem = "ServerItem";
 
     public static string ExchangeMenu ="ExchangeMenu";

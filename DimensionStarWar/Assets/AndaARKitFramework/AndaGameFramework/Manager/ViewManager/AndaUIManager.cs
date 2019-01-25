@@ -82,13 +82,19 @@ public class AndaUIManager  {
     public Transform jirvisMonsterImageDetail
     {
         get
-
         {
             if (_JIRVISEditorRoot == null)
             {
-                _JIRVISMonsterImageDetail = canvasRoot.Find("jirvis-top/jirvisMonsterImageDetail").transform;
+                var _gameObject = canvasRoot.Find("jirvis-top/jirvisMonsterImageDetail");
+                if (_gameObject == null)
+                {
+                    _JIRVISMonsterImageDetail = AndaDataManager.Instance.InstantiateMenu<MonsterImageDetail>(ONAME.JirvisMonsterImageDetail).transform;
+                    _JIRVISMonsterImageDetail.SetInto(AndaUIManager.Instance.jirvis_top);
+                }
+                else {
+                    _JIRVISMonsterImageDetail = _gameObject.transform;
+                }
             }
-
             return _JIRVISMonsterImageDetail;
         }
     }
