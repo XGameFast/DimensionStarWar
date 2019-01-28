@@ -105,8 +105,8 @@ public class ServerMessage
     public int serverMessageIndex { get; set; }
     public string serverMessageTitle { get; set; }
     public string serverMessageText { get; set; }
-    public List<ServerMessageObject> objectList { get; set; }
     public int hostIndex { get; set; }
+    public List<ServerMessageObject> objectList { get; set; }
     public int sendTime { get; set; }
     public int receiveTime { get; set; }
     public int receiveAwardsTime { get; set; }
@@ -114,6 +114,7 @@ public class ServerMessage
 
 public class ServerMessageObject
 {
+    public string guid { get; set; }
     public int hostIndex { get; set; }
     public int id { get; set; }
     public int count { get; set; }
@@ -123,6 +124,19 @@ public class ServerMessageObject
     public MonsterGrowUpAttribute monsterGrowUpAttribute { get; set; }
     public SD_Pag4U sD_Pag4U { get; set; }
     public PlayerCoupon playerCoupon { get; set; }
+    public ImageMessage imageMessage { get; set; }
+}
+public class ImageMessage
+{
+    public int id { get; set; }
+    public string region { get; set; }
+    public int hostIndex { get; set; }
+    public int monsterIndex { get; set; }
+    public int monsterId { get; set; }
+    public string monsterName { get; set; }
+    public string title { get; set; }
+    public int createTime { get; set; }
+    public string imageBase64 { get; set; }
 }
 public class ResultMonster : Result
 {

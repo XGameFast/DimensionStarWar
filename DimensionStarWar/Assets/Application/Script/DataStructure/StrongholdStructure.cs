@@ -54,6 +54,16 @@ public class BusinessCoupon
 
     //目前已掉落数量
     public int fallenCount { get; set; }
+
+    /// <summary>
+    /// 已拒绝数量或者兑换失败数量
+    /// </summary>
+    public int failCount { get; set; }
+    /// <summary>
+    /// 已兑换数量
+    /// </summary>
+    public int changeCount { get; set; }
+
     /// <summary>
     /// 类别（0不可直接兑换1可直接兑换）
     /// </summary>
@@ -67,9 +77,6 @@ public class BusinessCoupon
     /// 商家名称
     /// </summary>
     public string businessname { get; set; }
-
-    
-
 }
 public class PlayerCoupon
 {

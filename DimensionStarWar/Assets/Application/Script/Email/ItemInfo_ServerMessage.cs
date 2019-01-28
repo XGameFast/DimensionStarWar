@@ -95,7 +95,7 @@ public class ItemInfo_ServerMessage :  AndaObjectBasic,  IPointerClickHandler{
                 {
                     var item = andaLocalRewardDatas.FirstOrDefault(o => o.objID == m.id);
                     if (item != null)
-                        item.objCount+= m.count;
+                        item.objCount += m.count;
                     else
                         andaLocalRewardDatas.Add(new AndaLocalRewardData()
                         {
@@ -109,7 +109,11 @@ public class ItemInfo_ServerMessage :  AndaObjectBasic,  IPointerClickHandler{
                 }
                 else if (m.type == 3)
                 {
-                   
+
+                }
+                else if (m.type == 4)
+                {
+
                 }
             }
         }

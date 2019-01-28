@@ -22,8 +22,9 @@ public class ServerMessageView : MonoBehaviour {
 
     public List<ServerMessage> SMMData;
 
-
     public GameObject confirmButton;
+
+    
 
     public void Awake()
     {
@@ -153,6 +154,13 @@ public class ServerMessageView : MonoBehaviour {
             return;
         if (selectServerItem.info.objectList[0].type == 3)
             AndaPlayerCouponManager.Instance.SetPlayerDetail(selectServerItem.info.objectList[0].playerCoupon);
+        else if (selectServerItem.info.objectList[0].type == 4)
+        {
+            AndaUIManager.Instance.jirvisMonsterImageDetail.GetChild(1).GetComponent<Image>().sprite = ToolByGjp.Base64ToImg(selectServerItem.info.objectList[0].imageMessage.imageBase64);
+            AndaUIManager.Instance.jirvisMonsterImageDetail.SetAsLastSibling();
+            AndaUIManager.Instance.jirvisMonsterImageDetail.gameObject.SetTargetActiveOnce(true);
+            //呼出明星片面板
+        }
         else
         {
             if (selectServerItem.info.receiveAwardsTime == 0)//领取奖励
