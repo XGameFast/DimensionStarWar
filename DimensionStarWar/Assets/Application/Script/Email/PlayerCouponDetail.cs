@@ -82,7 +82,7 @@ public class PlayerCouponDetail : UIBasic2 {
  
     public void Confirm()
     {
-        AndaDataManager.Instance.PlayerCouponUp(2,1, ConfirmBack);
+        AndaDataManager.Instance.PlayerCouponUp(selectPlayerCoupon.playerCouponIndex, 1 , ConfirmBack);
     }
     public void ConfirmBack(bool res)
     {
