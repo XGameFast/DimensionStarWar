@@ -6,6 +6,8 @@ using System.Linq;
 
 public class AndaMessageManager {
 
+    public System.Action BackCallUpdatePlayerCoupon;
+
     private static AndaMessageManager _instance = null;
     public static AndaMessageManager Instance
     {
@@ -48,6 +50,8 @@ public class AndaMessageManager {
                                 case 1:
                                     //Debug.Log(LitJson.JsonMapper.ToJson(res.serverMessageList[i].objectList[i].sD_Pag4U));
                                     //res.serverMessageList[i].objectList[i].item;
+
+
                                     break;
                                 //宠物
                                 case 2:
@@ -57,10 +61,12 @@ public class AndaMessageManager {
                                 //优惠卷
                                 case 3:
                                     //Debug.Log();
-                                    //var playerCoupon = res.serverMessageList[i].objectList[i].playerCoupon;
-                                    //var item= AndaPlayerCouponManager.Instance.PlayerCouponData.FirstOrDefault(o => o.playerCouponIndex == playerCoupon.playerCouponIndex);
-                                    //item.status = playerCoupon.status;
-                                    //res.serverMessageList[i].objectList[i].item ;
+                                    var playerCoupon = res.serverMessageList[i].objectList[i].playerCoupon;
+                                    var item = AndaPlayerCouponManager.Instance.PlayerCouponData.FirstOrDefault(o => o.playerCouponIndex == playerCoupon.playerCouponIndex);
+                                    item.status = playerCoupon.status;
+                                    if (BackCallUpdatePlayerCoupon != null)
+                                        BackCallUpdatePlayerCoupon();
+                                    //res.serverMessageList[i].objectList[i].item;
                                     break;
                                 default:
                                     break;
