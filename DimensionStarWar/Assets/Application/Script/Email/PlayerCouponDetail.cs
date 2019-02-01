@@ -82,15 +82,18 @@ public class PlayerCouponDetail : UIBasic2 {
  
     public void Confirm()
     {
-        AndaDataManager.Instance.PlayerCouponUp(2,1, ConfirmBack);
+        AndaDataManager.Instance.PlayerCouponUp(selectPlayerCoupon.playerCouponIndex, 1 , ConfirmBack);
     }
     public void ConfirmBack(bool res)
     {
         if (res)
         {
             Debug.Log("优惠卷提交成功");
+
+            Close();
         }
         else {
+
             Debug.Log("优惠卷提交失败");
         }
     }

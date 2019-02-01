@@ -6,6 +6,15 @@ using LitJson;
 using System;
 using UnityEngine.UI;
 public static class AndaGameExtension {
+
+
+    [DllImport("__Internal")]
+    public static extern void _WechatLogin();
+
+    [DllImport("__Internal")]
+    public static extern void _RegisterRemoteNoti();
+
+
     [DllImport("__Internal")]
     public static extern void _ShakeDevice(int type);
 

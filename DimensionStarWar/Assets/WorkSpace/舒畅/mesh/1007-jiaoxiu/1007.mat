@@ -35,12 +35,12 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _liuwen1:
-        m_Texture: {fileID: 2800000, guid: 2a9af0d6364f8da43bc827ff5408c4a9, type: 3}
-        m_Scale: {x: 1, y: 1}
+        m_Texture: {fileID: 2800000, guid: a12a870693898be4e82d880524c9a7cf, type: 3}
+        m_Scale: {x: 2, y: 2}
         m_Offset: {x: 0, y: 0}
     - _liuwen2:
-        m_Texture: {fileID: 2800000, guid: d22778733a18de44d8da6d6b0d744ff1, type: 3}
-        m_Scale: {x: 1, y: 1}
+        m_Texture: {fileID: 2800000, guid: ba89c33a350b2ba4cb3f09415dd2fcb3, type: 3}
+        m_Scale: {x: 1, y: 2}
         m_Offset: {x: 0, y: 0}
     - _metallic:
         m_Texture: {fileID: 2800000, guid: 38bed5737cbd77543b38c95f2d173a98, type: 3}
@@ -55,18 +55,23 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _rongjietex:
-        m_Texture: {fileID: 2800000, guid: 0839562779f0c0543aaa239b78bd12b9, type: 3}
+        m_Texture: {fileID: 2800000, guid: 6b2e9ec8b8d9cb44a8817bec1701d420, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _roughess:
         m_Texture: {fileID: 2800000, guid: a6df1558bb17594419d61e197d7b7dfb, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _stglow:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Floats:
     - _Cutoff: 0.5
-    - _alpha: 0
+    - _alpha: 1
     - _rongjie: 1
     m_Colors:
+    - _glowcolor: {r: 0, g: 0, b: 0, a: 0}
     - _kangxiuColor: {r: 0, g: 0, b: 0, a: 1}
     - _liuwencolor: {r: 0.06617647, g: 0.3431034, b: 1, a: 1}
     - _rongjiebiancolor: {r: 0.09558821, g: 0.9251521, b: 1, a: 1}

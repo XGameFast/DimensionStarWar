@@ -5,6 +5,15 @@ using UnityEngine;
 public static class ONAME
 {
 
+    /// <summary>
+    /// 储存在本地的数据的key名称，以防忘记，做统一管
+    /// </summary>
+    public static string uuid = "uuid";
+    public static string deviceToken = "deviceToken";
+    public static string LastLogin = "LastLogin";//上次是否已经登录过
+
+
+
     public static string ARType = "AR";
     public static string VVType = "VV";
     public static string MapType = "地图";

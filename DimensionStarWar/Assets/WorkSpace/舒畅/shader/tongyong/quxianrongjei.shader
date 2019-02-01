@@ -62,10 +62,10 @@ Shader "Shader Forge/quxianrongjei" {
                 float faceSign = ( facing >= 0 ? 1 : -1 );
 ////// Lighting:
                 float node_4358 = (_rongjie*0.85+0.15);
-                float4 node_3231 = _Time;
-                float2 node_3335 = (i.uv0+node_3231.g*float2(0.2,0.3));
+                float4 node_3029 = _Time;
+                float2 node_3335 = (i.uv0+node_3029.g*float2(0.2,0.3));
                 float4 node_8780 = tex2D(_node_9988,TRANSFORM_TEX(node_3335, _node_9988));
-                float2 node_4519 = (i.uv0+node_3231.g*float2(-0.35,-0.15));
+                float2 node_4519 = (i.uv0+node_3029.g*float2(-0.35,-0.15));
                 float4 node_7030 = tex2D(_node_9988,TRANSFORM_TEX(node_4519, _node_9988));
                 float2 node_2639 = ((node_8780.r*node_7030.r*_UVniuqu)+i.uv0);
                 float4 _node_268_var = tex2D(_node_268,TRANSFORM_TEX(node_2639, _node_268));

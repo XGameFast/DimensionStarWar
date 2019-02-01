@@ -331,9 +331,9 @@ public class Table_SelectItemToSearch : UIBasic2 {
 #else
             if (Input.touchCount == 1)
             {
-                Touch touch = Input.GetTouch(0);
-                Vector2 deltaPos = touch.deltaPosition;
-                ControlDragMoveCamera(deltaPos * 5);
+                //Touch touch = Input.GetTouch(0);
+               // Vector2 deltaPos = touch.deltaPosition;
+                //ControlDragMoveCamera(deltaPos * 5);
             }
 #endif
 

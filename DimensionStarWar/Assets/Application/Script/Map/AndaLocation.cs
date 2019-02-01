@@ -50,7 +50,12 @@ public class AndaLocaltion  {
         }
 
       // yield return new  WaitForEndOfFrame();
-
+        if(!AndaMap.Instance.isInitLocation)
+        {
+            AndaMap.Instance.andaMapController.locationProviderFactory.InitLocationOnce();
+            AndaMap.Instance.isInitLocation = true;
+        }
+      
 
         AndaUIManager.Instance.OpenWaitBoard("正在建立星域定位图，请稍等，先来看一段魔性舞蹈八");
        
