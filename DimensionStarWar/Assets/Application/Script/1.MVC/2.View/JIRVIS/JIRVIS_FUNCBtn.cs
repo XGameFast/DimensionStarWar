@@ -6,10 +6,10 @@ public class JIRVIS_FUNCBtn : JIRVISButtonItemBase {
 
     public Image btnSprite;
     public Text btnLabel;
-     private System.Action CallBackClickBtn;
-
+    private System.Action CallBackClickBtn;
     private GameObject spriteItem;
-
+    public Transform itemPoint1;
+    public Transform itemPoint2;
     public override void OnDispawn()
     {
         if(spriteItem !=null)
@@ -19,8 +19,9 @@ public class JIRVIS_FUNCBtn : JIRVISButtonItemBase {
         base.OnDispawn();
     }
 
-    public void SetInfo(string btn_name,string btnIconName,System.Action callback)
+    public void SetInfo(int _index , string btn_name,string btnIconName,System.Action callback)
     {
+
         transform.name = btn_name;
         CallBackClickBtn = callback;
         btnLabel.text = btn_name;
@@ -29,6 +30,20 @@ public class JIRVIS_FUNCBtn : JIRVISButtonItemBase {
         spriteItem = Instantiate(spriteItem);
         spriteItem.transform.SetUIInto(transform);
         spriteItem.gameObject.SetActive(false);
+
+        if (_index % 2 == 0)
+        {
+            itemPoint2.gameObject.SetTargetActiveOnce(true);
+            itemPoint1.gameObject.SetTargetActiveOnce(false);
+            spriteItem.SetInto(itemPoint2);
+          
+        }
+        else
+        {
+            itemPoint2.gameObject.SetTargetActiveOnce(false);
+            itemPoint1.gameObject.SetTargetActiveOnce(true);
+            spriteItem.SetInto(itemPoint1);
+        }
     }
 
 

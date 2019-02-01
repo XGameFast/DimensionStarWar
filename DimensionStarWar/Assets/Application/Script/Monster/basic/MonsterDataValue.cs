@@ -153,6 +153,35 @@ public class MonsterDataValue {
         get {return currentSkillAnimationInterval ;}
     }
 
+    public float getNormalSkillCDLimit
+    {
+        get {return playerSkillAttributeList[1].skillCD ;}
+    }
+
+    public float getDefenseSkillCDLimit
+    {
+        get {return playerSkillAttributeList[0].skillCD;}
+    }
+    public float getSpecialSkillCDLimit
+    {
+        get{return playerSkillAttributeList[2].skillCD;}
+    }
+
+    public float getNormalSkillCurrentCD
+    {
+        get{ return skillCDTimeBox[1] ;}
+    }
+
+    public float getDefnseSkillCurrentCD
+    {
+        get {return skillCDTimeBox[0] ;}
+    }
+
+    public float getSpecialSkillCurrentCD
+    {
+        get { return skillCDTimeBox[2]; }
+    }
+
     #region 状态
     public bool isHit
     {

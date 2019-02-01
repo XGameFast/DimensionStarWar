@@ -37,7 +37,15 @@ public class CheckConfigController : BaseController {
         }
 
         InvokeDownload();
-       // Invoke("DiplayLogo", 1f);
+
+
+        //ARMonsterSceneDataManager.Instance.aRWorld.OpenLoginMenuBackground(true);
+
+        ARMonsterSceneDataManager.Instance.mainCamera.gameObject.SetActive(true);//.set();
+
+        ARMonsterSceneDataManager.Instance.mainCamera.GetComponent<CameraGlory>().OpenGlory(Vector2.zero, new Vector2(-45,45f));
+
+        // Invoke("DiplayLogo", 1f);
         //ARMonsterSceneDataManager.Instance.aRWorld.OpenAstrologyBackground();
 
     }
@@ -67,7 +75,14 @@ public class CheckConfigController : BaseController {
     public override void EndController()
     {
         base.EndController();
-        ARMonsterSceneDataManager.Instance.aRWorld.CloseAtrologyBackground();
+
+        ARMonsterSceneDataManager.Instance.SetMainCameraInitPose();
+
+        ARMonsterSceneDataManager.Instance.mainCamera.gameObject.SetActive(false);//.set();
+
+        ARMonsterSceneDataManager.Instance.mainCamera.GetComponent<CameraGlory>().CloseGlory();//(Vector2.zero, new Vector2(-45, 45f));
+        ARMonsterSceneDataManager.Instance.aRWorld.OpenLoginMenuBackground(false);
+        //ARMonsterSceneDataManager.Instance.aRWorld.CloseAtrologyBackground();
         checkConfigData.InitVlaue();
     }
 
@@ -112,14 +127,21 @@ public class CheckConfigController : BaseController {
     }
     private void TrueEnd()
     {
-        callbackFinishController(ONAME.LOGINCONTROLLER);
+#if UNITY_EDITOR
+        FinishRegisterNoti();
+#else
+         //注册通知
+        AndaGameExtension._RegisterRemoteNoti();
+#endif
+
+        //  
     }
 
     #endregion
 
     #region 逻辑
 
-   
+
 
     //[对比配置，是否需要更新文件]
     private void CheckBaseConfig(ConfigBase _fromServerConfigBase)
@@ -224,4 +246,12 @@ public class CheckConfigController : BaseController {
     }
 
     #endregion
+
+    /// <summary>
+    /// 完成注册通知，然后进入登录界面
+    /// </summary>
+    public void FinishRegisterNoti()
+    {
+        callbackFinishController(ONAME.LOGINCONTROLLER);
+    }
 }

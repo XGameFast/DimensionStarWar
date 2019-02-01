@@ -924,6 +924,7 @@ public class MapController : BaseController {
     #region 玩家的选择，立刻进入
     private void PlayerChooseEntermienStrongholdNow()
     {
+        JIRVIS.Instance.CloseTips();
         BackToBuildDimensionRoomController();
     }
     #endregion
@@ -1154,10 +1155,10 @@ public class MapController : BaseController {
     #region 打开玩家据点信息面板_自己的
     private void OpenPlayerStrongholdInformaiton(StrongholdBaseAttribution _shBase)
     {
-        //data.SetCurrentPlayerstrongholdIndex(_shBase.strongholdIndex);
-        //JIRVISAskForEnterMineStrongholdNow();
-        data.BuildMinePlayerStrongholdInfomation(_shBase as PlayerStrongholdAttribute);
+        data.BuildMinePlayerStrongholdInfomation(_shBase as PlayerStrongholdAttribute , PlayerChooseEntermienStrongholdNow, PlayerGiveUpEnterminstrongholdNow);
     }
+
+
 
     #endregion
 

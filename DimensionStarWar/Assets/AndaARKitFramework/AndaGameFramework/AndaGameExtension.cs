@@ -4,8 +4,17 @@ using UnityEngine;
 using System.Runtime.InteropServices;
 using LitJson;
 using System;
-
+using UnityEngine.UI;
 public static class AndaGameExtension {
+
+
+    [DllImport("__Internal")]
+    public static extern void _WechatLogin();
+
+    [DllImport("__Internal")]
+    public static extern void _RegisterRemoteNoti();
+
+
     [DllImport("__Internal")]
     public static extern void _ShakeDevice(int type);
 
@@ -115,6 +124,9 @@ public static class AndaGameExtension {
         rectTransform.parent = _parent;
         rectTransform.localScale = Vector3.one;
         rectTransform.localPosition = Vector3.zero;
+
+      
+        //rectTransform.del
     }
     public static List<Transform> GetChildList(this Transform board)
     {
@@ -570,4 +582,19 @@ public static class AndaGameExtension {
     {
         return (double)d * Math.PI / 180d;
     }
+
+
+    #region 让图片变暗
+    public static void SetBtnActive(this Button btn , bool isEnable)
+    {
+        btn.enabled = isEnable;
+        Image[] images = btn.GetComponentsInChildren<Image>();
+        int count = images.Length;
+        Color color = btn.image.color;
+        for (int i = 0 ; i < images.Length ;i++)
+        {
+            images[i].color = color;
+        }
+    }
+    #endregion
 }

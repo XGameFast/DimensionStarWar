@@ -111,7 +111,7 @@ public static class MonsterGameData
                         monsterID = 1005,
                         skillAnimationConfigs = new List<SkillAnimationConfig>
                         {
-                            new SkillAnimationConfig { skillID = 10005, skillAnimationLength = 2f , skillAnimationInterval = new List<float> { 6f ,20f, 40}},
+                            new SkillAnimationConfig { skillID = 10005, skillAnimationLength = 2f , skillAnimationInterval = new List<float> { 11f ,20f, 40}},
                             new SkillAnimationConfig { skillID = 11005, skillAnimationLength = 3.734f , skillAnimationInterval = new List<float> { 18f, 26f, 35f }},
                             new SkillAnimationConfig { skillID = 12005, skillAnimationLength = 1.167f , skillAnimationInterval = new List<float> { 67f,75f, 112f }},
                         }
@@ -122,7 +122,7 @@ public static class MonsterGameData
                         monsterID = 1006,
                         skillAnimationConfigs = new List<SkillAnimationConfig>
                         {
-                            new SkillAnimationConfig { skillID = 10006, skillAnimationLength = 1.067f , skillAnimationInterval = new List<float> { 9f ,18f, 32f}},
+                            new SkillAnimationConfig { skillID = 10006, skillAnimationLength = 1.067f , skillAnimationInterval = new List<float> { 10f ,18f, 32f}},
                             new SkillAnimationConfig { skillID = 11006, skillAnimationLength = 1f , skillAnimationInterval = new List<float> { 10f, 26f, 30f }},
                             new SkillAnimationConfig { skillID = 12006, skillAnimationLength = 2.6f , skillAnimationInterval = new List<float> { 34f,45f, 77f }},
                         }
@@ -133,7 +133,7 @@ public static class MonsterGameData
                         monsterID = 1007,
                         skillAnimationConfigs = new List<SkillAnimationConfig>
                         {
-                            new SkillAnimationConfig { skillID = 10007, skillAnimationLength = 1.333f , skillAnimationInterval = new List<float> { 10f ,22f, 38f}},
+                            new SkillAnimationConfig { skillID = 10007, skillAnimationLength = 1.333f , skillAnimationInterval = new List<float> { 11f ,22f, 38f}},
                             new SkillAnimationConfig { skillID = 11007, skillAnimationLength = 1.167f , skillAnimationInterval = new List<float> { 7f, 15f, 28f }},
                             new SkillAnimationConfig { skillID = 12007, skillAnimationLength = 2.067f , skillAnimationInterval = new List<float> { 15f,44f, 60f }},
                         }
@@ -172,6 +172,19 @@ public static class MonsterGameData
                 };
             }
             return _monsterSkillAnimationConfigs;
+        }
+    }
+
+    private static MonsterSearchConfig _monsterSearchConfig = null;
+    public static MonsterSearchConfig monsterSearchConfig
+    {
+        get 
+        {
+            if(_monsterSearchConfig == null)
+            {
+                _monsterSearchConfig = JsonMapper.ToObject<MonsterSearchConfig>(PlayerPrefs.GetString(ONAME.MonsterSearchConfigFileName));
+            }
+            return _monsterSearchConfig;
         }
     }
 
@@ -752,7 +765,9 @@ public static class MonsterGameData
             if(_gameBaseMonsterAttributeList == null)
             {
                 string json = PlayerPrefs.GetString(ONAME.MonsterConfigFileName);
+                #if UNITY_EDITOR
                 Debug.Log("monsterJson" + json);
+                #endif
                 _gameBaseMonsterAttributeList = JsonMapper.ToObject<List<MonsterBaseConfig>>(json);
             }
             return _gameBaseMonsterAttributeList;
@@ -1181,7 +1196,7 @@ public static class MonsterGameData
     public static List<SkillBaseAttribute> gameBaseSkillAttributeList
     {
         get {
-        
+         
             if(_gameBaseSkillAttributeList == null)
             {
             
@@ -1189,7 +1204,7 @@ public static class MonsterGameData
                 _gameBaseSkillAttributeList = JsonMapper.ToObject<List<SkillBaseAttribute>>(json);
         
             }
-        
+
             return _gameBaseSkillAttributeList;
         }
         /*get
@@ -2191,7 +2206,20 @@ public static class MonsterGameData
         return businessStrongholadBaseAttribute;
     }
 
-
+    public static List<MonsterBaseConfig> GetUserMonsterBaseConfigList()
+    {
+        int count = gameBaseMonsterAttributeList.Count;
+        List<MonsterBaseConfig> monsterBaseConfigs = new List<MonsterBaseConfig>();
+        for(int i = 0 ; i < count; i ++)
+        {
+            if(gameBaseMonsterAttributeList[i].monsterID < 2000)
+            {
+                monsterBaseConfigs.Add(gameBaseMonsterAttributeList[i]);
+            }
+           
+        }
+        return monsterBaseConfigs;
+    }
 
 
 

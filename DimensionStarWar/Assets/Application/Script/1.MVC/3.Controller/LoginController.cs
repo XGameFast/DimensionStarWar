@@ -15,6 +15,7 @@ public class LoginController : BaseController {
     }
     public override void EndController()
     {
+        ARMonsterSceneDataManager.Instance.aRWorld.OpenLoginMenuBackground(false);
         loginCtrData.InitValue();
         base.EndController();
     }
@@ -84,7 +85,8 @@ public class LoginController : BaseController {
         {
             PlayerPrefs.SetString("LastLogin", "Phone");
             PlayerPrefs.SetString("DefualtPhoneAccount", loginCtrData.GetLoginMenu.inputAccount.text);
-            PlayerPrefs.SetString("DefualtPhoneSerect" , AndaDataManager.Instance.userData.phoneSecret );
+            PlayerPrefs.SetString("DefualtPhoneSerect" , AndaDataManager.Instance.userData.phoneSecret);
+
             LoginFinish(isSuccess);
         }
     }
@@ -117,7 +119,7 @@ public class LoginController : BaseController {
         }
         else
         {
-            callbackFinishController(ONAME.MAPCONCTROLLER);
+            callbackFinishController(ONAME.BUILDDIMENSIONROOMCONTROLLER);
         }
     }
 
@@ -173,6 +175,17 @@ public class LoginController : BaseController {
                 loginCtrData.getm_Menu.OnUpdate();
             }
         }
+    }
+
+    /// <summary>
+    /// 微信登录回调
+    /// </summary>
+    /// <param name="userAccount">User account.</param>
+    /// <param name="userToken">User token.</param>
+    /// <param name="userImage">User image.</param>
+    public void WecahtLoginCallback(string code)
+    {
+        AndaDataManager.Instance.WeChatLogin(LoginFinish, code);
     }
     
 }

@@ -5,6 +5,15 @@ using UnityEngine;
 public static class ONAME
 {
 
+    /// <summary>
+    /// 储存在本地的数据的key名称，以防忘记，做统一管
+    /// </summary>
+    public static string uuid = "uuid";
+    public static string deviceToken = "deviceToken";
+    public static string LastLogin = "LastLogin";//上次是否已经登录过
+
+
+
     public static string ARType = "AR";
     public static string VVType = "VV";
     public static string MapType = "地图";
@@ -148,10 +157,17 @@ public static class ONAME
 
     public static string PlayerPowerShotBar = "PlayerPowerShotBar";
 
+    public static string PlayerCouponDetail = "PlayerCouponDetail";
+
+    public static string JirvisMonsterImageDetail = "jirvisMonsterImageDetail";
+
+    public static string ServerItem = "ServerItem";
 
     public static string ExchangeMenu ="ExchangeMenu";
 
     public static string MapBar_MineStrongholdInformationBar = "MapBar_MineStrongholdInformationBar";
+
+    public static string DimensionRoomItem_tableItemInfo = "DimensionRoomItem_tableItemInfo";
 
     #endregion
 
@@ -174,6 +190,11 @@ public static class ONAME
 
     public static string ExchangeMenuItem_SellItem = "ExchangeMenuItem_SellItem";
 
+    public static string Item_SetMonsterToSelectDimensionRoomItem = "Item_SetMonsterToSelectDimensionRoomItem";
+
+    public static string SelectDimensionRoomSetMonster = "SelectDimensionRoomSetMonster";
+
+    public static string Item_PlayerCoupon = "Item_PlayerCoupon";
     #endregion
     #region 消耗品
     public static string ExpBall00 = "ExpBall00";
@@ -234,17 +255,17 @@ public static class ONAME
     
 
     public static string consumableIcon = "51016";
-    public static string csmIcon = "51017";
-    public static string tzIcon = "51018";
-    public static string hbIcon = "51019";
-    public static string tcqIcon = "51020";
-    public static string xwjIcon = "51021";
-    public static string xywIcon = "51022";
-    public static string freeMonsters = "51023";
-    public static string mapAngle3D = "51024";
-    public static string mapAngle2D = "51025";
-    public static string addExchange = "51026";
-    public static string consignForsale = "51027";
+    public static string dimensionDoorIcon = "51017";
+    public static string strongholdDrawingIcon = "51018";
+    public static string currencyIcon = "51019";//金币
+    public static string detectIcon = "51020";//探测器
+    public static string unknowObj = "51021";//未知小物件
+    public static string luckyObjIcon = "51022";//幸运物
+    public static string freeMonsters = "51023";//自由宠物
+    public static string mapAngle3D = "51024";//3d地图
+    public static string mapAngle2D = "51025";//2d地图
+    public static string addExchange = "51026";//添加交易所
+    public static string consignForsale = "51027";//寄售按钮 
     public static string cardTicket = "51028";
     //public static string otherSH = "51029";//其他玩家的占星庭
     public static string allPlayerSH = "51030";//所有玩家据点
@@ -255,7 +276,6 @@ public static class ONAME
     public static string bossSH = "51035";//boss 据点
     public static string allBossSH = "51036";//所有Boss 据点
     public static string allBussinessSH = "51037";//所有商家点
-
     public static string shootingTrainingIcon = "shootingTrainingIcon";
 
 
@@ -366,6 +386,12 @@ public static class ONAME
     public static string StarConfigFileName = "StarConfig.txt";
     public static string SkillArchievementValueFileName = "SkillArchievementValue.txt";
 
+    //public static string Event.txt
+    public static string SearchConfigFileName = "SearchConfig.txt";
+  
+    public static string MonsterSearchConfigFileName = "MonsterSearchConfig.txt";
+
+    public static string MonsterluckyObjectConfigFileName = "MonsterluckyObjectConfig.txt";
 
     public static string ServerMessage = "ServerMessage.txt";
     #endregion

@@ -25,6 +25,9 @@ public class Skill10006 : SkillBallistic
         base.StraightLineMovement();
         if (!isHitTarget && mainObjIsMoving)//判断是否为击中以及在移动状态下
             mainObj.transform.position += mainObj.transform.forward.normalized * Time.deltaTime * playerSkillAttribute.baseSkillAttribute.skillMoveSpeed.DoubleToFloat() * ARMonsterSceneDataManager.Instance.getARWorldScale;
+
+
+
     }
 
     //击中时发生
@@ -92,19 +95,21 @@ public class Skill10006 : SkillBallistic
 
         base.RunningSkill();
 
+     
+
+        Debug.Log(insPoint.transform.name);
+        //设置移动特效起始位置
+        SetObjtToTargetPoint(mainObj.gameObject, insPoint.position, true);
+
+
         //初始化特效位置  host为 monster
-        GatheringObj.transform.SetInto(insPoint);
+        GatheringObj.transform.SetInto(mainObj);
         //激活特效
         GatheringObj.gameObject.SetTargetActiveOnce(true);
 
         GatheringObj.parent = null;
 
         trailObj.GetComponent<TrailRenderer>().Clear();
-
-        Debug.Log(insPoint.transform.name);
-        //设置移动特效起始位置
-        SetObjtToTargetPoint(mainObj.gameObject, insPoint.position, true);
-
         //技能执行
         mainObjIsMoving = true;
     }

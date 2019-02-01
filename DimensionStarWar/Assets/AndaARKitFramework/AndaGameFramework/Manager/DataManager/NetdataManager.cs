@@ -836,50 +836,62 @@ public class NetdataManager : ManagerBase {
        
     }
 
-    public void UpStartSearch(int monsterIndex, int recoveryObjectIndex,int searchObjectIndex, int luckyObjectIndex, System.Action<bool> callback)
+    public void UpStartSearch(int monsterIndex, LD_Objs recoveryObjectIndex, LD_Objs searchObjectIndex, LD_Objs luckyObjectIndex, System.Action<int> callback)
     {
         var _wForm = new WWWForm();
         _wForm.AddField("token", AndaDataManager.Instance.userData.token);
         _wForm.AddField("MonsterIndex", monsterIndex);
-        _wForm.AddField("luckyObjectIndex", luckyObjectIndex);
-        _wForm.AddField("recoveryObjectIndex", recoveryObjectIndex);
-        _wForm.AddField("searchObjectIndex", searchObjectIndex);
+        _wForm.AddField("luckyObjectIndex", luckyObjectIndex == null? 0: luckyObjectIndex.objIndex);
+        _wForm.AddField("recoveryObjectIndex", recoveryObjectIndex == null ? 0 : recoveryObjectIndex.objIndex);
+        _wForm.AddField("searchObjectIndex", searchObjectIndex == null? 0 : searchObjectIndex.objIndex);
         string path = networkAdress2 + "Monster/StartTreasure";
         //string path = "http://localhost:57789/api/" + "Monster/StartTreasure";
-        StartCoroutine(ExcuteUpStartSearchresutl(path, _wForm, callback));
+        StartCoroutine(ExcuteUpStartSearchresutl(recoveryObjectIndex, searchObjectIndex, luckyObjectIndex, path, _wForm, callback));
     }
 
-    private IEnumerator ExcuteUpStartSearchresutl(string _url, WWWForm _wForm, System.Action<bool> callback)
+    private IEnumerator ExcuteUpStartSearchresutl(LD_Objs recoveryObjectIndex, LD_Objs searchObjectIndex, LD_Objs luckyObjectIndex,string _url, WWWForm _wForm, System.Action<int> callback)
     {
         WWW postData = new WWW(_url, _wForm);
+        AndaUIManager.Instance.OpenWaitBoard("请稍等");
         yield return postData;
+        AndaUIManager.Instance.CloseWaitBoard();
         if (postData.error != null)
         {
+            # if UNITY_EDITOR
             Debug.Log(postData.error);
-            //callback(false);
+            #endif
+            callback(-1);
         }
         else
         {
+#if UNITY_EDITOR
             Debug.Log("postData.text" + postData.text);
+#endif
+
             string s = postData.text;
             MonsterSearch res = JsonMapper.ToObject<MonsterSearch>(postData.text);
             if (res.code == "200")
             {
-                foreach (var m in res.objectList)
+                if (recoveryObjectIndex != null)
                 {
-                    AndaDataManager.Instance.UpdateUserConsumableItemForADD(new SD_Pag4U()
-                    {
-                        hostIndex = res.monsterGrowUpAttribute.playerIndex,
-                        objectCount = m.addCount,
-                        objectID = m.objectId,
-                        objectIndex = m.objectIndex,
-                        objectValue = 0
-                    });
+                    AndaDataManager.Instance.ReducePlayerConsumableList(recoveryObjectIndex.objID, 1, recoveryObjectIndex.giveValue);
                 }
-                //AndaDataManager.Instance.ReducePlayerConsumableList(res.SD_Pag4U.objectID);
-                AndaDataManager.Instance.UpdateMonsterToStronghold(res.monsterGrowUpAttribute);
+                if (searchObjectIndex != null)
+                {
+                    AndaDataManager.Instance.ReducePlayerConsumableList(searchObjectIndex.objID, 1, searchObjectIndex.giveValue);
+
+                }
+                if (luckyObjectIndex != null)
+                {
+                    AndaDataManager.Instance.ReducePlayerConsumableList(luckyObjectIndex.objID, 1, luckyObjectIndex.giveValue);
+
+                }
+                //更新宠物完成探索的时间
+                AndaDataManager.Instance.UpdateMonsterFinishSearchValue(res.monsterGrowUpAttribute.monsterIndex, res.monsterGrowUpAttribute.finishTreasureTime);
+
+                callback(res.monsterGrowUpAttribute.finishTreasureTime);
             }
-            callback(res.code == "200");
+
         }
     }
 
@@ -896,7 +908,9 @@ public class NetdataManager : ManagerBase {
     private IEnumerator ExcuteUpFinishSearchresutl(string _url, WWWForm _wForm, System.Action<bool, string> callback)
     {
         WWW postData = new WWW(_url, _wForm);
+        AndaUIManager.Instance.OpenWaitBoard("请稍等");
         yield return postData;
+        AndaUIManager.Instance.CloseWaitBoard();
         if (postData.error != null)
         {
             Debug.Log(postData.error);
@@ -904,7 +918,9 @@ public class NetdataManager : ManagerBase {
         }
         else
         {
+            #if UNITY_EDITOR
             Debug.Log("postData.text" + postData.text);
+            #endif
             string s = postData.text;
             MonsterSearch res = JsonMapper.ToObject<MonsterSearch>(postData.text);
             if (res.code == "200")
@@ -931,9 +947,12 @@ public class NetdataManager : ManagerBase {
                 }
                 JIRVIS.Instance.jIRVISData.SetNormalRewardList(datalist);
                 JIRVIS.Instance.CheckNormalReward();
-                
+                callback(true, res.ImageUrl);
+            }else
+            {
+                callback(false, null);
             }
-            callback(res.code == "200", res.ImageUrl);
+           
         }
     }
 
@@ -1060,7 +1079,7 @@ public class NetdataManager : ManagerBase {
             if (result.code == "200")
             {
                 ExchangeObject exchangeObject = result.exchangeObjectInfo;
-                AndaDataManager.Instance.userData.ReduceConsumableItem(exchangeObject.objectIndex, exchangeObject.objectID,exchangeObject.objectCount);
+                AndaDataManager.Instance.ReducePlayerConsumableList(exchangeObject.objectID,exchangeObject.objectCount,exchangeObject.objectValue);
                 callback(exchangeObject);
             }
             else
@@ -1133,8 +1152,10 @@ public class NetdataManager : ManagerBase {
     private IEnumerator ExcuteCallServerUploadSetMonstertoStronghold(string _url, WWWForm wWWForm , System.Action<bool> callback,int monsterIndex, int strongholdIndex)
     {
         WWW postData = new WWW(_url, wWWForm);
+        AndaUIManager.Instance.OpenWaitBoard("请稍等");
         yield return postData;
-        if(postData.error!=null)
+        AndaUIManager.Instance.CloseWaitBoard();
+        if (postData.error!=null)
         {
             callback(false);
         }else
@@ -1587,12 +1608,13 @@ public class NetdataManager : ManagerBase {
     }
     #endregion
 
-    #region
-    public void PlayerCouponUp(int playerCouponIndex, System.Action<bool> callback)
+    #region 优惠卷部分
+    public void PlayerCouponUp(int playerCouponIndex,int addressIndex, System.Action<bool> callback)
     {
         var _wForm = new WWWForm();
         _wForm.AddField("token", AndaDataManager.Instance.userData.token);
         _wForm.AddField("playerCouponIndex", playerCouponIndex);
+        _wForm.AddField("addressIndex", addressIndex);
         string path = networkAdress2 + "PlayerCoupon/Up";
         //string path = "http://localhost:57789/api/" + "SD_Pag/Consume";
         StartCoroutine(PlayerCouponUpResutl(path, _wForm, callback));
@@ -1619,7 +1641,177 @@ public class NetdataManager : ManagerBase {
             callback(res.code == "200");
         }
     }
+
+    public void GetPlayerCoupon(System.Action<PlayerCouponsRequest> callback)
+    {
+        var _wForm = new WWWForm();
+        _wForm.AddField("token", AndaDataManager.Instance.userData.token);
+        string path = networkAdress2 + "PlayerCoupon/BusinessGetPlayerCoupons";
+        //string path = "http://localhost:57789/api/PlayerCoupon/BusinessGetPlayerCoupons";
+        StartCoroutine(ExcuteGetPlayerCoupon(path, _wForm, callback));
+    }
+
+    private IEnumerator ExcuteGetPlayerCoupon(string _url, WWWForm _wForm, System.Action<PlayerCouponsRequest> callback)
+    {
+        WWW postData = new WWW(_url, _wForm);
+        yield return postData;
+
+        if (postData.error != null)
+        {
+            Debug.Log(postData.error);
+        }
+        else
+        {
+            PlayerCouponsRequest result = JsonMapper.ToObject<PlayerCouponsRequest>(postData.text);
+            Debug.Log(postData.text);
+            callback(result);
+        }
+    }
     #endregion
+
+    #region 玩家地址管理部分
+    public void UserAddressList(System.Action<bool> callback)
+    {
+        var _wForm = new WWWForm();
+        _wForm.AddField("token", AndaDataManager.Instance.userData.token);
+        string path = networkAdress2 + "UserInfo/GetAddress";
+        //string path = "http://localhost:57789/api/" + "SD_Pag/Consume";
+        StartCoroutine(UserAddressListResutl(path, _wForm, callback));
+    }
+
+    private IEnumerator UserAddressListResutl(string _url, WWWForm _wForm, System.Action<bool> callback)
+    {
+        WWW postData = new WWW(_url, _wForm);
+        yield return postData;
+        if (postData.error != null)
+        {
+            Debug.Log(postData.error);
+            //callback(false);
+        }
+        else
+        {
+            Debug.Log("postData.text" + postData.text);
+            string s = postData.text;
+            AddressListRequest res = JsonMapper.ToObject<AddressListRequest>(postData.text);
+            if (res.code == "200")
+            {
+                Debug.Log("提交成功");
+            }
+            callback(res.code == "200");
+        }
+    }
+
+    public void UserAddressAdd(UserAddress info, System.Action<bool> callback)
+    {
+        var _wForm = new WWWForm();
+        _wForm.AddField("token", AndaDataManager.Instance.userData.token);
+        _wForm.AddField("address", info.address);
+        _wForm.AddField("area", info.area);
+        _wForm.AddField("city", info.city);
+        _wForm.AddField("contacts", info.contacts);
+        _wForm.AddField("phone", info.phone);
+        _wForm.AddField("province", info.province);
+        _wForm.AddField("street", info.street);
+        string path = networkAdress2 + "UserInfo/AddAddress";
+        //string path = "http://localhost:57789/api/" + "SD_Pag/Consume";
+        StartCoroutine(UserAddressAddResutl(path, _wForm, callback));
+    }
+
+    private IEnumerator UserAddressAddResutl(string _url, WWWForm _wForm, System.Action<bool> callback)
+    {
+        WWW postData = new WWW(_url, _wForm);
+        yield return postData;
+        if (postData.error != null)
+        {
+            Debug.Log(postData.error);
+            //callback(false);
+        }
+        else
+        {
+            Debug.Log("postData.text" + postData.text);
+            string s = postData.text;
+            AddressRequest res = JsonMapper.ToObject<AddressRequest>(postData.text);
+            if (res.code == "200")
+            {
+                Debug.Log("提交成功");
+            }
+            callback(res.code == "200");
+        }
+    }
+
+
+    public void UserAddressEdit(UserAddress info, System.Action<bool> callback)
+    {
+        var _wForm = new WWWForm();
+        _wForm.AddField("token", AndaDataManager.Instance.userData.token);
+        _wForm.AddField("address", info.address);
+        _wForm.AddField("area", info.area);
+        _wForm.AddField("city", info.city);
+        _wForm.AddField("contacts", info.contacts);
+        _wForm.AddField("phone", info.phone);
+        _wForm.AddField("province", info.province);
+        _wForm.AddField("street", info.street);
+        _wForm.AddField("userAddressIndex", info.userAddressIndex);
+        string path = networkAdress2 + "UserInfo/EditAddress";
+        //string path = "http://localhost:57789/api/" + "SD_Pag/Consume";
+        StartCoroutine(UserAddressEditResutl(path, _wForm, callback));
+    }
+
+    private IEnumerator UserAddressEditResutl(string _url, WWWForm _wForm, System.Action<bool> callback)
+    {
+        WWW postData = new WWW(_url, _wForm);
+        yield return postData;
+        if (postData.error != null)
+        {
+            Debug.Log(postData.error);
+            //callback(false);
+        }
+        else
+        {
+            Debug.Log("postData.text" + postData.text);
+            string s = postData.text;
+            AddressRequest res = JsonMapper.ToObject<AddressRequest>(postData.text);
+            if (res.code == "200")
+            {
+                Debug.Log("提交成功");
+            }
+            callback(res.code == "200");
+        }
+    }
+
+    public void UserAddressDel(int userAddressIndex, System.Action<bool> callback)
+    {
+        var _wForm = new WWWForm();
+        _wForm.AddField("token", AndaDataManager.Instance.userData.token);
+        _wForm.AddField("userAddressIndex",userAddressIndex);
+        string path = networkAdress2 + "UserInfo/DelAddress";
+        //string path = "http://localhost:57789/api/" + "SD_Pag/Consume";
+        StartCoroutine(UserAddressDelResutl(path, _wForm, callback));
+    }
+
+    private IEnumerator UserAddressDelResutl(string _url, WWWForm _wForm, System.Action<bool> callback)
+    {
+        WWW postData = new WWW(_url, _wForm);
+        yield return postData;
+        if (postData.error != null)
+        {
+            Debug.Log(postData.error);
+            //callback(false);
+        }
+        else
+        {
+            Debug.Log("postData.text" + postData.text);
+            string s = postData.text;
+            AddressRequest res = JsonMapper.ToObject<AddressRequest>(postData.text);
+            if (res.code == "200")
+            {
+                Debug.Log("提交成功");
+            }
+            callback(res.code == "200");
+        }
+    }
+    #endregion
+
 
     #region 服务器消息获取
     public void GetServerMessage(System.Action<ServerMessageRequest> callback)
@@ -1629,6 +1821,7 @@ public class NetdataManager : ManagerBase {
             return;
         _wForm.AddField("token", AndaDataManager.Instance.userData.token);
         string path = networkAdress2 + "ServerMessage/Get";
+        //string path = "http://localhost:57789/api/ServerMessage/Get";
         StartCoroutine(ExcuteGetServerMessage(path, _wForm, callback));
     }
 
@@ -1646,6 +1839,38 @@ public class NetdataManager : ManagerBase {
         {
             Debug.Log(postData.text);
             ServerMessageRequest result = JsonMapper.ToObject<ServerMessageRequest>(postData.text);
+            callback(result);
+        }
+    }
+
+
+
+    public void GetServerMessageAwards(System.Action<ServerMessageAwardsRequest> callback , int serverMessageIndex)
+    {
+        var _wForm = new WWWForm();
+        if (AndaDataManager.Instance.userData == null)
+            return;
+        _wForm.AddField("token", AndaDataManager.Instance.userData.token);
+        _wForm.AddField("serverMessageIndex", serverMessageIndex);
+        string path = networkAdress2 + "ServerMessage/GetAward";
+        //string path = "http://localhost:57789/api/ServerMessage/GetAward";
+        StartCoroutine(ExcuteGetServerMessageAwards(path, _wForm, callback));
+    }
+
+    private IEnumerator ExcuteGetServerMessageAwards(string _url, WWWForm _wForm, System.Action<ServerMessageAwardsRequest> callback)
+    {
+
+        WWW postData = new WWW(_url, _wForm);
+        yield return postData;
+
+        if (postData.error != null)
+        {
+            Debug.Log(postData.error);
+        }
+        else
+        {
+            Debug.Log(postData.text);
+            ServerMessageAwardsRequest result = JsonMapper.ToObject<ServerMessageAwardsRequest>(postData.text);
             callback(result);
         }
     }

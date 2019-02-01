@@ -13,6 +13,9 @@ public class CheckConfigData : ControllerData {
     {
         base.BuildData(_baseController);
         checkConfigController = baseController as CheckConfigController;
+
+       
+
         BuildLocalConfigBase();
     }
 

@@ -103,6 +103,7 @@ public class BuildDimensionRoomMenu : UIBasic2 {
     public override void InitMenu(BaseController _baseController)
     {
         base.InitMenu(_baseController);
+       
         buildDimensionRoomController =_baseController as  BuildDimensionRoomController;
     }
 
@@ -231,7 +232,9 @@ public class BuildDimensionRoomMenu : UIBasic2 {
             if(!buildDimensionMenu_MonsterInforBar.gameObject.activeSelf)
             {
                 buildDimensionMenu_MonsterInforBar.gameObject.SetTargetActiveOnce(true);
+                buildDimensionMenu_MonsterInforBar.GetComponent<Animator>().Play("FadeIn");
             }
+
             buildDimensionMenu_MonsterInforBar.SetInfo(playerMonster);
         }
     }

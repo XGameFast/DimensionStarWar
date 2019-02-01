@@ -223,6 +223,11 @@ public class JIRVIS {
         jIRVISData.RemoveCommisionEvent(eventID);
     }
 
+    public void SetBtnBarLock(bool isLock)
+    {
+        jIRVISData.getJIRVISBar.SetJIRVISBtnBar(isLock);
+    }
+
     public void CloseBtnBar()
     {
         jIRVISData.getJIRVISBar.SetBtnBarState(false);

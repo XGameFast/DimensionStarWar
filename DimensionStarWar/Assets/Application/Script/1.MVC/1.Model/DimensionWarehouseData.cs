@@ -32,6 +32,7 @@ public class DimensionWarehouseData : ControllerData {
     {
         base.BuildMenu(menuname);
         dimensionWarehouseMenu = getm_Menu as DimensionWarehouseMenu;
+        dimensionWarehouseMenu.SetFullScreen();
     }
 
 

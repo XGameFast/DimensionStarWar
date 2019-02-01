@@ -52,20 +52,47 @@ public class BusinessCoupon
     //总数
     public int totalCount { get; set; }
 
+    //目前已掉落数量
+    public int fallenCount { get; set; }
+
+    /// <summary>
+    /// 已拒绝数量或者兑换失败数量
+    /// </summary>
+    public int failCount { get; set; }
+    /// <summary>
+    /// 已兑换数量
+    /// </summary>
+    public int changeCount { get; set; }
+
     /// <summary>
     /// 类别（0不可直接兑换1可直接兑换）
     /// </summary>
     public int type { get; set; }
+    /// <summary>
+    /// 注意事项
+    /// </summary>
+    public string tips { get; set; }
 
+    /// <summary>
+    /// 商家名称
+    /// </summary>
+    public string businessname { get; set; }
 }
 public class PlayerCoupon
 {
-    //后段需要，前段不需要管：）
-    public int playerIndex{get;set;}
+    //玩家昵称
+    public string playerName { get; set; }
+
+    public int applyIndex { get; set; }
+    //后段需要，前段不需要管：
+    public int playerIndex { get; set; }
     //在玩家数据库中的与玩家挂钩的主键
     public int playerCouponIndex { get; set; }
     //这张优惠券来自哪个商家挂钩的优惠券主键
     public int businessCouponIndex { get; set; }
+
+    public int businessIndex { get; set; }
+
     //玩家同种优化券有多少张
     public int count { get; set; }
     //优惠卷状态（0上架1下架2作废）
@@ -74,11 +101,22 @@ public class PlayerCoupon
     public int expirationDate { get; set; }
     //建立时间
     public int createTime { get; set; }
+    //操作时间（确认/发货、拒绝）
+    public int operationTime { get; set; }
+
+    public string code { get; set; }
+
     //优惠券详情
     public BusinessCoupon coupon { get; set; }
+}
 
-    public int businessIndex{get;set;}
- 
+public class PlayerCouponQR
+{
+    public int playerCouponIndex { get; set; }
+
+    public int playerIndex { get; set; }
+
+    public int CreateTime { get; set; }
 }
 
 public class StrongholdBaseConfigAttribute
@@ -269,6 +307,9 @@ public class PlayerStrongholdAttribute : StrongholdBaseAttribution
     public float playerStrongholdRecoveryStrengthTime { get; set; }
     //当前空间的容量
     public int playerStrongholdCapacity { get; set; }
+
+
+
     //当前空间产生的经验块
     public int playerStrongholdExpblockCount { get; set; }
     //最多多少个经验快

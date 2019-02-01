@@ -78,32 +78,65 @@ public class PlayerCouponsRequest : Result
     public List<PlayerCoupon> data { get; set; }
 }
 
+public class AddressRequest : Result
+{
+    public UserAddress data { get; set; }
+}
+public class AddressListRequest : Result
+{
+    public List<UserAddress> data { get; set; }
+}
+
 public class ServerMessageRequest : Result
 {
     public List<ServerMessage> serverMessageList { get; set; }
 }
+
+public class ServerMessageAwardsRequest : Result
+{
+    public List<GameRequest.BattelObject> sD_Pag4Us { get; set; }
+    public List<MonsterGrowUpAttribute> monsterGrowUpAttributes { get; set; }
+    public ServerMessage serverMessage { get; set; }
+}
+
 
 public class ServerMessage
 {
     public int serverMessageIndex { get; set; }
     public string serverMessageTitle { get; set; }
     public string serverMessageText { get; set; }
-    public List<ServerMessageObject> objectList { get; set; }
     public int hostIndex { get; set; }
+    public List<ServerMessageObject> objectList { get; set; }
     public int sendTime { get; set; }
     public int receiveTime { get; set; }
+    public int receiveAwardsTime { get; set; }
 }
 
 public class ServerMessageObject
 {
+    public string guid { get; set; }
     public int hostIndex { get; set; }
     public int id { get; set; }
     public int count { get; set; }
     public int index { get; set; }
     public int type { get; set; }
+    public int status { get; set; }
     public MonsterGrowUpAttribute monsterGrowUpAttribute { get; set; }
     public SD_Pag4U sD_Pag4U { get; set; }
     public PlayerCoupon playerCoupon { get; set; }
+    public ImageMessage imageMessage { get; set; }
+}
+public class ImageMessage
+{
+    public int id { get; set; }
+    public string region { get; set; }
+    public int hostIndex { get; set; }
+    public int monsterIndex { get; set; }
+    public int monsterId { get; set; }
+    public string monsterName { get; set; }
+    public string title { get; set; }
+    public int createTime { get; set; }
+    public string imageBase64 { get; set; }
 }
 public class ResultMonster : Result
 {
@@ -430,6 +463,7 @@ public class Search : Result
 
 public class SearchObject
 {
+    
     public double x { get; set; }
     public double y { get; set; }
     public double z { get; set; }
@@ -439,5 +473,50 @@ public class SearchObject
 
 }
 
+public class MonsterSearchConfig
+{
+    //每阶段消耗的意志力
+    public int consumePower { get; set; }
+    //每阶段需要消耗的时间
+    public int time { get; set; }
+
+    //带上幸运物后添加的幸运值
+    public int addLuckyValue { get; set; }
+
+    //带上不对的幸运物后添加的幸运值
+    public int addHalfLuckyValue { get; set; }
+    public List<MonsterSearchObject> searchObjects { get; set; }
+}
+
+
+public class MonsterLuckyObjectConfig
+{
+    public int monsterID { get; set; }
+    public int LuckyObjectID { get; set; }
+}
+
+public class MonsterSearchObject
+{
+    public int objectID { get; set; }
+    public int type { get; set; }//0宠物 1物品
+
+    //发现该物品需要消耗的ID
+    public string needObject { get; set; }//0宠物 1物品
+
+    public int minCount { get; set; }
+    public int maxCount { get; set; }
+    //掉落概率
+    public double dropProbability { get; set; }
+    public int minValue { get; set; }
+    public int maxValue { get; set; }
+
+    //出现范围
+    public double minX { get; set; }
+    public double minY { get; set; }
+    public double minZ { get; set; }
+    public double maxX { get; set; }
+    public double maxY { get; set; }
+    public double maxZ { get; set; }
+}
 #endregion
 

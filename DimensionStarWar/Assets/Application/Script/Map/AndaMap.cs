@@ -18,7 +18,7 @@ public class AndaMap  {
             return _instance;
         }
     }
-
+    public bool isInitLocation = false;
     public AndaMapController andaMapController ;
     public AndaMapData andaMapData;
     private System.Action FinishBuildMap;
