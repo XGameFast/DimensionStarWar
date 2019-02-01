@@ -9,9 +9,11 @@ public class LoginController : BaseController {
     public override void StartController()
     {
         base.StartController();
+        ARMonsterSceneDataManager.Instance.mainCamera.GetComponent<CameraGlory>().SetLimit(Vector2.zero, new Vector2(-0.5f,0.5f));
         BuildLoginCtrData();
         loginCtrData.BuildMenu(ONAME.LoginMenu2);
         loginCtrData.GetLoginMenu.PreloadUserAccountAndPassword();
+        ARMonsterSceneDataManager.Instance.aRWorld.OpenLoginMenuBackground(true);
     }
     public override void EndController()
     {

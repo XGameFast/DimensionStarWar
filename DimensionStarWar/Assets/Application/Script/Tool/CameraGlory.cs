@@ -28,6 +28,8 @@ public class CameraGlory : MonoBehaviour {
 
     public void SetLimit(Vector2 x , Vector2 y)
     {
+        limitx=x;
+        limity = y;
     }
 
     public void OpenGlory(Vector2 x, Vector2 y)
@@ -44,8 +46,8 @@ public class CameraGlory : MonoBehaviour {
         {
 
             gyro.enabled = true;
-           // transform.transform.rotation = Quaternion.Euler(90f, 180f, 0f);
-            rotFix = new Quaternion(0f, 0f, 1f, 0f);
+          //transform.transform.rotation = Quaternion.Euler(90f, 180f, 0f);
+            rotFix = new Quaternion(0f, 0f, -1f, 0f);
             isStartGlory = true;
         }
 
@@ -56,8 +58,8 @@ public class CameraGlory : MonoBehaviour {
         if (gyroSupported)
         {
             gyro.enabled = false;
-           // transform.transform.rotation = Quaternion.Euler(90f, 180f, 0f);
-            rotFix = new Quaternion(0f, 0f, 1f, 0f);
+            //transform.transform.rotation = Quaternion.Euler(90f, 180f, 0f);
+            rotFix = new Quaternion(0f, 0f, -1f, 0f);
             isStartGlory = false;
         }
 
@@ -67,37 +69,50 @@ public class CameraGlory : MonoBehaviour {
 
     float timer = 0;
 
-    public void Update()
+
+    Quaternion lastQuaternion ;
+    Quaternion startQuaternion;
+
+    public void FixedUpdate()
     {
         if (isStartGlory && gameObject.activeSelf)
         {
 
-            Quaternion quaternion = gyro.attitude * rotFix;
-            transform.localRotation = quaternion;
+            startQuaternion = gyro.attitude * rotFix;
+
+            lastQuaternion = transform.rotation;// Quaternion.Lerp(lastQuaternion, startQuaternion, Time.deltaTime);
+           // lastQuaternion.x += startQuaternion.x;
+            lastQuaternion.y -= startQuaternion.x;
+
+            Debug.Log("LastQuatere" + lastQuaternion.y);
+
+            float e = Mathf.Clamp(lastQuaternion.y,limity[0],limity[1]);
+
+            lastQuaternion.y = e;
+
+            transform.rotation = Quaternion.Lerp(transform.rotation,lastQuaternion,Time.deltaTime*3f);
 
 
 
-            Vector3 t = transform.eulerAngles;
-            if(t.y>270)
-            {
-                t.y = t.y - 360;
-            }
-            //Debug.Log("t.yyyyyyyyyyyyyyyyyy" + t.y);
-            t.x = 0;//Mathf.Clamp(t.x,liitx[0],limitx[1]);
-            t.y = Mathf.Clamp(t.y,limity[0],limity[1]);
-           // Debug.Log("t.y" + t.y);
-            t.z = 0;//Mathf.Clamp(t.z, limity[0], limity[1]);
+            //if(Vector3.a(t.y , transform.eulerAngles.y) < 5)return;
 
-            // float y = Mathf.Lerp(transform.eulerAngles.y , t.y ,Time.deltaTime);
-            t.y*=0.1f;
-           // t.y = y;
-            transform.eulerAngles =t;
-            // float y = Time.deltaTime * t.y;
-            // t.y = y;
-            //transform.eulerAngles = t;
-            //timer += Time.deltaTime;
-           // transform.eulerAngles = Vector3.Lerp(transform.eulerAngles, t,Time.deltaTime);
-            //Debug.Log("Run here?!!??");
+
+            //Debug.Log("x:" + t.x + "y:" + t.y + "z:" + t.z );
+            ///float w = t.y*-1;
+            /*if (t.y > 270)
+             {
+                 t.y = t.y - 360;
+             }
+
+             t.x = 0;
+
+             t.z = 0;
+
+             t.y *= -0.35f;*/
+
+            //y = Mathf.Lerp(transform.eulerAngles.y , w, Time.deltaTime * 0.8f);
+
+//            transform.eulerAngles = new Vector3(90,y,0);
         }
     }
 }

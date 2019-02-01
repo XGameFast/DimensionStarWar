@@ -284,9 +284,9 @@ public class LoginMenu2 : UIBasic2 {
        // Debug.Log(1);
 #if UNITY_IPHONE
 
-        //AndaGameExtension._WechatLogin();
+        AndaGameExtension._WechatLogin();
 
-        loginController.WecahtLoginCallback("001fIMSF103d980FUtRF1p9bTF1fIMSG");
+        //loginController.WecahtLoginCallback("001fIMSF103d980FUtRF1p9bTF1fIMSG");
 
 
 #elif UNITY_ANDROID

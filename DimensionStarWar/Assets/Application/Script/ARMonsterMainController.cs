@@ -20,6 +20,7 @@ public class ARMonsterMainController : BaseController {
     public AndaARWorldController andaARWorldController;
     public AndaARCameraManager andaARCameraManager;
     public DeviceCheckTool deviceCheckTool;
+    public ARWorld arword;
     public BaseController currentCtrl
     {
         get { return arMonsterMainData.currentController; }
@@ -30,6 +31,7 @@ public class ARMonsterMainController : BaseController {
         //return;
         AndaARManager.Instance.SetController(andaARWorldController,andaARCameraManager);
         ARMonsterSceneDataManager.Instance.aRMonsterMainController = this;
+        ARMonsterSceneDataManager.Instance.aRWorld = arword;
     }
 
     private void Start()
@@ -64,11 +66,13 @@ public class ARMonsterMainController : BaseController {
     {
         if (JIRVIS.Instance.jIRVISData.isSupportAR)
         {
-            JIRVIS.Instance.PlayTips("SupportAR");
+           // JIRVIS.Instance.PlayTips("SupportAR");
+            Debug.Log("SupportAR");
         }
         else
         {
-            JIRVIS.Instance.PlayTips("UnSupportAR");
+            Debug.Log("UnSupportAR");
+            // JIRVIS.Instance.PlayTips("UnSupportAR");
         }
     }
 
