@@ -123,6 +123,15 @@ public class  ARWorld : AndaObjectBasic
     {
         ARMonsterSceneDataManager.Instance.mainCamera.gameObject.SetActive(false);
     }
+    public void OpenGameCameraGlory(Vector2 limitx , Vector2 limity)
+    {
+        ARMonsterSceneDataManager.Instance.mainCamera.GetComponent<CameraGlory>().OpenGlory(limitx,limity);
+    }
+
+    public void CloseGameCameraGlory()
+    {
+        ARMonsterSceneDataManager.Instance.mainCamera.GetComponent<CameraGlory>().CloseGlory();
+    }
     public void OpenMapCamera()
     {
         ARMonsterSceneDataManager.Instance.MapCamera.gameObject.SetActive(true);

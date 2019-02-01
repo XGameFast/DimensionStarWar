@@ -89,8 +89,11 @@ public class PlayerCouponDetail : UIBasic2 {
         if (res)
         {
             Debug.Log("优惠卷提交成功");
+
+            Close();
         }
         else {
+
             Debug.Log("优惠卷提交失败");
         }
     }

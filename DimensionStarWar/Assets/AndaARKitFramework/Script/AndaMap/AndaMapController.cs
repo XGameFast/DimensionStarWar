@@ -13,7 +13,7 @@ using System.Linq;
 public class AndaMapController : MonoBehaviour {
 
     public AbstractMap abstractMap;
-
+    public LocationProviderFactory locationProviderFactory;
     public Transform Root;
     private System.Action CallBackFinishbuildMap;
     private System.Action FinishBuildMap;

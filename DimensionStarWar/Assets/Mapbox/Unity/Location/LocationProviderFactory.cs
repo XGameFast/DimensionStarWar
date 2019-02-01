@@ -121,21 +121,27 @@ namespace Mapbox.Unity.Location
 		/// </summary>
 		protected virtual void Awake()
 		{
-			if (Instance != null)
-			{
-				DestroyImmediate(gameObject);
-				return;
-			}
-			Instance = this;
-
-			if (_dontDestroyOnLoad)
-			{
-				DontDestroyOnLoad(gameObject);
-			}
-
-			InjectEditorLocationProvider();
-			InjectDeviceLocationProvider();
+			
 		}
+
+        public void InitLocationOnce()
+        {
+            if (Instance != null)
+            {
+                DestroyImmediate(gameObject);
+                return;
+            }
+            Instance = this;
+
+            if (_dontDestroyOnLoad)
+            {
+                DontDestroyOnLoad(gameObject);
+            }
+
+            InjectEditorLocationProvider();
+            InjectDeviceLocationProvider();
+        }
+
 
 		/// <summary>
 		/// Injects the editor location provider.

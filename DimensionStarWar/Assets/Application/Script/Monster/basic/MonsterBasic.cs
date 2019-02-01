@@ -1297,7 +1297,7 @@ public class MonsterBasic : AndaObjectBasic
     public override void MonsterFadeIn()
     {
         base.MonsterFadeIn();
-        ControllerToPlayMoodForSayHello00();
+        //ControllerToPlayMoodForSayHello00();
         StartCoroutine(ExcuteFadeIn());
     }
 

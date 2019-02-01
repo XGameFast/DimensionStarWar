@@ -20,6 +20,7 @@ public class DimensionWareHouseChildItem : AndaObjectBasic {
         itemIndex =-1;
         callbackAction =null;
         callbackClickItem = null;
+        SetRedPointState(false);
         base.OnDispawn();
     }
     public void ClicItem()
@@ -27,11 +28,13 @@ public class DimensionWareHouseChildItem : AndaObjectBasic {
         if(callbackAction!=null)
         {
             callbackAction(itemID);
+            return;
         }
 
         if (callbackClickItem != null)
         {
             callbackClickItem(itemID,itemIndex);
+            return;
         }
     }
 

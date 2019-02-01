@@ -11,9 +11,7 @@ public class DimensionWarehouseMenu : UIBasic2 {
    
     private Dictionary<int , int> monsterDatas;
     private Dictionary<int ,int> consumableDatas;
-
-
-    private List<PlayerCoupon> playerCouponDatas;
+    private Dictionary<int, PlayerCoupon> playerCouponDatas;
 
     //private Dictionary<>
     public Animator centerItemGroup;
@@ -22,7 +20,8 @@ public class DimensionWarehouseMenu : UIBasic2 {
     public Text centerItemCount;
     public Transform monsterPoint;
     public Transform centerItemPoint;
-
+    public Image monsterSignSp;
+    public GameObject noneItemTipsObj;
     private int lastSelectItemIDType  = -1;
     private MonsterBasic monsterBasic;
     private Item_PlayerCoupon playerCouponItem;
@@ -35,6 +34,10 @@ public class DimensionWarehouseMenu : UIBasic2 {
     private PlayerCouponDetail playerCouponDetail;
     private PlayerMonsterAttribute currentSelectMonsterAttribute;
     private PlayerCoupon currentSelectPlayerCounpon;
+
+
+    private int lastSelectItemIndex;//上一次选择的单位的index；
+
     public override void InitMenu(BaseController _baseController)
     {
         base.InitMenu(_baseController);
@@ -44,8 +47,9 @@ public class DimensionWarehouseMenu : UIBasic2 {
     {
 
         ClearMonsterData();
+        ClearPlayerCoupons();
         ClearItems();
-
+        RemoveCurrentItem();
         base.OnDispawn();
     }
 
@@ -55,6 +59,14 @@ public class DimensionWarehouseMenu : UIBasic2 {
         if(monsterDatas!=null)
         {
             monsterDatas.Clear();
+        }
+    }
+
+    private void ClearPlayerCoupons()
+    {
+        if(playerCouponDatas!=null)
+        {
+            playerCouponDatas.Clear();
         }
     }
 
@@ -94,7 +106,7 @@ public class DimensionWarehouseMenu : UIBasic2 {
                 }
                 else //新添加
                 {
-                    monsterDatas.Add(mineMonster[i].monsterID, 1);
+                    monsterDatas.Add(mineMonster[i].monsterID,1);
                 }
             }
             //然后编辑整个配置表，把没有的添加进来
@@ -104,7 +116,7 @@ public class DimensionWarehouseMenu : UIBasic2 {
             {
                 if(!monsterDatas.ContainsKey(mbcList[i].monsterID))
                 {
-                    monsterDatas.Add(mbcList[i].monsterID, 1);
+                    monsterDatas.Add(mbcList[i].monsterID, 0);
                 }
             }
              
@@ -152,9 +164,13 @@ public class DimensionWarehouseMenu : UIBasic2 {
                 _item.SetImageBlack();
                 _item.SetRedPointState(false);
             }
-
             dimensionWareHouseChildItems.Add(_item);
         }
+
+
+        DefaultSelect();
+
+
     }
     #endregion
 
@@ -198,13 +214,21 @@ public class DimensionWarehouseMenu : UIBasic2 {
             int count = playerCoupons.Count;
             for (int i = 0; i < count; i++)
             {
-                if (playerCouponDatas == null) playerCouponDatas = new List<PlayerCoupon>();
-                playerCouponDatas.Add(playerCoupons[i]);
-               /* if (playerCoupons[i].status.Equals(0))
+                if (playerCoupons[i].status.Equals(0))
                 {
-                    if(playerCouponDatas == null) playerCouponDatas = new List<PlayerCoupon>();
-                    playerCouponDatas.Add(playerCoupons[i]);
-                }*/
+                    if(playerCouponDatas == null)
+                    {
+                        playerCouponDatas = new Dictionary<int, PlayerCoupon>();
+                        playerCouponDatas.Add(playerCoupons[i].playerCouponIndex,playerCoupons[i]);
+                    }else
+                    {
+                        if(!playerCouponDatas.ContainsKey(playerCoupons[i].playerCouponIndex))
+                        {
+                            playerCouponDatas.Add(playerCoupons[i].playerCouponIndex,playerCoupons[i]);
+                        }
+                    }
+                  
+                }
             }
         }
 
@@ -212,16 +236,19 @@ public class DimensionWarehouseMenu : UIBasic2 {
         if(playerCouponDatas!=null && playerCouponDatas.Count!=0)
         {
             int count = playerCouponDatas.Count;
-            for (int i = 0; i < count; i++)
+
+            foreach(var go in playerCouponDatas.Keys)
             {
                 DimensionWareHouseChildItem _item = AndaDataManager.Instance.InstantiateMenu<DimensionWareHouseChildItem>("DimensionWarehouseChild");
                 _item.SetCallBack2(ClickItem);
                 _item.transform.SetInto(grid);
-                _item.SetNameHeadImageCount(playerCouponDatas[i].coupon.title, playerCouponDatas[i].count, playerCouponDatas[i].coupon.image, playerCouponDatas[i].businessIndex, playerCouponDatas[i].playerCouponIndex, playerCouponDatas[i].coupon.userIndex == AndaDataManager.Instance.userData.userIndex);
+                PlayerCoupon pC = playerCouponDatas[go];
+                _item.SetNameHeadImageCount(pC.coupon.title, pC.count, pC.coupon.image, pC.businessIndex, pC.playerCouponIndex, pC.coupon.userIndex == AndaDataManager.Instance.userData.userIndex);
                 dimensionWareHouseChildItems.Add(_item);
             }
         }
 
+        DefaultSelect();
     }
 
     #endregion
@@ -342,13 +369,15 @@ public class DimensionWarehouseMenu : UIBasic2 {
         {
             case -1:
                 break;
-            case -2:
+            case -2: // 玩家的票据
                 centerItemGroup.gameObject.SetActive(true);
-                currentSelectPlayerCounpon = playerCouponDatas.FirstOrDefault(s=>s.playerCouponIndex == _itemIndex);
+                currentSelectPlayerCounpon = playerCouponDatas[_itemIndex];
                 playerCouponItem = AndaDataManager.Instance.InstantiateMenu<Item_PlayerCoupon>(ONAME.Item_PlayerCoupon);
                 playerCouponItem.SetInto(centerItemPoint.transform);
                 playerCouponItem.SetInfo(currentSelectPlayerCounpon);
                 usePlayerCouponTickBtn.gameObject.SetTargetActiveOnce(true);
+                DimensionWareHouseChildItem dw  = dimensionWareHouseChildItems.FirstOrDefault(s=>s.itemIndex == _itemIndex);
+                lastSelectItemIndex = dimensionWareHouseChildItems.IndexOf(dw);
                 break;
         }
     }
@@ -368,8 +397,10 @@ public class DimensionWarehouseMenu : UIBasic2 {
                
                 break;
             case 1000:
+                centerItemGroup.gameObject.SetActive(true);
                 PlayerMonsterAttribute pma = AndaDataManager.Instance.userData.GetFreeMonster().FirstOrDefault(s=>s.monsterID == itemID);
-                BuildMonsterItem(pma);
+                if(pma == null) pma = AndaDataManager.Instance.userData.userMonsterList.FirstOrDefault(s=>s.monsterID == itemID);
+                BuildMonsterItem(pma , itemID);
                 break;
             case 40000:
                 centerItemGroup.gameObject.SetActive(true);
@@ -401,17 +432,39 @@ public class DimensionWarehouseMenu : UIBasic2 {
         }*/
     }
 
-    private void BuildMonsterItem(PlayerMonsterAttribute playerMonsterAttribute)
+    private void BuildMonsterItem(PlayerMonsterAttribute playerMonsterAttribute , int itemID)
     {
-        currentSelectMonsterAttribute = playerMonsterAttribute;
+        string sid = itemID + "_01";
+        DimensionWareHouseChildItem _item = dimensionWareHouseChildItems.FirstOrDefault(s=>s.itemID == itemID);
+        centerItemName.text = _item.itemNameText.text;
+        lastSelectItemIndex =  dimensionWareHouseChildItems.IndexOf(_item);
+        monsterSignSp.gameObject.SetTargetActiveOnce(true);
+        monsterSignSp.sprite = AndaDataManager.Instance.GetStarSprite(sid);
+        monsterSignSp.SetNativeSize();
+        CloseFunctionBtn();
+        if (playerMonsterAttribute == null)
+        {
+            monsterSignSp.color = Color.gray;
+            noneItemTipsObj.gameObject.SetTargetActiveOnce(true);
+            noneItemTipsObj.GetComponentInChildren<Text>().text = "您还为拥有该星宿";
+        }
+        else
+        {
+            noneItemTipsObj.gameObject.SetTargetActiveOnce(false);
 
-        monsterBasic = AndaDataManager.Instance.InstantiateMonster<MonsterBasic>(currentSelectMonsterAttribute.monsterID.ToString());
+            monsterSignSp.color = Color.white;
+        
+            currentSelectMonsterAttribute = playerMonsterAttribute;
 
-        monsterBasic.SetInto(monsterPoint);
+            monsterBasic = AndaDataManager.Instance.InstantiateMonster<MonsterBasic>(currentSelectMonsterAttribute.monsterID.ToString());
 
-        monsterBasic.gameObject.SetLayer(ONAME.LayerUI);
-      
-        setMonsterToStrongholdBtn.gameObject.SetTargetActiveOnce(currentSelectMonsterAttribute.belongStrongholdIndex == 0 || currentSelectMonsterAttribute.belongStrongholdIndex == -1);
+            monsterBasic.SetInto(monsterPoint);
+
+            monsterBasic.gameObject.SetLayer(ONAME.LayerUI);
+
+            setMonsterToStrongholdBtn.gameObject.SetTargetActiveOnce(currentSelectMonsterAttribute.belongStrongholdIndex == 0 || currentSelectMonsterAttribute.belongStrongholdIndex == -1);
+        }
+       
     }
 
 
@@ -421,6 +474,7 @@ public class DimensionWarehouseMenu : UIBasic2 {
         {
             case 1000:
                 if (monsterBasic != null) AndaDataManager.Instance.RecieveItem(monsterBasic);
+                monsterSignSp.gameObject.SetTargetActiveOnce(false);
                 break;
             case 40000:
                 break;
@@ -448,6 +502,7 @@ public class DimensionWarehouseMenu : UIBasic2 {
         selectDimensionRoomSetMonster.SetFullScreen();
         selectDimensionRoomSetMonster.SetInfo(currentSelectMonsterAttribute);
         selectDimensionRoomSetMonster.clickCloseBar = ClickCloseSelectMonsterSetStrongholdBar;
+        selectDimensionRoomSetMonster.callbackInstantiateMonsterEvent = CallBackInstantiateMonsterEvent;
     }
 
     public void ClickCloseSelectMonsterSetStrongholdBar()
@@ -472,6 +527,36 @@ public class DimensionWarehouseMenu : UIBasic2 {
         {
             AndaDataManager.Instance.RecieveItem(playerCouponDetail);
         }
+    }
+
+
+    private void CallBackInstantiateMonsterEvent()
+    {
+        ClearItems();
+        RemoveCurrentItem();
+        BuildMonsterItem();
+    }
+
+    private void CallBackUsedPlayercounpons()
+    {
+        ClearItems();
+        RemoveCurrentItem();
+        BuildTickt();
+    }
+
+    private void DefaultSelect()
+    {
+        if (lastSelectItemIndex > dimensionWareHouseChildItems.Count - 1)
+        {
+            //默认选择上一次选择的单位;
+            dimensionWareHouseChildItems[0].ClicItem();
+        }
+        else
+        {
+            //默认选择上一次选择的单位;
+            dimensionWareHouseChildItems[lastSelectItemIndex].ClicItem();
+        }
+
     }
 }
 

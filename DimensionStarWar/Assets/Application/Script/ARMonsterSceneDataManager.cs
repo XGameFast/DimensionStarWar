@@ -229,6 +229,8 @@ public class ARMonsterSceneDataManager
         mainCamera.transform.rotation = mainCameraStartRotation;
     }
 
+   
+
     public void SetGameLightInitPose()
     {
        // GameLight.transform.position =  gameLightStartPoint;

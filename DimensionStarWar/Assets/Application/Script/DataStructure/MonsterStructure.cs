@@ -94,6 +94,7 @@ public class MonsterGrowUpAttribute
     public int monsterCurrentPower { get; set; }
     public int belongStrongholdIndex { get; set; }
     public int currentStateType { get; set; }
+    public int skinIndex { get; set; }//皮肤游标 
     public List<SkillGrowupAttribute> monsterSkillIDList { get; set; }
 }
 

@@ -37,7 +37,7 @@ public class LoginMenu2 : UIBasic2 {
 
         }else
         {
-            string lastLogin = PlayerPrefs.GetString("LastLogin");
+            string lastLogin = PlayerPrefs.GetString(ONAME.LastLogin);
             if (lastLogin == "")
             {
 
@@ -49,14 +49,13 @@ public class LoginMenu2 : UIBasic2 {
                     case "Wechat":
                         WXLogin();
                         break;
-
                     case "QQ":
                         QQLogin();
                         break;
                     case "Phone":
-                        string phoneAccount = PlayerPrefs.GetString("DefualtPhoneAccount");
-                        string phoneSecret = PlayerPrefs.GetString("DefualtPhoneSerect");
-                        AndaDataManager.Instance.RealLogin(loginController.LoginFinish, phoneAccount, phoneSecret);
+                      //  string phoneAccount = PlayerPrefs.GetString("DefualtPhoneAccount");
+                     //   string phoneSecret = PlayerPrefs.GetString("DefualtPhoneSerect");
+                     //   AndaDataManager.Instance.RealLogin(loginController.LoginFinish, phoneAccount, phoneSecret);
                         break;
                 }
             }
@@ -284,6 +283,10 @@ public class LoginMenu2 : UIBasic2 {
 
        // Debug.Log(1);
 #if UNITY_IPHONE
+
+        //AndaGameExtension._WechatLogin();
+
+        loginController.WecahtLoginCallback("001fIMSF103d980FUtRF1p9bTF1fIMSG");
 
 
 #elif UNITY_ANDROID

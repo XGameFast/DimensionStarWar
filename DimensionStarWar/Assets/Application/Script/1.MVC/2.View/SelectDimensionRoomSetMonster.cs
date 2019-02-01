@@ -17,7 +17,7 @@ public class SelectDimensionRoomSetMonster : UIBasic2 {
     private PlayerStrongholdAttribute selectStrongholdAttribute;
 
     public System.Action clickCloseBar;
-
+    public System.Action callbackInstantiateMonsterEvent;//回调实例化结果
 
 
     public override void OnDispawn()
@@ -134,6 +134,10 @@ public class SelectDimensionRoomSetMonster : UIBasic2 {
     {
         if(isSuccess)
         {
+            if(callbackInstantiateMonsterEvent!=null)
+            {
+                callbackInstantiateMonsterEvent();
+            }
             AndaDataManager.Instance.RecieveItem(this);
         }else
         {
