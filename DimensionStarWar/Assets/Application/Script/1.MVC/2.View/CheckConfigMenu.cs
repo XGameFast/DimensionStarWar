@@ -8,7 +8,9 @@ public class CheckConfigMenu : UIBasic2 {
     public GameObject monster;
     public float progress = 0f;
     public Text progressText;
-    public Slider progressSlider;
+    public Image progressSlider;
+
+    public GameObject restartVideoBtn;
 
     public override void InitMenu(BaseController _baseController)
     {
@@ -53,7 +55,7 @@ public class CheckConfigMenu : UIBasic2 {
                 yield break;
             }
             float t = Mathf.Clamp01(progress / 100f);
-            progressSlider.value = t;
+            progressSlider.material.SetFloat("_load", t);
             yield return null;
         }
 
@@ -72,5 +74,18 @@ public class CheckConfigMenu : UIBasic2 {
         //只要视频停止就会立刻跳转界面
         ARMonsterSceneDataManager.Instance.aRWorld.OpenStartVideo(false);
     }
+
+    public void SetReplayStartvideoBtn(bool stute)
+    {
+        restartVideoBtn.gameObject.SetTargetActiveOnce(stute);
+    }
+
+    public void ClickReplayStartVideo()
+    {
+        ARMonsterSceneDataManager.Instance.aRWorld.OpenLoginMenuBackground(false);
+        ARMonsterSceneDataManager.Instance.aRWorld.OpenStartVideo(true);
+        SetReplayStartvideoBtn(false);
+    }
+
 
 }

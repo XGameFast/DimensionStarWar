@@ -45,7 +45,19 @@ public class CheckConfigController : BaseController {
 
         ARMonsterSceneDataManager.Instance.mainCamera.GetComponent<CameraGlory>().OpenGlory(Vector2.zero, new Vector2(-0.3f,0.3f));
 
-        ARMonsterSceneDataManager.Instance.aRWorld.OpenStartVideo(true);
+
+        if(PlayerPrefs.GetString(ONAME.IsFirstWatchStartVideo) == "")
+        {
+            ARMonsterSceneDataManager.Instance.aRWorld.OpenStartVideo(true);
+            checkConfigData.getCheckConfigMenu.SetReplayStartvideoBtn(false);
+        }
+        else
+        {
+            checkConfigData.getCheckConfigMenu.SetReplayStartvideoBtn(true);
+            ARMonsterSceneDataManager.Instance.aRWorld.OpenLoginMenuBackground(true);
+        }
+
+       
 
 
 
@@ -78,6 +90,8 @@ public class CheckConfigController : BaseController {
 
     public override void EndController()
     {
+        PlayerPrefs.SetString(ONAME.IsFirstWatchStartVideo , "1");
+        ARMonsterSceneDataManager.Instance.aRWorld.OpenStartVideo(false);
         base.EndController();
 
         //ARMonsterSceneDataManager.Instance.SetMainCameraInitPose();

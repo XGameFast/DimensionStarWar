@@ -84,7 +84,7 @@ public class CameraGlory : MonoBehaviour {
            // lastQuaternion.x += startQuaternion.x;
             lastQuaternion.y -= startQuaternion.x;
 
-            Debug.Log("LastQuatere" + lastQuaternion.y);
+            //Debug.Log("LastQuatere" + lastQuaternion.y);
 
             float e = Mathf.Clamp(lastQuaternion.y,limity[0],limity[1]);
 

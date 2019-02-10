@@ -5,7 +5,7 @@ using UnityEngine;
 public class M_1007 : MonsterBasic
 {
     public List<Renderer> renderers;
-
+    public List<GameObject> fireEffects;
     public List<GameObject> fankui00;
     public GameObject fankui01;
     public List<GameObject> happy;
@@ -16,14 +16,39 @@ public class M_1007 : MonsterBasic
         base.SetAlpha(v);
        
     }
-    public override void SetRongjie(float v)
+
+    public override void MonsterFadeIn()
     {
-        base.SetRongjie(v);
+        int count = fireEffects.Count;
+        for (int i = 0; i < count; i++)
+        {
+            fireEffects[i].gameObject.SetTargetActiveOnce(false);
+        }
+        base.MonsterFadeIn();
+
+    }
+
+    public override void SetRongjie2(float v)
+    {
+        base.SetRongjie2(v);
         for (int i = 0; i < renderers.Count; i++)
         {
             renderers[i].material.SetFloat("_Alpha", v);
         }
+        if(v >=1)
+        {
+            int count = fireEffects.Count;
+            for(int i = 0; i < count; i++)
+            {
+                fireEffects[i].gameObject.SetTargetActiveOnce(true);
+            }
+        }
+
     }
+
+   
+
+
     public void Dazhaohu00()
     {
         Initialization();

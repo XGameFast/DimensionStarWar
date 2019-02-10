@@ -10,28 +10,29 @@ public class MonsterFadeInEffect : MonoBehaviour {
 
     public void OnDisable()
     {
-        p1.gameObject.SetTargetActiveOnce(false);
-        p2.gameObject.SetTargetActiveOnce(false);
+        if(p1!=null) p1.gameObject.SetTargetActiveOnce(false);
+
+        if(p2!=null)p2.gameObject.SetTargetActiveOnce(false);
     }
 
     public void OpenP1()
     {
-        p1.gameObject.SetTargetActiveOnce(true);
+        if (p1 != null) p1.gameObject.SetTargetActiveOnce(true);
     }
     public void OpenP2()
     {
-        p2.gameObject.SetTargetActiveOnce(true);
+        if (p2 != null) p2.gameObject.SetTargetActiveOnce(true);
     }
 
     public void SetValueP1(float _value)
     {
 
         float per = _value;
-        p1.material.SetFloat("_liudong" , _value);
+        if (p1 != null) p1.material.SetFloat("_liudong" , _value);
     }
 
     public void SetValueP2(float _value)
     {
-        p2.material.SetFloat("_rongjie", _value);
+        if (p2 != null )p2.material.SetFloat("_rongjie", _value);
     }
 }
