@@ -19,6 +19,12 @@ public class LoginMenu2 : UIBasic2 {
     private float sendTime = 0f;
     private int curType = 0;
 
+    public GameObject phoneLoginBtn;
+    public GameObject wechatLoginBtn;
+    public GameObject qqLoginBtn;
+    public GameObject replayStartVideoBtn;
+    public GameObject jumpVideoBtn;
+
     public override void OnDispawn()
     {
         base.OnDispawn();
@@ -53,9 +59,9 @@ public class LoginMenu2 : UIBasic2 {
                         QQLogin();
                         break;
                     case "Phone":
-                      //  string phoneAccount = PlayerPrefs.GetString("DefualtPhoneAccount");
-                     //   string phoneSecret = PlayerPrefs.GetString("DefualtPhoneSerect");
-                     //   AndaDataManager.Instance.RealLogin(loginController.LoginFinish, phoneAccount, phoneSecret);
+                        string phoneAccount = "15728004898";//PlayerPrefs.GetString("DefualtPhoneAccount");
+                        string phoneSecret = "000000";//PlayerPrefs.GetString("DefualtPhoneSerect");
+                        AndaDataManager.Instance.RealLogin(loginController.PhoneLoginResult, phoneAccount, phoneSecret);
                         break;
                 }
             }
@@ -123,7 +129,7 @@ public class LoginMenu2 : UIBasic2 {
         inputAccount.contentType =  InputField.ContentType.IntegerNumber;
         inputAccount.characterLimit = 11;
         inputPassword.contentType = InputField.ContentType.IntegerNumber;
-        inputAccount.characterLimit = 6;
+        inputPassword.characterLimit = 6;
 
         if (!GetEICodeBarAnimator.gameObject.activeSelf)
         {
@@ -284,9 +290,9 @@ public class LoginMenu2 : UIBasic2 {
        // Debug.Log(1);
 #if UNITY_IPHONE
 
-        //AndaGameExtension._WechatLogin();
+        AndaGameExtension._WechatLogin();
 
-        loginController.WecahtLoginCallback("001fIMSF103d980FUtRF1p9bTF1fIMSG");
+        //loginController.WecahtLoginCallback("001fIMSF103d980FUtRF1p9bTF1fIMSG");
 
 
 #elif UNITY_ANDROID
@@ -325,6 +331,47 @@ public class LoginMenu2 : UIBasic2 {
             }
         }
 
+    }
+
+    public void ClickRePlayStartVideo()
+    {
+        GetComponent<Animator>().Play("FadeOut");
+        ARMonsterSceneDataManager.Instance.mainCamera.GetComponent<CameraGlory>().SetLimit(Vector2.zero,new Vector2(-0.3f,0.3f));
+        ARMonsterSceneDataManager.Instance.aRWorld.OpenStartVideo(true);
+        ARMonsterSceneDataManager.Instance.aRWorld.OpenLoginMenuBackground(false);
+        //phoneLoginBtn.gameObject.SetTargetActiveOnce(false);
+       //wechatLoginBtn.gameObject.SetTargetActiveOnce(false);
+       //qqLoginBtn.gameObject.SetTargetActiveOnce(false);
+        replayStartVideoBtn.gameObject.SetTargetActiveOnce(false);
+        jumpVideoBtn.gameObject.SetTargetActiveOnce(true);
+
+        StartCoroutine(WaitForStartVideo());
+    }
+
+    public void ResetLoginMenu()
+    {
+        GetComponent<Animator>().Play("FadeIn");
+        ARMonsterSceneDataManager.Instance.mainCamera.GetComponent<CameraGlory>().SetLimit(Vector2.zero, new Vector2(-0.5f, 0.5f));
+        ARMonsterSceneDataManager.Instance.aRWorld.OpenLoginMenuBackground(true);
+        replayStartVideoBtn.gameObject.SetTargetActiveOnce(true);
+        jumpVideoBtn.gameObject.SetTargetActiveOnce(false);
+        Debug.Log(">?????");
+    }
+
+    public void ClickJump()
+    {
+       ARMonsterSceneDataManager.Instance.aRWorld.OpenStartVideo(false);
+    }
+
+    private IEnumerator WaitForStartVideo()
+    {
+        yield return new WaitForSeconds(1f);
+        while(ARMonsterSceneDataManager.Instance.aRWorld.startVideo.isPlaying)
+        {
+            yield return null;
+        }
+
+        ResetLoginMenu();
     }
 
 }

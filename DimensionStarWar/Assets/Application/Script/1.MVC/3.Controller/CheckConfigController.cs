@@ -43,7 +43,23 @@ public class CheckConfigController : BaseController {
 
         ARMonsterSceneDataManager.Instance.mainCamera.gameObject.SetActive(true);//.set();
 
-        ARMonsterSceneDataManager.Instance.mainCamera.GetComponent<CameraGlory>().OpenGlory(Vector2.zero, new Vector2(-45,45f));
+        ARMonsterSceneDataManager.Instance.mainCamera.GetComponent<CameraGlory>().OpenGlory(Vector2.zero, new Vector2(-0.3f,0.3f));
+
+
+        if(PlayerPrefs.GetString(ONAME.IsFirstWatchStartVideo) == "")
+        {
+            ARMonsterSceneDataManager.Instance.aRWorld.OpenStartVideo(true);
+            checkConfigData.getCheckConfigMenu.SetReplayStartvideoBtn(false);
+        }
+        else
+        {
+            checkConfigData.getCheckConfigMenu.SetReplayStartvideoBtn(true);
+            ARMonsterSceneDataManager.Instance.aRWorld.OpenLoginMenuBackground(true);
+        }
+
+       
+
+
 
         // Invoke("DiplayLogo", 1f);
         //ARMonsterSceneDataManager.Instance.aRWorld.OpenAstrologyBackground();
@@ -74,14 +90,16 @@ public class CheckConfigController : BaseController {
 
     public override void EndController()
     {
+        PlayerPrefs.SetString(ONAME.IsFirstWatchStartVideo , "1");
+        ARMonsterSceneDataManager.Instance.aRWorld.OpenStartVideo(false);
         base.EndController();
 
-        ARMonsterSceneDataManager.Instance.SetMainCameraInitPose();
+        //ARMonsterSceneDataManager.Instance.SetMainCameraInitPose();
 
-        ARMonsterSceneDataManager.Instance.mainCamera.gameObject.SetActive(false);//.set();
+       // ARMonsterSceneDataManager.Instance.mainCamera.gameObject.SetActive(false);//.set();
 
-        ARMonsterSceneDataManager.Instance.mainCamera.GetComponent<CameraGlory>().CloseGlory();//(Vector2.zero, new Vector2(-45, 45f));
-        ARMonsterSceneDataManager.Instance.aRWorld.OpenLoginMenuBackground(false);
+       // ARMonsterSceneDataManager.Instance.mainCamera.GetComponent<CameraGlory>().CloseGlory();//(Vector2.zero, new Vector2(-45, 45f));
+       // ARMonsterSceneDataManager.Instance.aRWorld.OpenLoginMenuBackground(false);
         //ARMonsterSceneDataManager.Instance.aRWorld.CloseAtrologyBackground();
         checkConfigData.InitVlaue();
     }
@@ -121,10 +139,29 @@ public class CheckConfigController : BaseController {
 
     private void End()
     {
-        JIRVIS.Instance.PlayTips("构建完成",true);
+       // JIRVIS.Instance.PlayTips("构建完成",true);
         checkConfigData.getCheckConfigMenu.progress = 100;
-        Invoke("TrueEnd", 1f);
+        if(ARMonsterSceneDataManager.Instance.aRWorld.startVideo.isPlaying)
+        {
+            StartCoroutine(WaitForVideo());
+        }else
+        {
+            Invoke("TrueEnd", 1f);
+        }
+       
     }
+
+    private IEnumerator WaitForVideo()
+    {
+        while(ARMonsterSceneDataManager.Instance.aRWorld.startVideo.isPlaying)
+        {
+            yield return null;
+        }
+
+        TrueEnd();//立刻结束
+    }
+
+
     private void TrueEnd()
     {
 #if UNITY_EDITOR

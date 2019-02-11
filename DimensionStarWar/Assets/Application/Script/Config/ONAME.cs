@@ -11,7 +11,7 @@ public static class ONAME
     public static string uuid = "uuid";
     public static string deviceToken = "deviceToken";
     public static string LastLogin = "LastLogin";//上次是否已经登录过
-
+    public static string IsFirstWatchStartVideo = "IsFirstWatchStartVideo";
 
 
     public static string ARType = "AR";
