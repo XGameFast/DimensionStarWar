@@ -49,7 +49,8 @@ public class PlayerCouponDetail : UIBasic2 {
         qr.playerIndex = selectPlayerCoupon.playerIndex;
         var json = LitJson.JsonMapper.ToJson(qr);
         Debug.Log(ToolByGjp.AESEncryptor.Encrypt(json, "playerCoupon"));
-        QRCode.texture = QRcodeDrawTool.ShowCode("http://47.99.45.109:8081/api/PlayerCoupon/QRCheackByGet?QR=" + ToolByGjp.AESEncryptor.Encrypt(json, "playerCoupon"));
+        QRCode.texture = QRcodeDrawTool.ShowCode(ToolByGjp.AESEncryptor.Encrypt(json, "playerCoupon"));
+        //QRCode.texture = QRcodeDrawTool.ShowCode("http://47.99.45.109:8081/api/PlayerCoupon/QRCheackByGet?QR=" + ToolByGjp.AESEncryptor.Encrypt(json, "playerCoupon"));
         tips.text = selectPlayerCoupon.coupon.tips;
         AndaDataManager.Instance.GetStrongholdImg(_playerCoupon.businessIndex,_playerCoupon.coupon.image , SetImage);
         Debug.Log(selectPlayerCoupon.status);

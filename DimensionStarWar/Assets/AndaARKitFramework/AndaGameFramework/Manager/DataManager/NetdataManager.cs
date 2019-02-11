@@ -225,7 +225,7 @@ public class NetdataManager : ManagerBase {
         }
         else
         {
-           
+            Debug.Log(postData.text);
             var data = JsonMapper.ToObject<Result>(postData.text);
             callBack(data.code == "200");
         }
