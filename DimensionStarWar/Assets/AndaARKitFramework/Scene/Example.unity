@@ -6248,13 +6248,14 @@ GameObject:
   - component: {fileID: 1414446988}
   - component: {fileID: 1414446990}
   - component: {fileID: 1414446989}
+  - component: {fileID: 1414446991}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1414446988
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6306,6 +6307,17 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1414446987}
+--- !u!225 &1414446991
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1414446987}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1417650897
 GameObject:
   m_ObjectHideFlags: 0
@@ -8092,7 +8104,7 @@ MonoBehaviour:
   translatePoint: {fileID: 0}
   text2d: {fileID: 2800000, guid: 85a6d2fcba932404cb378b5d20f49455, type: 3}
   skyBoxCamera: {fileID: 0}
-  canvasGroup: {fileID: 0}
+  canvasGroup: {fileID: 1414446991}
   blurItem: {fileID: 0}
   hologramScreenEffect: {fileID: 0}
   arKitShadow: {fileID: 1828701630}

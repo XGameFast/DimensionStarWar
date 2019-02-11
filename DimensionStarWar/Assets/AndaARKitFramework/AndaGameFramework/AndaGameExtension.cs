@@ -7,6 +7,8 @@ using System;
 using UnityEngine.UI;
 public static class AndaGameExtension {
 
+    [DllImport("__Internal")]
+    public static extern void _JumpToThirdBussiness(string url);
 
     [DllImport("__Internal")]
     public static extern void _WechatLogin();
