@@ -82,8 +82,13 @@ public class PlayerCouponDetail : UIBasic2 {
  
     public void Confirm()
     {
-        AndaDataManager.Instance.PlayerCouponUp(selectPlayerCoupon.playerCouponIndex, 1 , ConfirmBack);
+        //AndaDataManager.Instance.PlayerCouponUp(selectPlayerCoupon.playerCouponIndex, 1 , ConfirmBack);
+        AndaGameExtension._JumpToThirdBussiness("https://s.click.taobao.com/t?e=m%3D2%26s%3DwGUvWes%2F3Z0cQipKwQzePCperVdZeJviK7Vc7tFgwiFRAdhuF14FMTFMe7Yst8H9xq3IhSJN6GSDTf7kAhGDYXo8ETAclGeEXbCJk%2FqJ4eomOUVlbCAU8ABXgSuv7Sv7KtseCpInTy%2FkXkdea8kgYymBZ5ZWikN7RIhXpwzXCM5Pf2BYFhAHdGvBzQPtrpdWfjxl6AIniNpJGhlbad9UWw%3D%3D");
     }
+
+
+
+
     public void ConfirmBack(bool res)
     {
         if (res)
