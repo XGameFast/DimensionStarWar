@@ -385,6 +385,7 @@ public static class ONAME
     public static string StrongholdConfigFileName = "StrongholdConfig.txt";
     public static string StarConfigFileName = "StarConfig.txt";
     public static string SkillArchievementValueFileName = "SkillArchievementValue.txt";
+   //public static string AssetIDTypeFileName = "GameAssetIDTypeConfig.txt";
 
     //public static string Event.txt
     public static string SearchConfigFileName = "SearchConfig.txt";

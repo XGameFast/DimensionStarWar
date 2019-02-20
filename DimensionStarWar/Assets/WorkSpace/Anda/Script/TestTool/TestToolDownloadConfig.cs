@@ -57,6 +57,9 @@ public class TestToolDownloadConfig : MonoBehaviour {
     [HideInInspector][SerializeField] bool _SkillArchievementValueFileNameDownload;
     public bool SkillArchievementValueFileNameDownload {get { return _SkillArchievementValueFileNameDownload ; } set {_SkillArchievementValueFileNameDownload = value; } }
 
+    [HideInInspector] [SerializeField] bool _AssetIDTypeConfig;
+    public bool AssetIDTypeConfig { get { return _AssetIDTypeConfig; } set { _AssetIDTypeConfig = value; } }
+
 
     string networkAdress3 = "http://47.99.45.109:8081/ConfigTxt/";
 
@@ -179,7 +182,12 @@ public class TestToolDownloadConfig : MonoBehaviour {
         {
             yield return StartCoroutine(StartUpdateFile(ONAME.SkillArchievementValueFileName));
         }
-       
+        if(AssetIDTypeConfig)
+        {
+            yield return StartCoroutine(StartUpdateFile(ONAME.GameAssetIDTypeConfig));
+
+        }
+
 
         Debug.Log("需要的配置文件已经下载完毕");
 
