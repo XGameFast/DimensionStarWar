@@ -1294,6 +1294,20 @@ public class MonsterBasic : AndaObjectBasic
 
 
     #region fadeIN
+
+
+    public virtual void SetState00()
+    {
+
+    }
+
+    public virtual void SetState01()
+    {
+
+    }
+
+
+
     public override void MonsterFadeIn()
     {
         base.MonsterFadeIn();

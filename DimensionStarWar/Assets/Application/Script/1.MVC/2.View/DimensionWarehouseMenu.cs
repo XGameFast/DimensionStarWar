@@ -446,7 +446,7 @@ public class DimensionWarehouseMenu : UIBasic2 {
         {
             monsterSignSp.color = Color.gray;
             noneItemTipsObj.gameObject.SetTargetActiveOnce(true);
-            noneItemTipsObj.GetComponentInChildren<Text>().text = "您还为拥有该星宿";
+            noneItemTipsObj.GetComponentInChildren<Text>().text = "您还未拥有该星宿";
         }
         else
         {
@@ -461,6 +461,8 @@ public class DimensionWarehouseMenu : UIBasic2 {
             monsterBasic.SetInto(monsterPoint);
 
             monsterBasic.gameObject.SetLayer(ONAME.LayerUI);
+
+            monsterBasic.SetState00();
 
             setMonsterToStrongholdBtn.gameObject.SetTargetActiveOnce(currentSelectMonsterAttribute.belongStrongholdIndex == 0 || currentSelectMonsterAttribute.belongStrongholdIndex == -1);
         }
@@ -535,6 +537,7 @@ public class DimensionWarehouseMenu : UIBasic2 {
         ClearItems();
         RemoveCurrentItem();
         BuildMonsterItem();
+        monsterBasic.SetState01();
     }
 
     private void CallBackUsedPlayercounpons()
