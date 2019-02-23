@@ -117,6 +117,7 @@ public class BuildDimensionRoomData :ControllerData {
     private MonsterSkillBoard monsterSkillBoard;
     private PlayerMonsterAttribute tmpSetMonsterAttribute;//将空闲的宠物放入占星庭，用于零时保存数据
 
+    public MonsterShowCenter monsterShowCenter;
 
     public void RecieveItemForVV()
     {
@@ -150,6 +151,11 @@ public class BuildDimensionRoomData :ControllerData {
         {
             AndaDataManager.Instance.RecieveItem(dimensionSpace);
             dimensionSpace = null;
+        }
+
+        if(monsterShowCenter!=null)
+        {
+            AndaDataManager.Instance.RecieveItem(monsterShowCenter);
         }
     }
 
@@ -345,6 +351,16 @@ public class BuildDimensionRoomData :ControllerData {
         {
             dimensionSpace = AndaDataManager.Instance.InstantiateOtherObj<DimensionSpace>(ONAME.DimensionSpace);
             dimensionSpace.SetInto(ARMonsterSceneDataManager.Instance.gameWorld.transform);
+
+        }
+
+        if(monsterShowCenter == null)
+        {
+            monsterShowCenter = AndaDataManager.Instance.InstantiateOtherObj<MonsterShowCenter>(ONAME.MonsterShowCenter);
+            monsterShowCenter.SetInto(null);
+            monsterShowCenter.SetARGround(false);
+            monsterShowCenter.PlayCameraMove(2);//2号几位
+            monsterShowCenter.CameraDepth((int)ARMonsterSceneDataManager.Instance.UICamera.depth -1);
         }
     }
 
@@ -384,33 +400,31 @@ public class BuildDimensionRoomData :ControllerData {
 
     public void InvockBuildMonsterItem()
     {
-        if(curMonster!=null)RecieveMonsterItem();
+
         if(getCurMonsterAttribute == null)return;
 
-        curMonster = AndaDataManager.Instance.InstantiateMonster<MonsterBasic>(getCurMonsterAttribute.monsterID.ToString());
-        if (curMonster.GetComponent<MonsterItemTouchEvent>() == null)
+        if (JIRVIS.Instance.isARType) //AR模式不走 center show
         {
-            curMonster.gameObject.AddComponent<MonsterItemTouchEvent>();
-        }
-        curMonster.gameObject.SetLayer(ONAME.LayerDeafualt);
-        if(JIRVIS.Instance.isARType)
-        {
+            if(curMonster!=null)AndaDataManager.Instance.RecieveItem(curMonster);
+            curMonster = AndaDataManager.Instance.InstantiateMonster<MonsterBasic>(getCurMonsterAttribute.monsterID.ToString());
             curMonster.SetInto(ARMonsterSceneDataManager.Instance.aRWorld.transform);
             curMonster.SetVitrulScale();
             curMonster.transform.forward = ARMonsterSceneDataManager.Instance.FaceToCameraWithSeflY(curMonster.selfPostion);
         }else
         {
-            curMonster.SetInto(dimensionSpace.monsterPoint);
-            curMonster.transform.forward *=-1;
+
+            if (monsterShowCenter == null)
+            {
+                monsterShowCenter = AndaDataManager.Instance.InstantiateOtherObj<MonsterShowCenter>(ONAME.MonsterShowCenter);
+                monsterShowCenter.SetInto(null);
+
+            }
+
+            monsterShowCenter.SetMonster(getCurMonsterAttribute.monsterID.ToString());
+
         }
 
-       
     }
-
-
-
-
-
 
 
     public void SetCurSelectMonsterItemIndex(int _itemIndex)

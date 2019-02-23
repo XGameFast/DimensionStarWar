@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MonsterShowCenter : AndaObjectBasic {
-    private ShowCenterMonsterBasic  monsterBasic;
+    public ShowCenterMonsterBasic  monsterBasic;
     public Camera showCamera;
     public Transform monsterPoint;
+    public GameObject arGround;
 
     public override void OnDispawn()
     {
@@ -30,6 +31,23 @@ public class MonsterShowCenter : AndaObjectBasic {
         monsterBasic = AndaDataManager.Instance.InstantiateMonster<ShowCenterMonsterBasic>("MonsterShowCenter" + monsterID);
         monsterBasic.SetInto(monsterPoint);
         monsterBasic.FadeIn();
+    }
+    /// <summary>
+    /// 接受阴影的AR地面，可以定制关闭
+    /// </summary>
+    public void SetARGround(bool isOpen)
+    {
+        arGround.gameObject.SetActive(isOpen);
+    }
+
+    public void PlayCameraMove(int toIndexPoint)
+    {
+        showCamera.GetComponent<Animator>().Play("toPoin" +2 );
+    }
+
+    public void CameraDepth(int depth)
+    {
+        showCamera.depth = depth;
     }
 
     public void SetMonsterHello()

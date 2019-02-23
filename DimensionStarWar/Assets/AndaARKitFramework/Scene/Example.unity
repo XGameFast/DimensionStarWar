@@ -374,6 +374,57 @@ MonoBehaviour:
   worldType: 0
   arWorld: {fileID: 0}
   m_MenuBasic: {fileID: 0}
+--- !u!1001 &55495303
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1885072917}
+    m_Modifications:
+    - target: {fileID: 4981757710764046, guid: 93823cf82cfeb41caa8eb71696d512b9, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4981757710764046, guid: 93823cf82cfeb41caa8eb71696d512b9, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4981757710764046, guid: 93823cf82cfeb41caa8eb71696d512b9, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4981757710764046, guid: 93823cf82cfeb41caa8eb71696d512b9, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4981757710764046, guid: 93823cf82cfeb41caa8eb71696d512b9, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4981757710764046, guid: 93823cf82cfeb41caa8eb71696d512b9, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4981757710764046, guid: 93823cf82cfeb41caa8eb71696d512b9, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4981757710764046, guid: 93823cf82cfeb41caa8eb71696d512b9, type: 2}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1614376571878314, guid: 93823cf82cfeb41caa8eb71696d512b9, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 93823cf82cfeb41caa8eb71696d512b9, type: 2}
+  m_IsPrefabParent: 0
+--- !u!4 &55495304 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 4981757710764046, guid: 93823cf82cfeb41caa8eb71696d512b9,
+    type: 2}
+  m_PrefabInternal: {fileID: 55495303}
 --- !u!1 &57513996
 GameObject:
   m_ObjectHideFlags: 0
@@ -1960,7 +2011,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4907593303722434, guid: 7243ed1f440d84afdb908be57e0a0d34, type: 2}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1633290142086610, guid: 7243ed1f440d84afdb908be57e0a0d34, type: 2}
       propertyPath: m_IsActive
@@ -6247,7 +6298,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 07eaae54faefa09459116a548bd95870, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 5fcba86f8f96347cc984eb16201d92ee, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -8357,6 +8408,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1847792986}
+  - {fileID: 55495304}
   - {fileID: 440316167}
   m_Father: {fileID: 0}
   m_RootOrder: 6

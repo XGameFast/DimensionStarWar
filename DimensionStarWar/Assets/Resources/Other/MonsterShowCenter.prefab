@@ -11,6 +11,36 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 1614376571878314}
   m_IsPrefabParent: 1
+--- !u!1 &1156837213410350
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4820765891952724}
+  m_Layer: 0
+  m_Name: p1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &1320127184905154
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4232903562849914}
+  m_Layer: 0
+  m_Name: p2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1428276466292502
 GameObject:
   m_ObjectHideFlags: 0
@@ -54,6 +84,7 @@ GameObject:
   - component: {fileID: 4306462668344130}
   - component: {fileID: 20668869413166730}
   - component: {fileID: 114286650440918052}
+  - component: {fileID: 95220204662730750}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -106,6 +137,19 @@ Transform:
   m_Father: {fileID: 4981757710764046}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4232903562849914
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1320127184905154}
+  m_LocalRotation: {x: -0, y: 1, z: -0, w: -0.00000004371139}
+  m_LocalPosition: {x: 0, y: 1.08, z: 3.85}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4981757710764046}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4306462668344130
 Transform:
   m_ObjectHideFlags: 1
@@ -113,12 +157,12 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1598095690591428}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: -0.00000004371139}
-  m_LocalPosition: {x: 0, y: 1.34, z: 2.87}
+  m_LocalPosition: {x: 0, y: 1.57, z: 2.82}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4981757710764046}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: -192.99799, z: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4380672014579568
 Transform:
   m_ObjectHideFlags: 1
@@ -145,6 +189,19 @@ Transform:
   m_Father: {fileID: 4981757710764046}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4820765891952724
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1156837213410350}
+  m_LocalRotation: {x: -0, y: 1, z: -0, w: -0.00000004371139}
+  m_LocalPosition: {x: 0, y: 1.57, z: 2.82}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4981757710764046}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4981757710764046
 Transform:
   m_ObjectHideFlags: 1
@@ -157,6 +214,8 @@ Transform:
   m_Children:
   - {fileID: 4534915359551074}
   - {fileID: 4171169830659762}
+  - {fileID: 4820765891952724}
+  - {fileID: 4232903562849914}
   - {fileID: 4306462668344130}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -250,6 +309,23 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 10, y: 0.01, z: 10}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!95 &95220204662730750
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1598095690591428}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 3b5c185031d994dbf85d350e5409d72c, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!114 &114181214752798584
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -279,8 +355,10 @@ MonoBehaviour:
   objectID: 
   initializationScale: 1
   isActive: 0
+  monsterBasic: {fileID: 0}
   showCamera: {fileID: 20668869413166730}
   monsterPoint: {fileID: 4534915359551074}
+  arGround: {fileID: 1896490512283328}
 --- !u!114 &114286650440918052
 MonoBehaviour:
   m_ObjectHideFlags: 1

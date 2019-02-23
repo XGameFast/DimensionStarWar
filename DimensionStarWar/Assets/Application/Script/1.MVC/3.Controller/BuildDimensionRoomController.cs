@@ -8,6 +8,8 @@ public class BuildDimensionRoomController : BaseController {
 
     public BuildDimensionRoomData data;
 
+
+
     private bool isPause =false;
 
     #region 执行
@@ -15,7 +17,7 @@ public class BuildDimensionRoomController : BaseController {
     public override void StartController()
     {
         base.StartController();
-        ARMonsterSceneDataManager.Instance.SetUsedCamera(ARMonsterSceneDataManager.Instance.mainCamera);
+        //ARMonsterSceneDataManager.Instance.SetUsedCamera(ARMonsterSceneDataManager.Instance.mainCamera);
         //构建数据
         BuildData();
         //获取完整的玩家据点数据
@@ -388,7 +390,7 @@ public class BuildDimensionRoomController : BaseController {
         if(JIRVIS.Instance.jIRVISData.IsAutoEnterAstroloy) JIRVIS.Instance.jIRVISData.IsAutoEnterAstroloy =false;
         //因为要构建游戏场景，所以需要打开游戏主相机
         //ARMonsterSceneDataManager.Instance.mainCamera.gameObject.SetTargetActiveOnce(true);
-        ARMonsterSceneDataManager.Instance.OpenMainCamera();
+        //ARMonsterSceneDataManager.Instance.OpenMainCamera();
         ARMonsterSceneDataManager.Instance.OpenGameLight(true);//ture = 打开场景灯光
         //关闭背景
         ARMonsterSceneDataManager.Instance.aRWorld.ClosebackgroundVV();
@@ -534,12 +536,13 @@ public class BuildDimensionRoomController : BaseController {
 
     private void SetMonster()
     {
-        data.RecieveMonsterItem();//先回收前面的Monster
+
+        //data.RecieveMonsterItem();//先回收前面的Monster
 
         data.InvockBuildMonsterItem();
 
         //data.BuildMonsterFadeInEffect();
-        Invoke("InvokeSetMonster" , 1f);
+         Invoke("InvokeSetMonster" , 1f);
     }
 
     private void InvokeSetMonster()
