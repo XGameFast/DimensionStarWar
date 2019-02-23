@@ -32,8 +32,12 @@ public class M_1011 : MonsterBasic
 
     private IEnumerator ExcuteMonsterFadeIn()
     {
+        AndaObjectBasic aob = AndaDataManager.Instance.InstantiateOtherObj<AndaObjectBasic>("FadeInEffect");
+        aob.SetInto(transform);
+        aob.ResetDestory(3f);
+
         float t = 0;
-        while(t < 2)
+        while(t < 3)
         {
             t +=Time.deltaTime;
 
@@ -41,6 +45,8 @@ public class M_1011 : MonsterBasic
             for (int i = 0; i < count2; i++)
             {
                 monsterRenderes[i].materials[0].SetFloat("_Dissolve", t);
+
+                 
             }
 
 
@@ -52,6 +58,7 @@ public class M_1011 : MonsterBasic
         {
             monsterRenderes[i].materials[1].SetFloat("_Alpha", 0);
         }
+
     }
 
     public void SayHello()
