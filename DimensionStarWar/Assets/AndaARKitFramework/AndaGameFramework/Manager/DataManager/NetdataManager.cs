@@ -228,7 +228,7 @@ public class NetdataManager : ManagerBase {
         }
         else
         {
-           
+            Debug.Log(postData.text);
             var data = JsonMapper.ToObject<Result>(postData.text);
             callBack(data.code == "200");
         }
@@ -1670,6 +1670,13 @@ public class NetdataManager : ManagerBase {
             callback(result);
         }
     }
+    #endregion
+
+
+    #region
+
+
+
     #endregion
 
     #region 玩家地址管理部分

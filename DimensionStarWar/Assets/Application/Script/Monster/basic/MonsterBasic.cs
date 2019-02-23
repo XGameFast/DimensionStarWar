@@ -378,7 +378,7 @@ public class MonsterBasic : AndaObjectBasic
         GetComponent<BoxCollider>().enabled = true;
         SetRongjie(0);
         SetAlpha(1);
-        MonsterFadeIn();
+        //MonsterFadeIn();
 
     }
 

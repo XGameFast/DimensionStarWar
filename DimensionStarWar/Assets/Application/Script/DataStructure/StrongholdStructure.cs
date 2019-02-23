@@ -208,6 +208,10 @@ public class StrongholdGrowUpAttribute
     public string headImage { get; set; }
     public string autograph { get; set; }
 
+    public string description{get;set;}
+
+    public string bossID { get; set; }
+
     public List<int> coupons { get; set; }
 
     public List<BusinessActivity> activitys { get; set; }
@@ -236,6 +240,8 @@ public class BusinessStrongholdGrowUpAttribute : StrongholdGrowUpAttribute
     public BusinessData BusinessData{get;set;}
     public List<BusinessCoupon> businessCoupons { get; set; }
     public List<BusinessActivity> businessActivity {get;set;}
+   
+
 }
 
 
