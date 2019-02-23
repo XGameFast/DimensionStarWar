@@ -70,5 +70,6 @@ public class M_1006 : MonsterBasic {
     {
         Initialization();
         base.EndOfMonsterMoodAnimation();
+       
     }
 }

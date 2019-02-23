@@ -9,13 +9,18 @@ public class LoginController : BaseController {
     public override void StartController()
     {
         base.StartController();
+        ARMonsterSceneDataManager.Instance.mainCamera.GetComponent<CameraGlory>().SetLimit(Vector2.zero, new Vector2(-0.5f,0.5f));
         BuildLoginCtrData();
         loginCtrData.BuildMenu(ONAME.LoginMenu2);
         loginCtrData.GetLoginMenu.PreloadUserAccountAndPassword();
+        ARMonsterSceneDataManager.Instance.aRWorld.OpenLoginMenuBackground(true);
     }
     public override void EndController()
     {
         ARMonsterSceneDataManager.Instance.aRWorld.OpenLoginMenuBackground(false);
+        ARMonsterSceneDataManager.Instance.mainCamera.GetComponent<CameraGlory>().CloseGlory();
+        ARMonsterSceneDataManager.Instance.mainCamera.gameObject.SetTargetActiveOnce(false);
+
         loginCtrData.InitValue();
         base.EndController();
     }
@@ -83,7 +88,7 @@ public class LoginController : BaseController {
     {
         if(isSuccess)
         {
-            PlayerPrefs.SetString("LastLogin", "Phone");
+            PlayerPrefs.SetString(ONAME.LastLogin, "Phone");
             PlayerPrefs.SetString("DefualtPhoneAccount", loginCtrData.GetLoginMenu.inputAccount.text);
             PlayerPrefs.SetString("DefualtPhoneSerect" , AndaDataManager.Instance.userData.phoneSecret);
 
@@ -95,7 +100,7 @@ public class LoginController : BaseController {
     {
         if(isSuccess)
         {
-            PlayerPrefs.SetString("LastLogin", "Wechat");
+            PlayerPrefs.SetString(ONAME.LastLogin, "Wechat");
             LoginFinish(isSuccess);
         }
     }
@@ -104,7 +109,7 @@ public class LoginController : BaseController {
     {
         if(isSuccess)
         {
-            PlayerPrefs.SetString("LastLogin" ,"QQ");
+            PlayerPrefs.SetString(ONAME.LastLogin, "QQ");
             LoginFinish(isSuccess);
         }
     }
@@ -185,7 +190,31 @@ public class LoginController : BaseController {
     /// <param name="userImage">User image.</param>
     public void WecahtLoginCallback(string code)
     {
-        AndaDataManager.Instance.WeChatLogin(LoginFinish, code);
+        AndaDataManager.Instance.WeChatLogin(WexinLoginResult, code);
+    }
+
+
+
+
+
+
+
+
+    public void ClickWechatLogin()
+    {
+        loginCtrData.GetLoginMenu.WXLogin();
+    }
+
+    public void ClickPhoneLogin()
+    {
+
+        loginCtrData.GetLoginMenu.OpenGetEICodeBar();
+
+    }
+
+    public void ClickQQLogin()
+    {
+        loginCtrData.GetLoginMenu.WXLogin();
     }
     
 }

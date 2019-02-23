@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using CameraTransitions;
+using UnityEngine.Video;
 public class  ARWorld : AndaObjectBasic
 {
     public float arworldScalePercent;
-
+    public VideoPlayer startVideo;
     /*
      * 场景管理
      * 
@@ -56,10 +57,27 @@ public class  ARWorld : AndaObjectBasic
 
     public GameObject uiWebView;
 
+
+
+
     private void Start()
     {
         WebManager.Instance.webUIObj = uiWebView;
-        ARMonsterSceneDataManager.Instance.aRWorld = this;
+       
+    }
+
+
+    public void OpenStartVideo(bool isOpen)
+    {
+        if(isOpen)
+        {
+            startVideo.gameObject.SetActive(true);
+            startVideo.Play();
+        }else
+        {
+            startVideo.Stop();
+            startVideo.gameObject.SetActive(false);
+        }
     }
 
     public void OpenFightFocus()

@@ -55,6 +55,9 @@ public class TestToolDownloadConfigEditor : Editor {
         test.SkillArchievementValueFileNameDownload = EditorGUILayout.Toggle("更新技能成就值配置文件",
                                                                              test.SkillArchievementValueFileNameDownload);
 
+        test.AssetIDTypeConfig = EditorGUILayout.Toggle("更新物件ID分类配置表",
+                                                                             test.AssetIDTypeConfig);
+
 
         test.isNeedGetUserData = EditorGUILayout.Toggle("是否模拟登录获取accgjp的账号数据",
                                                         test.isNeedGetUserData);

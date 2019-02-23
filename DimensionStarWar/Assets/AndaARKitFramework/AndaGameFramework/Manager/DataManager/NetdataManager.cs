@@ -175,13 +175,16 @@ public class NetdataManager : ManagerBase {
 
         if (postData.error != null)
         {
-            Debug.Log(postData.error);
+            Debug.Log( " UnityError : " + postData.error);
         }
         else
         {
 #if UNITY_EDITOR
-            Debug.Log("Login" + postData.text);
+           // Debug.Log("Login" + postData.text);
 #endif
+
+            Debug.Log("Login" + postData.text);
+
             var data = JsonMapper.ToObject<PlayerLogin>(postData.text);
             if (data.code == "200")
             {
@@ -225,7 +228,7 @@ public class NetdataManager : ManagerBase {
         }
         else
         {
-           
+            Debug.Log(postData.text);
             var data = JsonMapper.ToObject<Result>(postData.text);
             callBack(data.code == "200");
         }
@@ -1667,6 +1670,13 @@ public class NetdataManager : ManagerBase {
             callback(result);
         }
     }
+    #endregion
+
+
+    #region
+
+
+
     #endregion
 
     #region 玩家地址管理部分

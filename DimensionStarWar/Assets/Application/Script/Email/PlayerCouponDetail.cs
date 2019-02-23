@@ -49,7 +49,8 @@ public class PlayerCouponDetail : UIBasic2 {
         qr.playerIndex = selectPlayerCoupon.playerIndex;
         var json = LitJson.JsonMapper.ToJson(qr);
         Debug.Log(ToolByGjp.AESEncryptor.Encrypt(json, "playerCoupon"));
-        QRCode.texture = QRcodeDrawTool.ShowCode("http://47.99.45.109:8081/api/PlayerCoupon/QRCheackByGet?QR=" + ToolByGjp.AESEncryptor.Encrypt(json, "playerCoupon"));
+        QRCode.texture = QRcodeDrawTool.ShowCode(ToolByGjp.AESEncryptor.Encrypt(json, "playerCoupon"));
+        //QRCode.texture = QRcodeDrawTool.ShowCode("http://47.99.45.109:8081/api/PlayerCoupon/QRCheackByGet?QR=" + ToolByGjp.AESEncryptor.Encrypt(json, "playerCoupon"));
         tips.text = selectPlayerCoupon.coupon.tips;
         AndaDataManager.Instance.GetStrongholdImg(_playerCoupon.businessIndex,_playerCoupon.coupon.image , SetImage);
         Debug.Log(selectPlayerCoupon.status);
@@ -82,8 +83,13 @@ public class PlayerCouponDetail : UIBasic2 {
  
     public void Confirm()
     {
-        AndaDataManager.Instance.PlayerCouponUp(selectPlayerCoupon.playerCouponIndex, 1 , ConfirmBack);
+        //AndaDataManager.Instance.PlayerCouponUp(selectPlayerCoupon.playerCouponIndex, 1 , ConfirmBack);
+        AndaGameExtension._JumpToThirdBussiness("https://s.click.taobao.com/t?e=m%3D2%26s%3DwGUvWes%2F3Z0cQipKwQzePCperVdZeJviK7Vc7tFgwiFRAdhuF14FMTFMe7Yst8H9xq3IhSJN6GSDTf7kAhGDYXo8ETAclGeEXbCJk%2FqJ4eomOUVlbCAU8ABXgSuv7Sv7KtseCpInTy%2FkXkdea8kgYymBZ5ZWikN7RIhXpwzXCM5Pf2BYFhAHdGvBzQPtrpdWfjxl6AIniNpJGhlbad9UWw%3D%3D");
     }
+
+
+
+
     public void ConfirmBack(bool res)
     {
         if (res)

@@ -1298,7 +1298,7 @@ public class MonsterBasic : AndaObjectBasic
     {
         base.MonsterFadeIn();
         //ControllerToPlayMoodForSayHello00();
-        StartCoroutine(ExcuteFadeIn());
+        StartCoroutine(ExcuteFadeIn2());
     }
 
     public override void MonsterFadeOut()
@@ -1346,6 +1346,22 @@ public class MonsterBasic : AndaObjectBasic
         monsterFadeInEffect.gameObject.SetTargetActiveOnce(false);
 
     }
+
+
+    private IEnumerator ExcuteFadeIn2()
+    {
+        monsterFadeInEffect.gameObject.SetTargetActiveOnce(true);
+        float t =  0;
+        while(t < 3)
+        {
+            t+=Time.deltaTime;
+            SetRongjie2(t/3);
+            yield return null;
+        }
+        monsterFadeInEffect.gameObject.SetTargetActiveOnce(false);
+    }
+
+
     private IEnumerator ExcuteFadeIn()
     {
         monsterFadeInEffect.gameObject.SetTargetActiveOnce(true);
@@ -1405,6 +1421,15 @@ public class MonsterBasic : AndaObjectBasic
         for (int i = 0; i < count; i++)
         {
             bodyRender[i].material.SetFloat("_rongjie", v);
+        }
+    }
+    public virtual void SetRongjie2(float v)
+    {
+        int count = bodyRender.Length;
+        v = Mathf.Clamp01(v);
+        for (int i = 0; i < count; i++)
+        {
+            bodyRender[i].material.SetFloat("_Dissolve", v);
         }
     }
     #endregion

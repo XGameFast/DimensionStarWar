@@ -895,6 +895,11 @@ public class AndaDataManager
 
     #endregion
 
+    #region 皮肤
+
+
+    #endregion
+
 
     #region 用户地址管理
     public void UserAddressList(System.Action<bool> callback)
@@ -970,7 +975,6 @@ public class AndaDataManager
         mallData.BuildData();
     }
     #endregion
-
 
     #region use prop
 
