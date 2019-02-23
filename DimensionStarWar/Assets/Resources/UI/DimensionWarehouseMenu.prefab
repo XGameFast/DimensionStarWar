@@ -492,7 +492,7 @@ Transform:
   m_GameObject: {fileID: 1701511047185622}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: -30.5, z: 0}
-  m_LocalScale: {x: 1.9993672, y: 1.9993676, z: 1.9993676}
+  m_LocalScale: {x: 3.0309625, y: 3.0309615, z: 3.0309615}
   m_Children: []
   m_Father: {fileID: 4012140046948840}
   m_RootOrder: 0
@@ -1140,14 +1140,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.4705882, g: 0.4705882, b: 0.4705882, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 9c7eeacd6044147c1a5baeed57aaea34, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 5fcba86f8f96347cc984eb16201d92ee, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1380,7 +1380,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
-  randomSeed: -167219087
+  randomSeed: -280384572
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -4786,7 +4786,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
-  randomSeed: 2028784943
+  randomSeed: -1340562181
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -4876,7 +4876,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 1, b: 1, a: 0.803}
+      maxColor: {r: 1, g: 1, b: 1, a: 0.466}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -8462,7 +8462,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1444830038556970}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: -137}
+  m_LocalPosition: {x: 0, y: 0, z: -133}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 224351827652936846}
@@ -8777,7 +8777,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -486738.53, y: 0}
+  m_AnchoredPosition: {x: -1345146.5, y: 0}
   m_SizeDelta: {x: 0, y: 210}
   m_Pivot: {x: 0, y: 1}
 --- !u!224 &224934767638756682
@@ -8805,15 +8805,15 @@ RectTransform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1223395137216538}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 0, y: 0, z: -291}
-  m_LocalScale: {x: 300, y: 300, z: 300}
+  m_LocalPosition: {x: 0, y: 0, z: -384}
+  m_LocalScale: {x: 560.4369, y: 560.4368, z: 560.4368}
   m_Children: []
   m_Father: {fileID: 224525332306389072}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -700}
+  m_AnchoredPosition: {x: 0, y: -805}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &225252218287588282

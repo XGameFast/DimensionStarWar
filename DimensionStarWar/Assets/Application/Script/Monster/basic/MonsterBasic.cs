@@ -376,9 +376,10 @@ public class MonsterBasic : AndaObjectBasic
             monsterMood.BuildData(this);
         }
         GetComponent<BoxCollider>().enabled = true;
-        SetRongjie(0);
-        SetAlpha(1);
-        //MonsterFadeIn();
+        // SetRongjie(0);
+        //SetAlpha(1);
+
+        SetState01();
 
     }
 

@@ -269,8 +269,18 @@ public static class AndaGameExtension {
             //遍历当前物体及其所有子物体
             tran.gameObject.layer =  LayerMask.NameToLayer(layerName);
         }
-
     }
+
+    public static void SetLayer(this GameObject obj , int layer)
+    {
+        if (obj.layer == layer) return;
+        foreach (Transform tran in obj.transform.GetComponentsInChildren<Transform>())
+        {
+            //遍历当前物体及其所有子物体
+            tran.gameObject.layer = layer;
+        }
+    }
+
 
     public static string ToTime(this int value)
     {

@@ -12,53 +12,30 @@ public class M_1011 : MonsterBasic
     public GameObject nanguo;
 
     public Renderer[] monsterRenderes;
-   
-
-    public override void SetState00()
-    {
-        int count = monsterRenderes.Length;
-        for(int i = 0 ; i < count; i++)
-        {
-            monsterRenderes[i].materials[0].SetFloat("_Dissolve", -0.1f);
-            monsterRenderes[i].materials[1].SetFloat("_Alpha", 1);
-        }
-    }
-
+    public float excuteFadeInExcuteTimer;
 
     public override void SetState01()
     {
+        base.SetState01();
         StartCoroutine(ExcuteMonsterFadeIn());
     }
 
     private IEnumerator ExcuteMonsterFadeIn()
     {
-        AndaObjectBasic aob = AndaDataManager.Instance.InstantiateOtherObj<AndaObjectBasic>("FadeInEffect");
-        aob.SetInto(transform);
-        aob.ResetDestory(3f);
-
         float t = 0;
-        while(t < 3)
+        while(t < excuteFadeInExcuteTimer)
         {
             t +=Time.deltaTime;
-
+            float per = t / excuteFadeInExcuteTimer;
             int count2 = monsterRenderes.Length;
             for (int i = 0; i < count2; i++)
             {
-                monsterRenderes[i].materials[0].SetFloat("_Dissolve", t);
-
-                 
+                monsterRenderes[i].material.SetFloat("_Dissolve", per);
             }
 
 
             yield return null;
         }
-
-        int count = monsterRenderes.Length;
-        for (int i = 0; i < count; i++)
-        {
-            monsterRenderes[i].materials[1].SetFloat("_Alpha", 0);
-        }
-
     }
 
     public void SayHello()

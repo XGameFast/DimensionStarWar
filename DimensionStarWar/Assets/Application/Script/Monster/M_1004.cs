@@ -11,6 +11,36 @@ public class M_1004 : MonsterBasic {
 
     public float time = 0f;
     public bool isfly = false;
+
+
+    public Renderer bodyRenderer;
+    public float excuteFadeInTimer;
+
+
+    public override void SetState01()
+    {
+        base.SetState01();
+        bodyRenderer.material.SetFloat("_Dissolve" , 0);
+        StartCoroutine(ExcuteSetState01());
+    }
+
+    private IEnumerator ExcuteSetState01()
+    {
+        float t = 0;
+        while(t < excuteFadeInTimer)
+        {
+            t += Time.deltaTime;
+            float per = t / excuteFadeInTimer;
+            bodyRenderer.material.SetFloat("_Dissolve", per);
+            yield return null;
+        }
+
+        bodyRenderer.material.SetFloat("_Dissolve", 1.1f);
+    }
+
+
+
+
     public void Dazhaohu()
     {
         dazhaohu1.SetTargetActiveOnce(true);

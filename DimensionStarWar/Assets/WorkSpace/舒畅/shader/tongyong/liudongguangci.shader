@@ -58,10 +58,10 @@ Shader "Shader Forge/liudongguangci" {
                 float faceSign = ( facing >= 0 ? 1 : -1 );
 ////// Lighting:
                 float4 _node_3517_var = tex2D(_node_3517,TRANSFORM_TEX(i.uv0, _node_3517));
-                float4 node_1755 = _Time;
-                float2 node_2764 = (i.uv0+node_1755.g*float2(0.2,0.1));
+                float4 node_4698 = _Time;
+                float2 node_2764 = (i.uv0+node_4698.g*float2(0.2,0.1));
                 float4 node_9422 = tex2D(_node_862,TRANSFORM_TEX(node_2764, _node_862));
-                float2 node_8530 = (i.uv0+node_1755.g*float2(-0.3,-0.05));
+                float2 node_8530 = (i.uv0+node_4698.g*float2(-0.3,-0.05));
                 float4 node_5888 = tex2D(_node_862,TRANSFORM_TEX(node_8530, _node_862));
                 float node_660 = (node_9422.b+node_5888.b);
                 float3 finalColor = (_node_3517_var.rgb+((node_660*_node_3517_var.a)*_node_8873.rgb));

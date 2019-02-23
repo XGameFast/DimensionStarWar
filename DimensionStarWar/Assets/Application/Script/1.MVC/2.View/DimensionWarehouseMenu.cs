@@ -38,6 +38,8 @@ public class DimensionWarehouseMenu : UIBasic2 {
 
     private int lastSelectItemIndex;//上一次选择的单位的index；
 
+    private MonsterShowCenter monsterShowCenter;
+
     public override void InitMenu(BaseController _baseController)
     {
         base.InitMenu(_baseController);
@@ -456,13 +458,15 @@ public class DimensionWarehouseMenu : UIBasic2 {
         
             currentSelectMonsterAttribute = playerMonsterAttribute;
 
-            monsterBasic = AndaDataManager.Instance.InstantiateMonster<MonsterBasic>(currentSelectMonsterAttribute.monsterID.ToString());
-
-            monsterBasic.SetInto(monsterPoint);
-
-            monsterBasic.gameObject.SetLayer(ONAME.LayerUI);
-
-            monsterBasic.SetState00();
+            //构建monster
+            if(monsterShowCenter == null) 
+            {
+                monsterShowCenter = AndaDataManager.Instance.InstantiateOtherObj<MonsterShowCenter>(ONAME.MonsterShowCenter);
+          
+                monsterShowCenter.SetInto(null);
+            }
+           
+            monsterShowCenter.SetMonster(currentSelectMonsterAttribute.monsterID.ToString());
 
             setMonsterToStrongholdBtn.gameObject.SetTargetActiveOnce(currentSelectMonsterAttribute.belongStrongholdIndex == 0 || currentSelectMonsterAttribute.belongStrongholdIndex == -1);
         }
@@ -475,10 +479,14 @@ public class DimensionWarehouseMenu : UIBasic2 {
         switch(lastSelectItemIDType)
         {
             case 1000:
-                if (monsterBasic != null) AndaDataManager.Instance.RecieveItem(monsterBasic);
+                if(monsterShowCenter!=null)
+                {
+                    monsterShowCenter.Clear();
+                }
                 monsterSignSp.gameObject.SetTargetActiveOnce(false);
                 break;
             case 40000:
+
                 break;
             case -1:
 
@@ -537,7 +545,11 @@ public class DimensionWarehouseMenu : UIBasic2 {
         ClearItems();
         RemoveCurrentItem();
         BuildMonsterItem();
-        monsterBasic.SetState01();
+
+        if(monsterShowCenter!=null)
+        {
+            monsterShowCenter.SetMonsterHello();
+        }
     }
 
     private void CallBackUsedPlayercounpons()

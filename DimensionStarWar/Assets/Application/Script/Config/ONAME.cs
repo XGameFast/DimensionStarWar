@@ -225,6 +225,8 @@ public static class ONAME
 
     public static string searchTipArrowObj = "searchTipArrowObj";
 
+    public static string MonsterShowCenter = "MonsterShowCenter";
+
     #endregion
 
     #region UI按钮图标
