@@ -1,0 +1,106 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 400-Skin&Energize
+  m_Shader: {fileID: 4800000, guid: b4a046653aefb604d8a37537b8456064, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 2451
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AO:
+        m_Texture: {fileID: 2800000, guid: 8f0fc9c5898376b45992fc05ce863253, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DissolveTex:
+        m_Texture: {fileID: 2800000, guid: 46a5e82dd2634d94bb1662061241a8ba, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OffsetTex:
+        m_Texture: {fileID: 2800000, guid: 0525f5ac47fca9c4eb41c0acfe31e574, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _basecolor:
+        m_Texture: {fileID: 2800000, guid: c1786d05434c82844962a1ebaf04e0fd, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _liuwen1:
+        m_Texture: {fileID: 2800000, guid: c5f8130835a8dde4696de29b242a5982, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _metallic:
+        m_Texture: {fileID: 2800000, guid: bb77000dc37a29d4dbe5f5bd9d52471e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _node_3833:
+        m_Texture: {fileID: 2800000, guid: c5f8130835a8dde4696de29b242a5982, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _node_6917:
+        m_Texture: {fileID: 2800000, guid: 0525f5ac47fca9c4eb41c0acfe31e574, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _node_8042:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _node_8587:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _normal:
+        m_Texture: {fileID: 2800000, guid: 214d72ec7f465f847a14e4ed40ac2945, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _roughess:
+        m_Texture: {fileID: 2800000, guid: c01fefb172a85bb42801b44998da931a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _saomiao:
+        m_Texture: {fileID: 2800000, guid: 426e392ac715b4248aafc705aa010f0d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _stglow:
+        m_Texture: {fileID: 2800000, guid: 9933aad8d99bebd44b018ac3d8e09225, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _wangge2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _wanggetex:
+        m_Texture: {fileID: 2800000, guid: c5f8130835a8dde4696de29b242a5982, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _wanggetex2:
+        m_Texture: {fileID: 2800000, guid: d8222406ddf827d46932dd535bf9bb85, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _Alpha: 1
+    - _Cutoff: 0.5
+    - _Dissolve: 1.1
+    - _MatallicIntensity: 0.241
+    - _baseAlpha: 1
+    - _node_3648: 0.544
+    - _node_5990: 0
+    - _node_6908: 0
+    - _shujuxingtai: 0
+    m_Colors:
+    - _Dissolvebiancolor: {r: 0.35294116, g: 0.9464503, b: 1, a: 1}
+    - _dicolor: {r: 0, g: 0.14827585, b: 0.5, a: 1}
+    - _node_2998: {r: 0, g: 0, b: 0, a: 1}
+    - _node_5353: {r: 0, g: 0.31379318, b: 0.5, a: 1}
+    - _stglowcolor: {r: 0.24, g: 0.12413792, b: 0, a: 1}
+    - _wanggecolor: {r: 0, g: 8.044308, b: 12.025, a: 1}
+    - _wanggedi: {r: 0, g: 0, b: 0, a: 1}
