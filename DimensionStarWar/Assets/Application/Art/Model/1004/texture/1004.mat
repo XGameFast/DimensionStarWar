@@ -62,11 +62,16 @@ Material:
         m_Texture: {fileID: 2800000, guid: e250cd785fbbf4445963b7057169ae7d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _stglow:
+        m_Texture: {fileID: 2800000, guid: 9e8dd22bf37f1034a9ecb799149ff5c2, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Floats:
     - _Cutoff: 0.5
     - _alpha: 0
     - _rongjie: 1
     m_Colors:
+    - _glowcolor: {r: 0, g: 0, b: 0, a: 0}
     - _kangxiuColor: {r: 0, g: 0, b: 0, a: 1}
     - _liuwencolor: {r: 0.06617647, g: 0.3431034, b: 1, a: 1}
     - _rongjiebiancolor: {r: 0.09558821, g: 0.9251521, b: 1, a: 1}
