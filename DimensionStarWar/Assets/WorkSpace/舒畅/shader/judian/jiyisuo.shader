@@ -86,10 +86,10 @@ Shader "Shader Forge/jiyisuo" {
                 float3 diffuseColor = (_node_4128_var.rgb*_bense);
                 float3 diffuse = (directDiffuse + indirectDiffuse) * diffuseColor;
 ////// Emissive:
-                float4 node_3176 = _Time;
-                float2 node_2117 = (i.uv0+node_3176.g*float2(0.2,0.1));
+                float4 node_1251 = _Time;
+                float2 node_2117 = (i.uv0+node_1251.g*float2(0.2,0.1));
                 float4 node_5542 = tex2D(_node_820,TRANSFORM_TEX(node_2117, _node_820));
-                float2 node_623 = (i.uv0+node_3176.g*float2(-0.2,-0.3));
+                float2 node_623 = (i.uv0+node_1251.g*float2(-0.2,-0.3));
                 float4 node_4993 = tex2D(_node_820,TRANSFORM_TEX(node_623, _node_820));
                 float node_1738 = pow((node_5542.r*node_4993.r),1.2);
                 float4 _node_4669_var = tex2D(_node_4669,TRANSFORM_TEX(i.uv0, _node_4669));

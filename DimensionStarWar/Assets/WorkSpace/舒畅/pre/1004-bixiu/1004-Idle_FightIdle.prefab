@@ -1388,7 +1388,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1787812819608676}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -1.268, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4180829588777442}
@@ -1770,7 +1770,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1006956397157750}
   m_LocalRotation: {x: -0.50000036, y: 0.49999967, z: 0.49999967, w: 0.50000036}
-  m_LocalPosition: {x: -0, y: 0.23252001, z: -0.000000021356506}
+  m_LocalPosition: {x: 0, y: 0.23252001, z: -1.167}
   m_LocalScale: {x: 0.0009999999, y: 0.0009999999, z: 0.001}
   m_Children:
   - {fileID: 4024875337465202}
@@ -1963,6 +1963,11 @@ MonoBehaviour:
   objectID: 
   initializationScale: 1
   isActive: 0
+  bati: 0
+  onlyBigAttack: 0
+  onlyDefense: 0
+  onlyNormalAttack: 0
+  standOnly: 0
   monsterPowerBar: {fileID: 0}
   skinStoneMaterias: {fileID: 0}
   head: {fileID: 0}
@@ -1978,16 +1983,27 @@ MonoBehaviour:
   rightLeg: {fileID: 0}
   powerBarPoint: {fileID: 0}
   headChildPoint: {fileID: 0}
+  powerLinkPoint: {fileID: 0}
   hitAniamtionCount: 2
   attackAnimationCount: 2
+  hudongAnimationCount: 0
+  helloAnimationCount: 0
+  fadeInDuration: 0
+  bodyRender: []
+  monsterFadeInEffect: {fileID: 0}
   withHeadDistance: 0
   isPlayer: 0
   playerIndex: 0
   animator: {fileID: 95904643194114514}
   monsterIndex: 0
   isBigHit: 0
-  bodyRender: []
-  monsterFadeInEffect: {fileID: 0}
+  lefteye: {fileID: 0}
+  dazhaohu1: {fileID: 0}
+  sayhello: {fileID: 0}
+  sayHelloChild01: {fileID: 0}
+  sayHelloChild00: {fileID: 0}
+  time: 0
+  isfly: 0
 --- !u!137 &137459270710040276
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1
@@ -2002,7 +2018,7 @@ SkinnedMeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 7b5b7db0b44314bcb91ce7c26c0e4a87, type: 2}
+  - {fileID: 2100000, guid: cb90ecac4fdc8434ca3390425b003c02, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
