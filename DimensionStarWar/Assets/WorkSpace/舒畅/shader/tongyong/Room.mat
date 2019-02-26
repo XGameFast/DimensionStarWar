@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Room
+  m_Shader: {fileID: 4800000, guid: 81b100c10af36e24f8ff08b2c813f37b, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _dissolvetex:
+        m_Texture: {fileID: 2800000, guid: 46a5e82dd2634d94bb1662061241a8ba, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _liuwentex:
+        m_Texture: {fileID: 2800000, guid: d22778733a18de44d8da6d6b0d744ff1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _muqiangtex:
+        m_Texture: {fileID: 2800000, guid: 77b1731b29e742a449c2418b9de45188, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _wanggetex:
+        m_Texture: {fileID: 2800000, guid: 7ed65089cc37c6c44a423350ee3bd0c6, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _Cutoff: 0.5
+    - _Dissolve: 1
+    - _node_3411: 1
+    - _offon: 1
+    m_Colors:
+    - _biancolor: {r: 0.3308823, g: 1.1129816, b: 1.5, a: 1}
+    - _liucolor: {r: 0.2647059, g: 0.7261664, b: 1, a: 1}
+    - _muqiangcolor: {r: 0.21247835, g: 0.43511662, b: 0.9632353, a: 1}
+    - _node_2523: {r: 0.233564, g: 0.5529023, b: 0.9926471, a: 1}
+    - _wanggecolor: {r: 0.233564, g: 0.5529023, b: 0.9926471, a: 1}

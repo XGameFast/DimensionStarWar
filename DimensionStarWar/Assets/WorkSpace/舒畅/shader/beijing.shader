@@ -70,10 +70,10 @@ Shader "Shader Forge/beijing" {
                 float faceSign = ( facing >= 0 ? 1 : -1 );
 ////// Lighting:
                 float4 _MainTex_var = tex2D(_MainTex,TRANSFORM_TEX(i.uv0, _MainTex));
-                float4 node_6655 = _Time;
-                float2 node_490 = (i.uv0+node_6655.g*float2(0.1,0.1));
+                float4 node_7208 = _Time;
+                float2 node_490 = (i.uv0+node_7208.g*float2(0.1,0.1));
                 float4 node_940 = tex2D(_node_2431,TRANSFORM_TEX(node_490, _node_2431));
-                float2 node_2077 = (i.uv0+node_6655.g*float2(-0.1,-0.1));
+                float2 node_2077 = (i.uv0+node_7208.g*float2(-0.1,-0.1));
                 float4 node_1553 = tex2D(_node_2431,TRANSFORM_TEX(node_2077, _node_2431));
                 float2 node_7185 = ((node_940.r*node_1553.r*_niuqudaxiao)+i.uv0);
                 float4 _node_8654_var = tex2D(_node_8654,TRANSFORM_TEX(node_7185, _node_8654));
